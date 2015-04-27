@@ -1,6 +1,7 @@
 package com.github.fauu.notpetstore.repository;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
+import com.github.fauu.notpetstore.repository.exception.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
@@ -13,14 +14,21 @@ public class TransientSnippetRepository implements SnippetRepository {
 
   @Override
   public List<Snippet> findAll() {
-    return snippetStore;
+    if (snippetStore != null) {
+      return snippetStore;
+    } else {
+      throw new DataAccessException("Could not access snippet store");
+    }
   }
 
   @Override
   public Snippet save(final Snippet snippet) {
-    snippetStore.add(snippet);
-
-    return snippet;
+    if (snippetStore.add(snippet)) {
+      return snippet;
+    } else {
+      throw new DataAccessException("Could not add snippet to snippet store: "
+                                    + snippet);
+    }
   }
 
 }

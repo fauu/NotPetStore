@@ -117,3 +117,9 @@ button:active {
   background: #ffab91;
   transition: all 0.2s linear;
 }
+
+.error-message {
+  color: #f44336;
+  text-align: center;
+  margin-bottom: 30px;
+}
