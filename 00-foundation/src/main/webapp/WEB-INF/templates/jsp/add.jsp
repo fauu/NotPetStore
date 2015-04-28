@@ -5,17 +5,27 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <t:main-template>
-  <jsp:attribute name="pageName">Add New Snippet</jsp:attribute>
+  <jsp:attribute name="pageName"><spring:message code="addNewSnippet" /></jsp:attribute>
 
   <jsp:body>
     <form:form action="/" commandName="snippetForm" method="POST">
-      <form:input path="title" placeholder="Snippet title" />
+      <div class="field">
+        <spring:message code="snippetForm.titlePlaceholder" var="titlePlaceholder" />
+        <spring:bind path="title">
+          <form:input path="title" placeholder="${titlePlaceholder}" class="${status.error ? 'error' : ''}"/>
+          <form:errors path="title" class="errors" />
+        </spring:bind>
+      </div>
 
-      <spring:bind path="content">
-        <form:textarea path="content" placeholder="Paste something!" class="${status.error ? 'error' : ''}" />
-      </spring:bind>
+      <div class="field">
+        <spring:message code="snippetForm.contentPlaceholder" var="contentPlaceholder" />
+        <spring:bind path="content">
+          <form:textarea path="content" placeholder="${contentPlaceholder}" class="${status.error ? 'error' : ''}" />
+          <form:errors path="content" class="errors" />
+        </spring:bind>
+      </div>
 
-      <form:button type="submit">Save</form:button>
+      <form:button type="submit"><spring:message code="snippetForm.save" /></form:button>
     </form:form>
   </jsp:body>
 </t:main-template>
