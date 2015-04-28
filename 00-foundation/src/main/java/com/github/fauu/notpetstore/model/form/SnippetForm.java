@@ -6,11 +6,11 @@ import javax.validation.constraints.Size;
 
 public class SnippetForm {
 
-  @Size(max = 10, message = "{snippetForm.error.titleTooLong}")
+  @Size(max = 80, message = "{snippetForm.error.titleTooLong}")
   private String title;
 
   @NotEmpty(message = "{snippetForm.error.contentEmpty}")
-  @Size(max = 10, message = "{snippetForm.error.contentTooLong}")
+  @Size(max = 5000, message = "{snippetForm.error.contentTooLong}")
   private String content;
 
   public String getTitle() {
