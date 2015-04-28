@@ -8,12 +8,12 @@
 
   <context:component-scan base-package="com.github.fauu.notpetstore.web.controller"/>
 
+  <mvc:resources mapping="/static/**" location="/static/" />
+
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="prefix" value="/WEB-INF/templates/jsp/"/>
     <property name="suffix" value=".jsp"/>
   </bean>
-
-  <mvc:default-servlet-handler />
 
   <mvc:annotation-driven />
 

@@ -16,7 +16,7 @@ public class SnippetServiceImpl implements SnippetService {
   private SnippetRepository snippetRepository;
 
   @Override
-  public List<Snippet> findAll() {
+  public List<Snippet> findAll() throws ServiceException {
     try {
       final List<Snippet> snippets = snippetRepository.findAll();
 

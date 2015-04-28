@@ -6,8 +6,6 @@
   <jsp:attribute name="pageName">Add New Snippet</jsp:attribute>
 
   <jsp:body>
-    <jsp:include page="fragments/errorMessage.jsp" />
-
     <form:form action="/" commandName="snippet" method="POST">
       <form:textarea path="content" placeholder="Paste something!" />
       <form:button type="submit">Save</form:button>

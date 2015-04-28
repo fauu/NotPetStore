@@ -118,8 +118,17 @@ button:active {
   transition: all 0.2s linear;
 }
 
-.error-message {
-  color: #f44336;
+.message {
+  font-size: 18px;
   text-align: center;
   margin-bottom: 30px;
+}
+
+.message.error .code {
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+.message.error.severe {
+  color: #f44336;
 }

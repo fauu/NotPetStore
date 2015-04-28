@@ -4,6 +4,7 @@ import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.service.SnippetService;
 import com.github.fauu.notpetstore.service.SnippetServiceImpl;
 import com.github.fauu.notpetstore.service.exception.ServiceException;
+import com.github.fauu.notpetstore.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
 @RequestMapping("/")
 public class SnippetController {
 
-  private static final Logger logger
-      = LoggerFactory.getLogger(SnippetController.class);
+  private Logger logger;
+
+  public SnippetController() {
+    logger = LoggerFactory.getLogger(getClass());
+  }
 
   @Autowired
   private SnippetService snippetService;
@@ -37,44 +42,24 @@ public class SnippetController {
 	}
 
   @RequestMapping(value = "/", method = RequestMethod.POST)
-  public String doAdd(final @ModelAttribute("snippet") Snippet snippet,
-                      final RedirectAttributes redirectAttributes) {
-    try {
-      snippetService.add(snippet);
-    } catch (ServiceException e) {
-      logAndFlashError(e, redirectAttributes);
-    }
+  public String doAdd(final @ModelAttribute("snippet") Snippet snippet) {
+    snippetService.add(snippet);
 
     return "redirect:/";
   }
 
   @RequestMapping(value = "/browse", method = RequestMethod.GET)
-  public String browse(final Model model,
-                       final RedirectAttributes redirectAttributes) {
-    try {
-      final List<Snippet> snippets = snippetService.findAll();
+  public String browse(final Model model) {
+    final List<Snippet> snippets = snippetService.findAll();
 
-      model.addAttribute("snippets", snippets);
+    model.addAttribute("snippets", snippets);
 
-      return "browse";
-    } catch (ServiceException e) {
-      logAndFlashError(e, redirectAttributes);
-
-      return "redirect:/";
-    }
+    return "browse";
   }
 
-  @RequestMapping(value = "/{pasteId}", method = RequestMethod.GET)
-  public String view(final @PathVariable("pasteId") String pasteId) {
-    return "404";
-  }
-
-  private void logAndFlashError(final Exception e,
-                                final RedirectAttributes redirectAttributes) {
-    logger.error("", e);
-
-    redirectAttributes.addFlashAttribute("error",
-        "There was an error processing your request. Please try again.");
+  @RequestMapping(value = "/{snippetId}", method = RequestMethod.GET)
+  public String view(final @PathVariable("snippetId") String snippetId) {
+    throw new ResourceNotFoundException();
   }
 
 }
