@@ -1,9 +1,16 @@
-package com.github.fauu.notpetstore.model.entity;
+package com.github.fauu.notpetstore.model.form;
 
-public class Snippet {
+import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.Size;
+
+public class SnippetForm {
+
+  @Size(max = 100)
   private String title;
 
+  @NotEmpty
+  @Size(max = 5000)
   private String content;
 
   public String getTitle() {
@@ -24,7 +31,7 @@ public class Snippet {
 
   @Override
   public String toString() {
-    return "Snippet{" +
+    return "SnippetForm{" +
         "title='" + title + '\'' +
         ", content='" + content + '\'' +
         '}';
@@ -35,18 +42,18 @@ public class Snippet {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    Snippet snippet = (Snippet) o;
+    SnippetForm that = (SnippetForm) o;
 
-    if (title != null ? !title.equals(snippet.title) : snippet.title != null)
+    if (title != null ? !title.equals(that.title) : that.title != null)
       return false;
-    return content.equals(snippet.content);
+    return !(content != null ? !content.equals(that.content) : that.content != null);
 
   }
 
   @Override
   public int hashCode() {
     int result = title != null ? title.hashCode() : 0;
-    result = 31 * result + content.hashCode();
+    result = 31 * result + (content != null ? content.hashCode() : 0);
     return result;
   }
 

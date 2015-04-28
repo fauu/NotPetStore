@@ -75,21 +75,36 @@ body > main {
   margin: 30px;
 }
 
-form {
+#snippetForm {
   text-align: center;
 }
 
-textarea {
+#snippetForm #title {
+  background: #fff;
+  border: none;
+  border-bottom: 2px solid #9574cd;
+  font-size: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 5px;
+  width: 100%;
+}
+
+#snippetForm #content {
   background: #fff;
   border: none;
   border-bottom: 2px solid #9574cd;
   font-family: Inconsolata, monospace;
   font-size: 15px;
   height: 600px;
+  padding-bottom: 5px;
   width: 100%;
 }
 
-button {
+#snippetForm .error {
+  border-color: #f44336 !important;
+}
+
+#snippetForm button {
   background: #ff5722;
   border: none;
   border-radius: 2px;
@@ -105,7 +120,7 @@ button {
   transition: all 0.2s linear;
 }
 
-button:hover {
+#snippetForm button:hover {
   background: #ff7043;
   box-shadow: 0 4px 7px 0 rgba(0, 0, 0, 0.24),
               0 4px 15px 0 rgba(0, 0, 0, 0.18);
@@ -113,7 +128,7 @@ button:hover {
   transition: all 0.2s linear;
 }
 
-button:active {
+#snippetForm button:active {
   background: #ffab91;
   transition: all 0.2s linear;
 }

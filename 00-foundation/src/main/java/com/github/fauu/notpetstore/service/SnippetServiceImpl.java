@@ -1,6 +1,7 @@
 package com.github.fauu.notpetstore.service;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
+import com.github.fauu.notpetstore.model.form.SnippetForm;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
 import com.github.fauu.notpetstore.repository.exception.DataAccessException;
 import com.github.fauu.notpetstore.service.exception.ServiceException;
@@ -27,12 +28,15 @@ public class SnippetServiceImpl implements SnippetService {
   }
 
   @Override
-  public Snippet add(final Snippet snippet) {
+  public Snippet add(final SnippetForm snippetForm) {
     // TODO: Verify snippet
-    try {
-      final Snippet savedSnippet = snippetRepository.save(snippet);
 
-      return savedSnippet;
+    final Snippet snippet = new Snippet();
+    snippet.setTitle(snippetForm.getTitle());
+    snippet.setContent(snippetForm.getContent());
+
+    try {
+      return snippetRepository.save(snippet);
     } catch (DataAccessException e) {
       throw new ServiceException("Could not add snippet", e);
     }
