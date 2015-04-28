@@ -1,5 +1,5 @@
 .idea/
 *.iml
 *.iws
-log/
+logs/
 target/
