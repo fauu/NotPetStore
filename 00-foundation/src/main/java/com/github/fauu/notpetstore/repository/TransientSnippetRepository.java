@@ -26,8 +26,17 @@ public class TransientSnippetRepository implements SnippetRepository {
     if (snippetStore.add(snippet)) {
       return snippet;
     } else {
-      throw new DataAccessException("Could not add snippet to snippet store: "
+      throw new DataAccessException("Could not add to snippet store: "
                                     + snippet);
+    }
+  }
+
+  @Override
+  public void deleteAll() {
+    if (snippetStore != null) {
+      snippetStore.clear();
+    } else {
+      throw new DataAccessException("Could not access snippet store");
     }
   }
 

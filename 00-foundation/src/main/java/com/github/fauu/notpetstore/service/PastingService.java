@@ -11,24 +11,20 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SnippetService {
+public class PastingService {
 
   @Autowired
   private SnippetRepository snippetRepository;
 
-  public List<Snippet> findAll() throws ServiceException {
+  public List<Snippet> getAllSnippets() throws ServiceException {
     try {
-      List<Snippet> snippets = snippetRepository.findAll();
-
-      return snippets;
+      return snippetRepository.findAll();
     } catch (DataAccessException e) {
-      throw new ServiceException("Could not find snippets", e);
+      throw new ServiceException("Could not get snippets", e);
     }
   }
 
-  public Snippet add(SnippetForm snippetForm) {
-    // TODO: Verify snippet
-
+  public Snippet addSnippet(SnippetForm snippetForm) {
     Snippet snippet = new Snippet();
     snippet.setTitle(snippetForm.getTitle());
     snippet.setContent(snippetForm.getContent());

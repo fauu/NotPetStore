@@ -11,4 +11,6 @@ public interface SnippetRepository {
 
   Snippet save(Snippet snippet) throws DataAccessException;
 
+  void deleteAll() throws DataAccessException;
+
 }

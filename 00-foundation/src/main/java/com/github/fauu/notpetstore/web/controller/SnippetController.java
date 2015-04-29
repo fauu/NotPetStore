@@ -1,7 +1,7 @@
 package com.github.fauu.notpetstore.web.controller;
 
 import com.github.fauu.notpetstore.model.form.SnippetForm;
-import com.github.fauu.notpetstore.service.SnippetService;
+import com.github.fauu.notpetstore.service.PastingService;
 import com.github.fauu.notpetstore.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,7 +19,7 @@ import javax.validation.Valid;
 public class SnippetController {
 
   @Autowired
-  private SnippetService snippetService;
+  private PastingService pastingService;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String add(Model model) {
@@ -35,14 +35,14 @@ public class SnippetController {
       return "add";
     }
 
-    snippetService.add(snippetForm);
+    pastingService.addSnippet(snippetForm);
 
     return "redirect:/";
   }
 
   @RequestMapping(value = "/browse", method = RequestMethod.GET)
   public String browse(Model model) {
-    model.addAttribute("snippets", snippetService.findAll());
+    model.addAttribute("snippets", pastingService.getAllSnippets());
 
     return "browse";
   }
