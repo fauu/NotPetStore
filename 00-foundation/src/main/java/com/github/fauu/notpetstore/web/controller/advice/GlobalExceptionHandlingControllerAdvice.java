@@ -27,7 +27,7 @@ public class GlobalExceptionHandlingControllerAdvice {
 
   @ExceptionHandler(Throwable.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public String otherError(final Throwable e) {
+  public String otherError(Throwable e) {
     logger.error("Returned Internal Server Error", e);
 
     return "error/500";

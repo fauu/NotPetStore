@@ -52,7 +52,7 @@ public class SnippetControllerTests extends AbstractContextControllerTests {
   @Test
   public void doAdd_EmptyContent_ShouldRenderAddFormWithValidationErrorForContent()
       throws Exception {
-    final SnippetForm snippetForm = new SnippetForm();
+    SnippetForm snippetForm = new SnippetForm();
     snippetForm.setTitle("title");
     snippetForm.setContent("");
 
@@ -73,11 +73,11 @@ public class SnippetControllerTests extends AbstractContextControllerTests {
   @Test
   public void doAdd_ValidForm_ShouldStoreSnippetAndRedirectToRoot()
       throws Exception {
-    final SnippetForm snippetForm = new SnippetForm();
+    SnippetForm snippetForm = new SnippetForm();
     snippetForm.setTitle("title");
     snippetForm.setContent("content");
 
-    final Snippet snippet = new Snippet();
+    Snippet snippet = new Snippet();
     snippet.setTitle(snippetForm.getTitle());
     snippet.setContent(snippetForm.getContent());
 
@@ -95,11 +95,11 @@ public class SnippetControllerTests extends AbstractContextControllerTests {
   @Test
   public void browse_ShouldRenderBrowseSnippetsPageWithSnippetList()
       throws Exception {
-    final Snippet firstSnippet = new Snippet();
+    Snippet firstSnippet = new Snippet();
     firstSnippet.setTitle("First snippet title");
     firstSnippet.setContent("First snippet content");
 
-    final Snippet secondSnippet = new Snippet();
+    Snippet secondSnippet = new Snippet();
     secondSnippet.setTitle("Second snippet title");
     secondSnippet.setContent("Second snippet content");
 

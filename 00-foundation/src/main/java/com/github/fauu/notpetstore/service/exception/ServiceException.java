@@ -2,11 +2,11 @@ package com.github.fauu.notpetstore.service.exception;
 
 public class ServiceException extends RuntimeException {
 
-  public ServiceException(final String msg) {
+  public ServiceException(String msg) {
     super(msg);
   }
 
-  public ServiceException(final String msg, final Throwable cause) {
+  public ServiceException(String msg, Throwable cause) {
     super(msg, cause);
   }
 

@@ -22,7 +22,7 @@ public class TransientSnippetRepository implements SnippetRepository {
   }
 
   @Override
-  public Snippet save(final Snippet snippet) {
+  public Snippet save(Snippet snippet) {
     if (snippetStore.add(snippet)) {
       return snippet;
     } else {

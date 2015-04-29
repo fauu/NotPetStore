@@ -22,15 +22,15 @@ public class SnippetController {
   private SnippetService snippetService;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String add(final Model model) {
+	public String add(Model model) {
     model.addAttribute(new SnippetForm());
 
 		return "add";
 	}
 
   @RequestMapping(value = "/", method = RequestMethod.POST)
-  public String doAdd(final @ModelAttribute @Valid SnippetForm snippetForm,
-                      final BindingResult bindingResult) {
+  public String doAdd(@ModelAttribute @Valid SnippetForm snippetForm,
+                      BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       return "add";
     }
@@ -41,14 +41,14 @@ public class SnippetController {
   }
 
   @RequestMapping(value = "/browse", method = RequestMethod.GET)
-  public String browse(final Model model) {
+  public String browse(Model model) {
     model.addAttribute("snippets", snippetService.findAll());
 
     return "browse";
   }
 
   @RequestMapping(value = "/{snippetId}", method = RequestMethod.GET)
-  public String view(final @PathVariable String snippetId) {
+  public String view(@PathVariable String snippetId) {
     throw new ResourceNotFoundException();
   }
 
