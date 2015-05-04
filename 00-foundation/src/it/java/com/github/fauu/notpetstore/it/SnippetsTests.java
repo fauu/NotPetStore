@@ -5,7 +5,6 @@ import com.github.fauu.notpetstore.repository.SnippetRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -13,11 +12,8 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 public class SnippetsTests extends AbstractIntegrationTests {
-
-  private MockMvc mockMvc;
 
   @Autowired
   private SnippetRepository snippetRepository;
@@ -26,9 +22,10 @@ public class SnippetsTests extends AbstractIntegrationTests {
 
   private MockHttpServletRequestBuilder addSnippetRequestValid;
 
+  @Override
   @Before
-  public void setup() {
-    mockMvc = webAppContextSetup(context).build();
+  public void setUp() {
+    super.setUp();
 
     addSnippetRequestEmptyContent
         = post("/").param("title", "Title")

@@ -9,8 +9,7 @@ public class SnippetForm {
   @Size(max = 80, message = "{snippetForm.error.titleTooLong}")
   private String title;
 
-  @NotEmpty(message = "{snippetForm.error.contentEmpty}")
-  @Size(max = 5000, message = "{snippetForm.error.contentTooLong}")
+  @Size(min = 140, max = 5000, message = "{snippetForm.error.contentBadLength}")
   private String content;
 
   public String getTitle() {

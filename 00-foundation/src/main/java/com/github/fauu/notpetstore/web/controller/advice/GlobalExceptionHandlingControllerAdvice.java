@@ -12,11 +12,8 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 @ControllerAdvice
 public class GlobalExceptionHandlingControllerAdvice {
 
-  private Logger logger;
-
-  public GlobalExceptionHandlingControllerAdvice() {
-    logger = LoggerFactory.getLogger(getClass());
-  }
+  private static final Logger LOG
+      = LoggerFactory.getLogger(GlobalExceptionHandlingControllerAdvice.class);
 
   @ExceptionHandler({NoHandlerFoundException.class,
                      ResourceNotFoundException.class})
@@ -27,8 +24,8 @@ public class GlobalExceptionHandlingControllerAdvice {
 
   @ExceptionHandler(Throwable.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public String otherError(Throwable e) {
-    logger.error("Returned Internal Server Error", e);
+  public String any(Throwable e) {
+    LOG.error("Returned Internal Server Error", e);
 
     return "error/500";
   }

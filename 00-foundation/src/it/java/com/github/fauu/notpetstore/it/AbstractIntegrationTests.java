@@ -23,7 +23,7 @@ public abstract class AbstractIntegrationTests {
   protected MockMvc mockMvc;
 
   @Before
-  public void setup() {
+  public void setUp() {
     mockMvc = webAppContextSetup(context).build();
   }
 
