@@ -16,6 +16,11 @@ public class TransientSnippetRepository implements SnippetRepository {
   }
 
   @Override
+  public boolean exists(String id) {
+    return snippetStore.stream().anyMatch(s -> s.getId().equals(id));
+  }
+
+  @Override
   public List<Snippet> findAll() {
     return snippetStore;
   }

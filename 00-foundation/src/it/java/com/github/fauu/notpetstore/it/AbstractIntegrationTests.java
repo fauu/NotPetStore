@@ -18,13 +18,13 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 public abstract class AbstractIntegrationTests {
 
   @Autowired
-  protected WebApplicationContext context;
+  protected WebApplicationContext applicationContext;
 
   protected MockMvc mockMvc;
 
   @Before
   public void setUp() {
-    mockMvc = webAppContextSetup(context).build();
+    mockMvc = webAppContextSetup(applicationContext).build();
   }
 
 }

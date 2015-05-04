@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface SnippetRepository {
 
+  boolean exists(String id);
+
   List<Snippet> findAll();
 
   Snippet save(Snippet snippet);

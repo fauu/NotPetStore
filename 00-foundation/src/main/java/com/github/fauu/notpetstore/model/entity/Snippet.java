@@ -1,10 +1,30 @@
 package com.github.fauu.notpetstore.model.entity;
 
+import org.springframework.util.Assert;
+
+import java.time.LocalDateTime;
+
 public class Snippet {
+
+  private String id;
 
   private String title;
 
   private String content;
+
+  private Visibility visibility;
+
+  private LocalDateTime dateTimeAdded;
+
+  private int numViews;
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
 
   public String getTitle() {
     return title;
@@ -22,12 +42,28 @@ public class Snippet {
     this.content = content;
   }
 
-  @Override
-  public String toString() {
-    return "Snippet{" +
-        "title='" + title + '\'' +
-        ", content='" + content + '\'' +
-        '}';
+  public Visibility getVisibility() {
+    return visibility;
+  }
+
+  public void setVisibility(Visibility visibility) {
+    this.visibility = visibility;
+  }
+
+  public LocalDateTime getDateTimeAdded() {
+    return dateTimeAdded;
+  }
+
+  public void setDateTimeAdded(LocalDateTime dateTimeAdded) {
+    this.dateTimeAdded = dateTimeAdded;
+  }
+
+  public int getNumViews() {
+    return numViews;
+  }
+
+  public void setNumViews(int numViews) {
+    this.numViews = numViews;
   }
 
   @Override
@@ -37,17 +73,26 @@ public class Snippet {
 
     Snippet snippet = (Snippet) o;
 
-    if (title != null ? !title.equals(snippet.title) : snippet.title != null)
-      return false;
-    return content.equals(snippet.content);
-
+    return id.equals(snippet.id);
   }
 
   @Override
   public int hashCode() {
-    int result = title != null ? title.hashCode() : 0;
-    result = 31 * result + content.hashCode();
-    return result;
+    return id.hashCode();
+  }
+
+  public enum Visibility {
+    PUBLIC,
+    UNLISTED;
+
+    @Override
+    public String toString() {
+      switch (this) {
+        case PUBLIC: return "Public";
+        case UNLISTED: return "Unlisted";
+        default: throw new AssertionError("Encountered unhandled value");
+      }
+    }
   }
 
 }

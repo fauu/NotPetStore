@@ -1,8 +1,9 @@
 package com.github.fauu.notpetstore.model.form;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import com.github.fauu.notpetstore.model.entity.Snippet;
 
 import javax.validation.constraints.Size;
+import java.util.List;
 
 public class SnippetForm {
 
@@ -11,6 +12,14 @@ public class SnippetForm {
 
   @Size(min = 140, max = 5000, message = "{snippetForm.error.contentBadLength}")
   private String content;
+
+  private Snippet.Visibility visibility;
+
+  private Snippet.Visibility[] visibilityValues = Snippet.Visibility.values();
+
+  public SnippetForm() {
+    visibility = Snippet.Visibility.PUBLIC;
+  }
 
   public String getTitle() {
     return title;
@@ -26,6 +35,18 @@ public class SnippetForm {
 
   public void setContent(String content) {
     this.content = content;
+  }
+
+  public Snippet.Visibility getVisibility() {
+    return visibility;
+  }
+
+  public void setVisibility(Snippet.Visibility visibility) {
+    this.visibility = visibility;
+  }
+
+  public Snippet.Visibility[] getVisibilityValues() {
+    return visibilityValues;
   }
 
   @Override

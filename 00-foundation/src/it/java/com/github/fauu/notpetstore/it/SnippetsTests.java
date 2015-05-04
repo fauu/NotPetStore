@@ -62,7 +62,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void doAdd_ValidForm_ShouldRedirectToRoot() throws Exception {
+  public void doAdd_ShouldRedirectToRoot() throws Exception {
     mockMvc.perform(addSnippetRequestValid)
            .andExpect(status().is3xxRedirection())
            .andExpect(view().name("redirect:/"))
@@ -70,7 +70,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void doAdd_ValidForm_ShouldStoreSnippet() throws Exception {
+  public void doAdd_ShouldStoreSnippet() throws Exception {
     mockMvc.perform(addSnippetRequestValid);
 
     Snippet snippet = snippetRepository.findAll().get(0);

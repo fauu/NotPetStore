@@ -11,7 +11,7 @@
     <c:url value="/" var="actionPath" />
     <sf:form action="${actionPath}" commandName="snippetForm" method="POST">
       <div class="field">
-        <spring:message code="snippetForm.titlePlaceholder" var="titlePlaceholder" />
+        <spring:message var="titlePlaceholder" code="snippetForm.titlePlaceholder" />
         <spring:bind path="title">
           <sf:input path="title" placeholder="${titlePlaceholder}" class="${status.error ? 'error' : ''}"/>
           <sf:errors path="title" class="errors" />
@@ -19,11 +19,22 @@
       </div>
 
       <div class="field">
-        <spring:message code="snippetForm.contentPlaceholder" var="contentPlaceholder" />
+        <spring:message var="contentPlaceholder" code="snippetForm.contentPlaceholder" />
         <spring:bind path="content">
           <sf:textarea path="content" placeholder="${contentPlaceholder}" class="${status.error ? 'error' : ''}" />
           <sf:errors path="content" class="errors" />
         </spring:bind>
+      </div>
+
+      <div class="field">
+        <ul id="visibility">
+          <c:forEach var="value" items="${snippetForm.visibilityValues}">
+            <spring:message var="label" code="snippet.visibility.${value.toString().toLowerCase()}" />
+            <li>
+              <sf:radiobutton path="visibility" value="${value}" label="${label}" selected="selected" />
+            </li>
+          </c:forEach>
+        </ul>
       </div>
 
       <sf:button type="submit"><spring:message code="snippetForm.save" /></sf:button>
