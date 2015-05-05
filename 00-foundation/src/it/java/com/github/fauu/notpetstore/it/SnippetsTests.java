@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -24,6 +27,8 @@ public class SnippetsTests extends AbstractIntegrationTests {
   private MockHttpServletRequestBuilder addSnippetRequestEmptyContent;
 
   private MockHttpServletRequestBuilder addSnippetRequestValid;
+
+  private List<Snippet> dummySnippets;
 
   @Override
   @Before
@@ -41,6 +46,45 @@ public class SnippetsTests extends AbstractIntegrationTests {
                    .param("visibility", Snippet.Visibility.PUBLIC.name());
 
     snippetRepository.deleteAll();
+
+    dummySnippets = new LinkedList<>();
+
+    Snippet dummySnippet1 = new Snippet();
+    dummySnippet1.setId("id1");
+    dummySnippet1.setTitle("Title 1");
+    dummySnippet1.setContent("Content 1");
+    dummySnippet1.setVisibility(Snippet.Visibility.PUBLIC);
+    dummySnippet1.setDateTimeAdded(LocalDateTime.of(2015, Month.SEPTEMBER, 9, 0, 0));
+    dummySnippet1.setDeleted(false);
+
+    Snippet dummySnippet2 = new Snippet();
+    dummySnippet2.setId("id2");
+    dummySnippet2.setTitle("Title 2");
+    dummySnippet2.setContent("Content 2");
+    dummySnippet2.setVisibility(Snippet.Visibility.PUBLIC);
+    dummySnippet2.setDateTimeAdded(LocalDateTime.of(2015, Month.SEPTEMBER, 10, 0, 0));
+    dummySnippet2.setDeleted(false);
+
+    Snippet dummySnippet3 = new Snippet();
+    dummySnippet3.setId("id3");
+    dummySnippet3.setTitle("Title 3");
+    dummySnippet3.setContent("Content 3");
+    dummySnippet3.setVisibility(Snippet.Visibility.PUBLIC);
+    dummySnippet3.setDateTimeAdded(LocalDateTime.of(2015, Month.SEPTEMBER, 11, 0, 0));
+    dummySnippet3.setDeleted(true);
+
+    Snippet dummySnippet4 = new Snippet();
+    dummySnippet4.setId("id4");
+    dummySnippet4.setTitle("Title 4");
+    dummySnippet4.setContent("Content 4");
+    dummySnippet4.setVisibility(Snippet.Visibility.UNLISTED);
+    dummySnippet4.setDateTimeAdded(LocalDateTime.of(2015, Month.SEPTEMBER, 12, 0, 0));
+    dummySnippet4.setDeleted(false);
+
+    dummySnippets.add(dummySnippet1);
+    dummySnippets.add(dummySnippet2);
+    dummySnippets.add(dummySnippet3);
+    dummySnippets.add(dummySnippet4);
   }
 
   @Test
@@ -98,25 +142,9 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void browse_ShouldHavePublicSnippetList() throws Exception {
-    Snippet snippet1 = new Snippet();
-    snippet1.setTitle("Title 1");
-    snippet1.setContent("Content 1");
-    snippet1.setVisibility(Snippet.Visibility.PUBLIC);
-
-    Snippet snippet2 = new Snippet();
-    snippet2.setTitle("Title 2");
-    snippet2.setContent("Content 2");
-    snippet2.setVisibility(Snippet.Visibility.PUBLIC);
-
-    Snippet snippet3 = new Snippet();
-    snippet3.setTitle("Title 3");
-    snippet3.setContent("Content 3");
-    snippet3.setVisibility(Snippet.Visibility.UNLISTED);
-
-    snippetRepository.save(snippet1);
-    snippetRepository.save(snippet2);
-    snippetRepository.save(snippet3);
+  @SuppressWarnings("unchecked")
+  public void browse_ShouldHaveNotDeletedPublicSnippetList() throws Exception {
+    dummySnippets.forEach(snippetRepository::save);
 
     mockMvc.perform(get("/browse"))
            .andExpect(model().attribute("snippets", hasSize(2)))
@@ -125,5 +153,16 @@ public class SnippetsTests extends AbstractIntegrationTests {
                  hasProperty("content", is("Content 2"))
                )));
   }
+
+  @Test
+  public void browse_ShouldHaveSnippetListSortedByDateTimeAddedDesc()
+      throws Exception {
+    dummySnippets.stream().limit(2).forEachOrdered(snippetRepository::save);
+
+    mockMvc.perform(get("/browse"))
+           .andExpect(model().attribute("snippets",
+               contains(dummySnippets.get(1), dummySnippets.get(0))));
+  }
+
 
 }

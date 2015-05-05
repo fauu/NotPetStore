@@ -30,7 +30,8 @@
           <tr>
             <td class="title">
               <c:url var="snippetUrl" value="/${snippet.id}" />
-              <a href="${snippetUrl}">${snippet.title}</a>
+              <spring:message var="untitled" code="untitled" />
+              <a href="${snippetUrl}">${not empty snippet.title ? snippet.title : untitled}</a>
             </td>
 
             <fmt:formatDate var="formattedDateTimeAdded"

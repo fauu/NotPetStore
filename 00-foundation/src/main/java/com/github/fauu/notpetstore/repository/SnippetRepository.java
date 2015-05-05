@@ -10,8 +10,6 @@ public interface SnippetRepository {
 
   List<Snippet> findAll();
 
-  List<Snippet> findAllPublicSnippets();
-
   Snippet save(Snippet snippet);
 
   void deleteAll();

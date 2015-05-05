@@ -1,7 +1,5 @@
 package com.github.fauu.notpetstore.model.entity;
 
-import org.springframework.util.Assert;
-
 import java.time.LocalDateTime;
 
 public class Snippet {
@@ -17,6 +15,8 @@ public class Snippet {
   private LocalDateTime dateTimeAdded;
 
   private int numViews;
+
+  private boolean deleted;
 
   public String getId() {
     return id;
@@ -64,6 +64,14 @@ public class Snippet {
 
   public void setNumViews(int numViews) {
     this.numViews = numViews;
+  }
+
+  public boolean isDeleted() {
+    return deleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
   }
 
   @Override

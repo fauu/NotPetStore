@@ -1,13 +1,10 @@
 package com.github.fauu.notpetstore.repository;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
-import com.github.fauu.notpetstore.model.form.SnippetForm;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Repository
 public class TransientSnippetRepository implements SnippetRepository {
@@ -29,15 +26,8 @@ public class TransientSnippetRepository implements SnippetRepository {
   }
 
   @Override
-  public List<Snippet> findAllPublicSnippets() {
-    return snippetStore.stream()
-                       .filter(s -> s.getVisibility() ==
-                                    Snippet.Visibility.PUBLIC)
-                       .collect(toList());
-  }
-
-  @Override
   public Snippet save(Snippet snippet) {
+    snippetStore.removeIf(s -> s.equals(snippet));
     snippetStore.add(snippet);
 
     return snippet;
