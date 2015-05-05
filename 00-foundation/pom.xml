@@ -26,6 +26,8 @@
     <mockito.version>1.10.19</mockito.version>
     <hamcrest.version>1.3</hamcrest.version>
     <el.version>2.2</el.version>
+
+    <prettytime.version>3.2.7.Final</prettytime.version>
   </properties>
 
   <dependencies>
@@ -162,6 +164,13 @@
       <artifactId>el-api</artifactId>
       <version>${el.version}</version>
       <scope>test</scope>
+    </dependency>
+
+    <!-- Utils -->
+    <dependency>
+       <groupId>org.ocpsoft.prettytime</groupId>
+       <artifactId>prettytime</artifactId>
+       <version>${prettytime.version}</version>
     </dependency>
   </dependencies>
 

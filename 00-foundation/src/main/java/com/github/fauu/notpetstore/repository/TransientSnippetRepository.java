@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.LinkedList;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @Repository
 public class TransientSnippetRepository implements SnippetRepository {
 
@@ -24,6 +26,14 @@ public class TransientSnippetRepository implements SnippetRepository {
   @Override
   public List<Snippet> findAll() {
     return snippetStore;
+  }
+
+  @Override
+  public List<Snippet> findAllPublicSnippets() {
+    return snippetStore.stream()
+                       .filter(s -> s.getVisibility() ==
+                                    Snippet.Visibility.PUBLIC)
+                       .collect(toList());
   }
 
   @Override

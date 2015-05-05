@@ -27,8 +27,12 @@ public class PastingService {
     addDummySnippets();
   }
 
-  public List<Snippet> getAllSnippets() throws ServiceException {
+  public List<Snippet> getAllSnippets() {
     return snippetRepository.findAll();
+  }
+
+  public List<Snippet> getAllPublicSnippets() {
+    return snippetRepository.findAllPublicSnippets();
   }
 
   public Snippet addSnippet(SnippetForm snippetForm) {
@@ -53,22 +57,34 @@ public class PastingService {
   }
 
   private void addDummySnippets() {
-    SnippetForm snippetForm = new SnippetForm();
+    Snippet snippet;
 
-    snippetForm.setTitle("Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit");
-    snippetForm.setContent("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla euismod nulla nec ex cursus, eu vestibulum eros iaculis. Integer ullamcorper orci et elit eleifend posuere. Vestibulum mattis eros eget libero facilisis, vitae pretium velit tincidunt. Pellentesque faucibus risus quis mauris consectetur, nec interdum arcu sagittis. Nullam ullamcorper sem dui, in aliquet urna luctus sed. Etiam finibus, nibh ut aliquet pharetra, leo enim blandit elit, vel tempus sem urna nec risus. Nullam mattis libero enim, id dignissim nulla ultricies eget. Nullam vitae scelerisque magna. Integer vitae blandit lorem, vel vehicula tortor. Vestibulum at efficitur sem, at consectetur quam. Aenean efficitur vitae dui dapibus pretium.");
-    snippetForm.setVisibility(Snippet.Visibility.PUBLIC);
-    addSnippet(snippetForm);
+    snippet = new Snippet();
+    snippet.setId(generateUniqueId(NEW_SNIPPET_ID_LENGTH));
+    snippet.setTitle("Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit");
+    snippet.setContent("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla euismod nulla nec ex cursus, eu vestibulum eros iaculis. Integer ullamcorper orci et elit eleifend posuere. Vestibulum mattis eros eget libero facilisis, vitae pretium velit tincidunt. Pellentesque faucibus risus quis mauris consectetur, nec interdum arcu sagittis. Nullam ullamcorper sem dui, in aliquet urna luctus sed. Etiam finibus, nibh ut aliquet pharetra, leo enim blandit elit, vel tempus sem urna nec risus. Nullam mattis libero enim, id dignissim nulla ultricies eget. Nullam vitae scelerisque magna. Integer vitae blandit lorem, vel vehicula tortor. Vestibulum at efficitur sem, at consectetur quam. Aenean efficitur vitae dui dapibus pretium.");
+    snippet.setVisibility(Snippet.Visibility.PUBLIC);
+    snippet.setDateTimeAdded(LocalDateTime.now().minusMonths(4).minusDays(15).minusHours(3));
+    snippet.setNumViews(0);
+    snippetRepository.save(snippet);
 
-    snippetForm.setTitle("Praesent hendrerit risus at dui congue, id dictum nibh semper");
-    snippetForm.setContent("Praesent hendrerit risus at dui congue, id dictum nibh semper. Praesent ornare neque vel ex placerat, sit amet pulvinar massa porttitor. Donec scelerisque vestibulum dolor tempor molestie. Duis condimentum elementum efficitur. Cras sollicitudin condimentum rutrum. Suspendisse sapien metus, porta quis tortor ut, interdum sodales tellus. Nunc sit amet diam tempor, molestie sapien sed, malesuada neque. Nulla facilisi. Pellentesque non dictum felis. Nulla luctus in nunc nec iaculis. Quisque tellus justo, sodales quis nulla non, faucibus ullamcorper urna. Nunc luctus, orci nec sodales finibus, justo tortor blandit quam, a porta risus leo pharetra orci. Sed a justo non eros rhoncus dapibus id efficitur enim. Donec maximus consequat metus vitae tempus. Duis viverra lorem libero, sit amet bibendum justo eleifend nec. Mauris eros lorem, congue non dui sit amet, pulvinar sodales ante.");
-    snippetForm.setVisibility(Snippet.Visibility.PUBLIC);
-    addSnippet(snippetForm);
+    snippet = new Snippet();
+    snippet.setId(generateUniqueId(NEW_SNIPPET_ID_LENGTH));
+    snippet.setTitle("Praesent hendrerit risus at dui congue, id dictum nibh semper");
+    snippet.setContent("Praesent hendrerit risus at dui congue, id dictum nibh semper. Praesent ornare neque vel ex placerat, sit amet pulvinar massa porttitor. Donec scelerisque vestibulum dolor tempor molestie. Duis condimentum elementum efficitur. Cras sollicitudin condimentum rutrum. Suspendisse sapien metus, porta quis tortor ut, interdum sodales tellus. Nunc sit amet diam tempor, molestie sapien sed, malesuada neque. Nulla facilisi. Pellentesque non dictum felis. Nulla luctus in nunc nec iaculis. Quisque tellus justo, sodales quis nulla non, faucibus ullamcorper urna. Nunc luctus, orci nec sodales finibus, justo tortor blandit quam, a porta risus leo pharetra orci. Sed a justo non eros rhoncus dapibus id efficitur enim. Donec maximus consequat metus vitae tempus. Duis viverra lorem libero, sit amet bibendum justo eleifend nec. Mauris eros lorem, congue non dui sit amet, pulvinar sodales ante.");
+    snippet.setVisibility(Snippet.Visibility.PUBLIC);
+    snippet.setDateTimeAdded(LocalDateTime.now().minusDays(11).minusMinutes(58));
+    snippet.setNumViews(0);
+    snippetRepository.save(snippet);
 
-    snippetForm.setTitle("Vivamus in massa a dui sodales finibus");
-    snippetForm.setContent("Morbi pharetra, arcu sed molestie faucibus, justo eros tempus eros, accumsan laoreet risus diam eu turpis. Aenean ultrices nisi ex, et blandit nulla tincidunt id. Mauris aliquet eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus in massa a dui sodales finibus. Vivamus sollicitudin viverra nisi, in consectetur velit imperdiet ac. Fusce vehicula leo ut erat lobortis euismod.");
-    snippetForm.setVisibility(Snippet.Visibility.PUBLIC);
-    addSnippet(snippetForm);
+    snippet = new Snippet();
+    snippet.setId(generateUniqueId(NEW_SNIPPET_ID_LENGTH));
+    snippet.setTitle("Vivamus in massa a dui sodales finibus");
+    snippet.setContent("Morbi pharetra, arcu sed molestie faucibus, justo eros tempus eros, accumsan laoreet risus diam eu turpis. Aenean ultrices nisi ex, et blandit nulla tincidunt id. Mauris aliquet eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus in massa a dui sodales finibus. Vivamus sollicitudin viverra nisi, in consectetur velit imperdiet ac. Fusce vehicula leo ut erat lobortis euismod.");
+    snippet.setVisibility(Snippet.Visibility.UNLISTED);
+    snippet.setDateTimeAdded(LocalDateTime.now().minusHours(2).minusMinutes(36));
+    snippet.setNumViews(0);
+    snippetRepository.save(snippet);
   }
 
 }

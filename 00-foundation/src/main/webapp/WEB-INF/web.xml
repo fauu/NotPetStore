@@ -30,5 +30,12 @@
     <servlet-name>dispatcher</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
+  
+  <jsp-config>
+    <taglib>
+      <taglib-uri>http://github.com/fauu/nps/jsp/tags/util</taglib-uri>
+      <taglib-location>/WEB-INF/tags/tld/util.tld</taglib-location>
+    </taglib>
+  </jsp-config>
 
 </web-app>

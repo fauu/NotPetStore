@@ -42,7 +42,7 @@ public class SnippetController {
 
   @RequestMapping(value = "/browse", method = RequestMethod.GET)
   public String browse(Model model) {
-    model.addAttribute("snippets", pastingService.getAllSnippets());
+    model.addAttribute("snippets", pastingService.getAllPublicSnippets());
 
     return "browse";
   }

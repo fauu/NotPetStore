@@ -9,11 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Matchers.matches;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -100,17 +98,25 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void browse_ShouldHaveSnippetList() throws Exception {
+  public void browse_ShouldHavePublicSnippetList() throws Exception {
     Snippet snippet1 = new Snippet();
     snippet1.setTitle("Title 1");
     snippet1.setContent("Content 1");
+    snippet1.setVisibility(Snippet.Visibility.PUBLIC);
 
     Snippet snippet2 = new Snippet();
     snippet2.setTitle("Title 2");
     snippet2.setContent("Content 2");
+    snippet2.setVisibility(Snippet.Visibility.PUBLIC);
+
+    Snippet snippet3 = new Snippet();
+    snippet3.setTitle("Title 3");
+    snippet3.setContent("Content 3");
+    snippet3.setVisibility(Snippet.Visibility.UNLISTED);
 
     snippetRepository.save(snippet1);
     snippetRepository.save(snippet2);
+    snippetRepository.save(snippet3);
 
     mockMvc.perform(get("/browse"))
            .andExpect(model().attribute("snippets", hasSize(2)))
