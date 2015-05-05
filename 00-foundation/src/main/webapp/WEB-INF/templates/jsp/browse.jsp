@@ -13,9 +13,9 @@
     <table id="snippet-list">
       <thead>
         <tr>
-          <th class="title">Title</th>
-          <th class="added">Added</th>
-          <th class="views">Views</th>
+          <th class="title"><spring:message code="title" /></th>
+          <th class="added"><spring:message code="addedDateTime" /></th>
+          <th class="views"><spring:message code="numViews" /></th>
         </tr>
       </thead>
       <tbody>
@@ -23,7 +23,7 @@
           <tr>
             <td class="title"><a href="<c:url value="/${snippet.id}" />">${snippet.title}</a></td>
             <td class="added">
-              <util:relativeLocalDateTime localDateTime="${snippet.dateTimeAdded}" locale="en_US" />
+              <util:relativeLocalDateTime localDateTime="${snippet.dateTimeAdded}" locale="${pageContext.response.locale}" />
             </td>
             <td class="views">${snippet.numViews}</td>
           </tr>
