@@ -12,25 +12,31 @@
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto">
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Inconsolata">
   <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <link rel="stylesheet" type="text/css" href="<c:url value="/public/css/main.css" />">
+  <c:url var="mainStylesheetUrl" value="/public/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="${mainStylesheetUrl}">
 </head>
 <body>
   <header>
-    <a id="site-title-group" href="<c:url value="/" />">
-      <img id="site-logo" src="<c:url value="/public/img/logo.png" />" />
+    <c:url var="homeUrl" value="/" />
+    <a id="site-title-group" href="${homeUrl}">
+      <c:url var="logoUrl" value="/public/img/logo.png" />
+      <img id="site-logo" src="${logoUrl}" />
       <h1 id="site-title">Not Pet Store <span id="site-sub-title">or Naive Pasting System</span></h1>
     </a>
     <nav id="main-nav">
       <ul>
         <li>
-          <a href="<c:url value="/" />">
-            <img class="icon" src="<c:url value="/public/img/icon-new.png" />" />
+          <a href="${homeUrl}">
+            <c:url var="iconNewUrl" value="/public/img/icon-new.png" />
+            <img class="icon" src="${iconNewUrl}" />
             <spring:message code="mainNav.addNewSnippet" />
           </a>
         </li>
         <li>
-          <a href="<c:url value="/browse" />">
-            <img class="icon" src="<c:url value="/public/img/icon-browse.png" />" />
+          <c:url var="browseUrl" value="/browse" />
+          <a href="${browseUrl}">
+            <c:url var="iconBrowseUrl" value="/public/img/icon-browse.png" />
+            <img class="icon" src="${iconBrowseUrl}" />
             <spring:message code="mainNav.browseSnippets" />
           </a>
         </li>

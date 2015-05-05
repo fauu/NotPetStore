@@ -10,6 +10,12 @@
   <short-name>npsutil</short-name>
   <uri>http://github.com/fauu/nps/jsp/tags/util</uri>
 
+  <function>
+    <name>localDateTimeToDate</name>
+    <function-class>com.github.fauu.notpetstore.web.util.jsp.LocalDateTimeToDateFunction</function-class>
+    <function-signature>java.util.Date localDateTimeToDate(java.time.LocalDateTime)Date localDateTimeToDate(java.time.LocalDateTime)</function-signature>
+  </function>
+
   <tag>
     <name>relativeLocalDateTime</name>
     <tag-class>com.github.fauu.notpetstore.web.util.jsp.RelativeLocalDateTimeTag</tag-class>
