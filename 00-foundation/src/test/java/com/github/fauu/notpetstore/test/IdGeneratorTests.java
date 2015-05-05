@@ -3,9 +3,9 @@ package com.github.fauu.notpetstore.test;
 import com.github.fauu.notpetstore.util.IdGenerator;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 public class IdGeneratorTests {
 
@@ -19,7 +19,7 @@ public class IdGeneratorTests {
   public void generate_ShouldReturnStringOfDesiredLength() throws Exception {
     String id = IdGenerator.generate(15);
 
-    assertEquals(15, id.length());
+    assertThat(id.length(), is(15));
   }
 
   @Test
@@ -27,16 +27,16 @@ public class IdGeneratorTests {
       throws Exception {
     String id = IdGenerator.generate(8);
 
-    assertTrue(id.matches("[0-9a-zA-z]+"));
+    assertThat(id.matches("[0-9a-zA-z]+"), is(true));
   }
 
   @Test
-  public void generate_ShouldReturnDifferentStringsForTwoConsecutiveCalls()
+  public void generate_ShouldReturnUnequalStringsForTwoConsecutiveCalls()
       throws Exception {
     String previousId = IdGenerator.generate(8);
     String id = IdGenerator.generate(8);
 
-    assertNotEquals(previousId, id);
+    assertThat(id, is(not(previousId)));
   }
 
 }

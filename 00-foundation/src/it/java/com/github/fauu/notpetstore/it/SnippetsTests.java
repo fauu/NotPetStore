@@ -2,13 +2,18 @@ package com.github.fauu.notpetstore.it;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
+import com.github.fauu.notpetstore.test.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.matches;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,11 +34,13 @@ public class SnippetsTests extends AbstractIntegrationTests {
 
     addSnippetRequestEmptyContent
         = post("/").param("title", "Title")
-                   .param("content", "");
+                   .param("content", "")
+                   .param("visibility", Snippet.Visibility.PUBLIC.name());
 
     addSnippetRequestValid
         = post("/").param("title", "Title")
-                   .param("content", "Content");
+                   .param("content", TestUtil.generateDummyString(140))
+                   .param("visibility", Snippet.Visibility.PUBLIC.name());
 
     snippetRepository.deleteAll();
   }
@@ -75,8 +82,13 @@ public class SnippetsTests extends AbstractIntegrationTests {
 
     Snippet snippet = snippetRepository.findAll().get(0);
 
+    assertThat(snippet.getId().length(), is(8));
+    assertThat(snippet.getId().matches("[0-9a-zA-Z]+"), is(true));
     assertThat(snippet.getTitle(), is("Title"));
-    assertThat(snippet.getContent(), is("Content"));
+    assertThat(snippet.getContent(), is(TestUtil.generateDummyString(140)));
+    assertThat(snippet.getVisibility(), is(Snippet.Visibility.PUBLIC));
+    assertThat(snippet.getDateTimeAdded().isBefore(LocalDateTime.now()), is(true));
+    assertThat(snippet.getNumViews(), is(0));
   }
 
   @Test

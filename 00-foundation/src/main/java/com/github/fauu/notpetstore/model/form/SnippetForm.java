@@ -2,6 +2,7 @@ package com.github.fauu.notpetstore.model.form;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class SnippetForm {
   @Size(min = 140, max = 5000, message = "{snippetForm.error.contentBadLength}")
   private String content;
 
+  @NotNull
   private Snippet.Visibility visibility;
 
   private Snippet.Visibility[] visibilityValues = Snippet.Visibility.values();

@@ -31,7 +31,7 @@
           <c:forEach var="value" items="${snippetForm.visibilityValues}">
             <spring:message var="label" code="snippet.visibility.${value.toString().toLowerCase()}" />
             <li>
-              <sf:radiobutton path="visibility" value="${value}" label="${label}" selected="selected" />
+              <sf:radiobutton path="visibility" value="${value}" label="${label}" />
             </li>
           </c:forEach>
         </ul>
