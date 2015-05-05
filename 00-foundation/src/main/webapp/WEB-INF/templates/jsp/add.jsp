@@ -8,8 +8,10 @@
   <jsp:attribute name="pageName"><spring:message code="addNewSnippet" /></jsp:attribute>
 
   <jsp:body>
-    <c:url value="/" var="actionPath" />
-    <sf:form action="${actionPath}" commandName="snippetForm" method="POST">
+    <h2><spring:message code="newSnippet" /></h2>
+
+    <c:url var="actionPath" value="/" />
+    <sf:form action="${actionPath}" commandName="snippetForm" method="POST" id="snippet-form">
       <div class="field">
         <spring:message var="titlePlaceholder" code="snippetForm.titlePlaceholder" />
         <spring:bind path="title">

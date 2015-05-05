@@ -1,7 +1,37 @@
 body {
+  background: #F9F9F9;
+  color: #212121;
   font-family: Roboto, sans-serif;
   font-size: 14px;
   margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+h2 {
+  font-size: 25px;
+}
+
+a {
+  color: #9575cd;
+  text-decoration: none;
+  transition: all 0.2s linear;
+}
+
+a:hover {
+  color: #b39ddb;
+  transition: all 0.2s linear;
+}
+
+a:active {
+  color: #d1c4e9;
+  transition: all 0.2s linear;
 }
 
 body > header {
@@ -22,7 +52,6 @@ header #site-title-group {
 
 header #site-title {
   display: inline;
-  font-weight: normal;
   margin: 0 0 0 20px;
 }
 
@@ -75,11 +104,11 @@ body > main {
   margin: 30px;
 }
 
-#snippetForm {
+#snippet-form {
   text-align: center;
 }
 
-#snippetForm .field {
+#snippet-form .field {
   margin-bottom: 20px;
   text-align: left;
 }
@@ -90,17 +119,15 @@ body > main {
   margin-top: 4px;
 }
 
-#snippetForm #title {
-  background: #fff;
+#snippet-form #title {
   border: none;
   border-bottom: 2px solid #9574cd;
-  font-size: 22px;
+  font-size: 20px;
   padding-bottom: 5px;
   width: 100%;
 }
 
-#snippetForm #content {
-  background: #fff;
+#snippet-form #content {
   border: none;
   border-bottom: 2px solid #9574cd;
   font-family: Inconsolata, monospace;
@@ -110,28 +137,28 @@ body > main {
   width: 100%;
 }
 
-#snippetForm #visibility {
+#snippet-form #visibility {
   font-size: 16px;
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-#snippetForm li {
+#snippet-form li {
   display: inline;
   margin-right: 25px;
 }
 
-#snippetForm input[type="radio"] {
+#snippet-form input[type="radio"] {
   margin: -3px 5px 0 0;
   vertical-align: middle;
 }
 
-#snippetForm .error {
+#snippet-form .error {
   border-color: #f44336 !important;
 }
 
-#snippetForm button {
+#snippet-form button {
   background: #ff5722;
   border: none;
   border-radius: 2px;
@@ -146,7 +173,7 @@ body > main {
   transition: all 0.2s linear;
 }
 
-#snippetForm button:hover {
+#snippet-form button:hover {
   background: #ff7043;
   box-shadow: 0 4px 7px 0 rgba(0, 0, 0, 0.24),
               0 4px 15px 0 rgba(0, 0, 0, 0.18);
@@ -154,9 +181,57 @@ body > main {
   transition: all 0.2s linear;
 }
 
-#snippetForm button:active {
+#snippet-form button:active {
   background: #ffab91;
   transition: all 0.2s linear;
+}
+
+#snippet-list {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#snippet-list th {
+  padding: 18px 20px;
+}
+
+#snippet-list td {
+  padding: 15px 20px;
+}
+
+#snippet-list thead tr {
+  border-bottom: 1px solid #E0E0E0;
+}
+
+#snippet-list tbody tr {
+  transition: all 0.2s linear;
+}
+
+#snippet-list tbody tr:hover {
+  background: #EEEEEE;
+}
+
+#snippet-list th {
+  color: #757575;
+  font-size: 14px;
+  font-weight: normal !important;
+}
+
+#snippet-list th.title {
+  text-align: left;
+  width: 70%;
+}
+
+#snippet-list th.added {
+  text-align: left;
+}
+
+#snippet-list th.views {
+  text-align: right;
+}
+
+#snippet-list td.views {
+  text-align: right;
 }
 
 .message {

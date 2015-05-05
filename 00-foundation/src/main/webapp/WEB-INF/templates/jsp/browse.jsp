@@ -7,13 +7,26 @@
   <jsp:attribute name="pageName"><spring:message code="browseSnippets" /></jsp:attribute>
 
   <jsp:body>
-    <ul>
-      <c:forEach var="snippet" items="${snippets}">
-        <li>
-          ${snippet.content}
-        </li>
-      </c:forEach>
-    </ul>
+    <h2><spring:message code="snippets" /></h2>
+
+    <table id="snippet-list">
+      <thead>
+        <tr>
+          <th class="title">Title</th>
+          <th class="added">Added</th>
+          <th class="views">Views</th>
+        </tr>
+      </thead>
+      <tbody>
+        <c:forEach var="snippet" items="${snippets}">
+          <tr>
+            <td class="title"><a href="<c:url value="/${snippet.id}" />">${snippet.title}</a></td>
+            <td class="added">${snippet.dateTimeAdded}</td>
+            <td class="views">${snippet.numViews}</td>
+          </tr>
+        </c:forEach>
+      </tbody>
+    </table>
   </jsp:body>
 </t:main-template>
 

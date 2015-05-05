@@ -1,6 +1,7 @@
 package com.github.fauu.notpetstore.repository;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
+import com.github.fauu.notpetstore.model.form.SnippetForm;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
