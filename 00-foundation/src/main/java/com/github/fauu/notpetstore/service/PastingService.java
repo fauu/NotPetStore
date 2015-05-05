@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -27,6 +28,10 @@ public class PastingService {
   @PostConstruct
   public void init() {
     addDummySnippets();
+  }
+
+  public Optional<Snippet> getById(String id) {
+    return snippetRepository.findById(id);
   }
 
   public List<Snippet> getNotDeletedPublicSnippetsSortedByDateTimeAddedDesc() {

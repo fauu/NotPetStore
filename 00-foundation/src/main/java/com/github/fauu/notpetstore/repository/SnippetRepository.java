@@ -2,11 +2,14 @@ package com.github.fauu.notpetstore.repository;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface SnippetRepository {
 
   boolean exists(String id);
+
+  Optional<Snippet> findById(String id);
 
   Stream<Snippet> findAll();
 

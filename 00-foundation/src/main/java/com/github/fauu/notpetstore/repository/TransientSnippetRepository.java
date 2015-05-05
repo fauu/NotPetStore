@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Repository
@@ -18,7 +19,15 @@ public class TransientSnippetRepository implements SnippetRepository {
 
   @Override
   public boolean exists(String id) {
-    return snippetStore.stream().anyMatch(s -> s.getId().equals(id));
+    return snippetStore.stream()
+                       .anyMatch(s -> s.getId().equals(id));
+  }
+
+  @Override
+  public Optional<Snippet> findById(String id) {
+    return snippetStore.stream()
+                       .filter(s -> s.getId().equals(id))
+                       .findFirst();
   }
 
   @Override

@@ -241,8 +241,9 @@ body > main {
 }
 
 .message.error .code {
-  font-size: 22px;
-  margin-right: 10px;
+  display: block;
+  font-size: 60px;
+  margin-bottom: 20px;
 }
 
 .message.error.severe {

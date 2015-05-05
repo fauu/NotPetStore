@@ -15,6 +15,8 @@ public class GlobalExceptionHandlingControllerAdvice {
   private static final Logger LOG
       = LoggerFactory.getLogger(GlobalExceptionHandlingControllerAdvice.class);
 
+  // TODO: Test these handlers?
+
   @ExceptionHandler({NoHandlerFoundException.class,
                      ResourceNotFoundException.class})
   @ResponseStatus(HttpStatus.NOT_FOUND)

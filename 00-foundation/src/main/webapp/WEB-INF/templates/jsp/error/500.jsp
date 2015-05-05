@@ -1,13 +1,17 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <t:main-template>
-  <jsp:attribute name="pageName">Server Error</jsp:attribute>
+  <jsp:attribute name="pageName">
+    <spring:message code="serverError" />
+  </jsp:attribute>
 
   <jsp:body>
     <div class="message error severe">
-      <strong class="code">500</strong>There was an error processing your request. Please try again.
+      <strong class="code">500</strong>
+      <spring:message code="errorProcessingRequest" />
     </div>
   </jsp:body>
 </t:main-template>

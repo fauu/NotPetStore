@@ -150,9 +150,9 @@ public class SnippetsTests extends AbstractIntegrationTests {
     mockMvc.perform(get("/browse"))
            .andExpect(model().attribute("snippets", hasSize(2)))
            .andExpect(model().attribute("snippets", hasItems(
-                 hasProperty("title", is("Title 1")),
-                 hasProperty("content", is("Content 2"))
-               )));
+               hasProperty("title", is("Title 1")),
+               hasProperty("content", is("Content 2"))
+           )));
   }
 
   @Test
@@ -165,5 +165,38 @@ public class SnippetsTests extends AbstractIntegrationTests {
                contains(dummySnippets.get(1), dummySnippets.get(0))));
   }
 
+  @Test
+  public void view_DeletedSnippet_ShouldReturn404WithDeletedSnippetAttribute()
+      throws Exception {
+    snippetRepository.save(dummySnippets.get(2));
+
+    mockMvc.perform(get("/id3"))
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("error/404"))
+           .andExpect(forwardedUrlPattern("/**/error/404.*"))
+           .andExpect(model().attribute("deletedSnippet", is(true)));
+  }
+
+  @Test
+  public void view_ShouldTryToRenderViewSnippetPage() throws Exception {
+    Snippet dummySnippet = dummySnippets.get(0);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(get("/" + dummySnippet.getId()))
+           .andExpect(status().isOk())
+           .andExpect(view().name("view"))
+           .andExpect(forwardedUrlPattern("/**/view.*"));
+  }
+
+  @Test
+  public void view_ShouldHaveRequestedSnippet() throws Exception {
+    Snippet dummySnippet = dummySnippets.get(0);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(get("/" + dummySnippet.getId()))
+           .andExpect(model().attribute("snippet", is(dummySnippet)));
+  }
 
 }
