@@ -13,6 +13,7 @@ import java.time.Month;
 import java.util.LinkedList;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -122,7 +123,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
   public void doAdd_ShouldStoreSnippet() throws Exception {
     mockMvc.perform(addSnippetRequestValid);
 
-    Snippet snippet = snippetRepository.findAll().get(0);
+    Snippet snippet = snippetRepository.findAll().collect(toList()).get(0);
 
     assertThat(snippet.getId().length(), is(8));
     assertThat(snippet.getId().matches("[0-9a-zA-Z]+"), is(true));

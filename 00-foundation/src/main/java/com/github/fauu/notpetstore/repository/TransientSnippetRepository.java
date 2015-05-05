@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Repository
 public class TransientSnippetRepository implements SnippetRepository {
@@ -21,8 +22,15 @@ public class TransientSnippetRepository implements SnippetRepository {
   }
 
   @Override
-  public List<Snippet> findAll() {
-    return snippetStore;
+  public Stream<Snippet> findAll() {
+    return snippetStore.stream();
+  }
+
+  @Override
+  public Stream<Snippet> findByDeletedFalseAndVisibilityPublic() {
+    return snippetStore.stream()
+        .filter(s -> !s.isDeleted())
+        .filter(s -> s.getVisibility().equals(Snippet.Visibility.PUBLIC));
   }
 
   @Override

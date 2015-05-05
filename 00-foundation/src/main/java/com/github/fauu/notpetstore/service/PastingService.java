@@ -3,13 +3,14 @@ package com.github.fauu.notpetstore.service;
 import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.model.form.SnippetForm;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
-import com.github.fauu.notpetstore.service.exception.ServiceException;
 import com.github.fauu.notpetstore.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -28,15 +29,9 @@ public class PastingService {
     addDummySnippets();
   }
 
-  public List<Snippet> getAllSnippets() {
-    return snippetRepository.findAll();
-  }
-
   public List<Snippet> getNotDeletedPublicSnippetsSortedByDateTimeAddedDesc() {
-    return snippetRepository.findAll().stream()
-        .filter(s -> !s.isDeleted())
-        .filter(s -> s.getVisibility() == Snippet.Visibility.PUBLIC)
-        .sorted((s1, s2) -> s2.getDateTimeAdded().compareTo(s1.getDateTimeAdded()))
+    return snippetRepository.findByDeletedFalseAndVisibilityPublic()
+        .sorted(Comparator.comparing(Snippet::getDateTimeAdded).reversed())
         .collect(toList());
   }
 
