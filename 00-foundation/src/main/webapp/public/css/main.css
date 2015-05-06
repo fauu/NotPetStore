@@ -1,5 +1,5 @@
 body {
-  background: #F9F9F9;
+  background: #f9f9f9;
   color: #212121;
   font-family: Roboto, sans-serif;
   font-size: 14px;
@@ -109,8 +109,13 @@ body > main {
 }
 
 #snippet-form .field {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   text-align: left;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 7px;
 }
 
 .field .errors {
@@ -119,29 +124,45 @@ body > main {
   margin-top: 4px;
 }
 
-#snippet-form #title {
+#snippet-form #title, #snippet-form #content, #snippet-form #syntax-highlighting {
   border: none;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 5px;
+  transition: all 0.2s linear;
+  width: 100%;
+}
+
+#snippet-form #title:focus, #snippet-form #content:focus, #snippet-form #syntax-highlighting:focus {
   border-bottom: 2px solid #9574cd;
+  transition: all 0.2s linear;
+}
+
+#snippet-form #title {
   font-size: 20px;
   padding-bottom: 5px;
-  width: 100%;
 }
 
 #snippet-form #content {
-  border: none;
-  border-bottom: 2px solid #9574cd;
-  font-family: Inconsolata, monospace;
+  font-family: Consolas, Inconsolata, Monaco, monospace;
   font-size: 15px;
   height: 400px;
+}
+
+#snippet-form #syntax-highlighting {
+  background: inherit;
+  font-size: 20px;
   padding-bottom: 5px;
-  width: 100%;
 }
 
 #snippet-form #visibility {
-  font-size: 16px;
+  font-size: 18px;
   list-style-type: none;
   margin: 0;
   padding: 0;
+}
+
+#snippet-form #visibility label {
+  display: inline;
 }
 
 #snippet-form li {
@@ -232,6 +253,24 @@ body > main {
 
 #snippet-list td.views {
   text-align: right;
+}
+
+pre#snippet-content[class*="language-"] {
+  border-radius: 2px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16),
+              0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  font-family: Consolas, Inconsolata, Monaco, monospace;
+  padding: 8px 0 5px 65px;
+}
+
+#snippet-content .line-numbers-rows {
+  border-right: 1px solid #e0e0e0 !important;
+  line-height: 21px;
+  top: -3px !important;
+}
+
+#snippet-content .line-numbers-rows > span:before {
+  color: #bdbdbd;
 }
 
 .message {

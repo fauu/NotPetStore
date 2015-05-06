@@ -14,7 +14,13 @@ public class SnippetForm {
   private String content;
 
   @NotNull
+  private Snippet.SyntaxHighlighting syntaxHighlighting;
+
+  @NotNull
   private Snippet.Visibility visibility;
+
+  private Snippet.SyntaxHighlighting[] syntaxHighlightingValues
+      = Snippet.SyntaxHighlighting.values();
 
   private Snippet.Visibility[] visibilityValues = Snippet.Visibility.values();
 
@@ -38,6 +44,14 @@ public class SnippetForm {
     this.content = content;
   }
 
+  public Snippet.SyntaxHighlighting getSyntaxHighlighting() {
+    return syntaxHighlighting;
+  }
+
+  public void setSyntaxHighlighting(Snippet.SyntaxHighlighting syntaxHighlighting) {
+    this.syntaxHighlighting = syntaxHighlighting;
+  }
+
   public Snippet.Visibility getVisibility() {
     return visibility;
   }
@@ -48,6 +62,10 @@ public class SnippetForm {
 
   public Snippet.Visibility[] getVisibilityValues() {
     return visibilityValues;
+  }
+
+  public Snippet.SyntaxHighlighting[] getSyntaxHighlightingValues() {
+    return syntaxHighlightingValues;
   }
 
   @Override

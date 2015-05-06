@@ -3,17 +3,22 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <%@ attribute name="pageName" fragment="true" %>
+<%@ attribute name="extraStylesheetDefs" fragment="true" %>
 
 <html>
 <head>
   <title>
     <jsp:invoke fragment="pageName" /> · Not Pet Store (01 - Foundation)
   </title>
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto">
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Inconsolata">
-  <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <meta charset="UTF-8">
+
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Inconsolata">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <jsp:invoke fragment="extraStylesheetDefs" />
   <c:url var="mainStylesheetUrl" value="/public/css/main.css" />
-  <link rel="stylesheet" type="text/css" href="${mainStylesheetUrl}">
+  <link rel="stylesheet" href="${mainStylesheetUrl}">
 </head>
 <body>
   <header>

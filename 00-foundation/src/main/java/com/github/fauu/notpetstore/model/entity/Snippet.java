@@ -10,6 +10,8 @@ public class Snippet {
 
   private String content;
 
+  private SyntaxHighlighting syntaxHighlighting;
+
   private Visibility visibility;
 
   private LocalDateTime dateTimeAdded;
@@ -40,6 +42,14 @@ public class Snippet {
 
   public void setContent(String content) {
     this.content = content;
+  }
+
+  public SyntaxHighlighting getSyntaxHighlighting() {
+    return syntaxHighlighting;
+  }
+
+  public void setSyntaxHighlighting(SyntaxHighlighting syntaxHighlighting) {
+    this.syntaxHighlighting = syntaxHighlighting;
   }
 
   public Visibility getVisibility() {
@@ -90,16 +100,49 @@ public class Snippet {
   }
 
   public enum Visibility {
-    PUBLIC,
-    UNLISTED;
+    PUBLIC("Public"),
+    UNLISTED("Unlisted");
+
+    private String displayName;
+
+    Visibility(String displayName) {
+      this.displayName = displayName;
+    }
 
     @Override
     public String toString() {
-      switch (this) {
-        case PUBLIC: return "Public";
-        case UNLISTED: return "Unlisted";
-        default: throw new AssertionError("Encountered unhandled value");
-      }
+      return displayName;
+    }
+  }
+
+  public enum SyntaxHighlighting {
+    NONE("none", "None"),
+    MARKUP("markup", "Markup (HTML)"),
+    CSS("css", "CSS"),
+    CLIKE("clike", "C-like"),
+    JAVASCRIPT("javascript", "JavaScript"),
+    JAVA("java", "Java");
+
+    private String code;
+
+    private String displayName;
+
+    SyntaxHighlighting(String code, String displayName) {
+      this.code = code;
+      this.displayName = displayName;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public String getDisplayName() {
+      return displayName;
+    }
+
+    @Override
+    public String toString() {
+      return displayName;
     }
   }
 

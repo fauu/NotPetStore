@@ -12,9 +12,18 @@
     <c:out value="${title}" />
   </jsp:attribute>
 
+  <jsp:attribute name="extraStylesheetDefs">
+    <c:url var="prismStylesheetUrl" value="/public/third-party/css/prism.css" />
+    <link rel="stylesheet" href="${prismStylesheetUrl}">
+  </jsp:attribute>
+
   <jsp:body>
     <h2><c:out value="${title}" /></h2>
 
+    <pre id="snippet-content"><code class="line-numbers language-${snippet.syntaxHighlighting.code}"><c:out value="${snippet.content}" /></code></pre>
+
+    <c:url var="prismJsUrl" value="/public/third-party/js/prism.js" />
+    <script src="${prismJsUrl}"></script>
   </jsp:body>
 </t:main-template>
 

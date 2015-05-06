@@ -29,6 +29,13 @@
       </div>
 
       <div class="field">
+        <label for="syntaxHighlighting"><spring:message code="snippet.syntaxHighlighting" /></label>
+        <sf:select path="syntaxHighlighting" id="syntax-highlighting">
+          <sf:options items="${snippetForm.syntaxHighlightingValues}" itemLabel="displayName" />
+        </sf:select>
+      </div>
+
+      <div class="field">
         <ul id="visibility">
           <c:forEach var="value" items="${snippetForm.visibilityValues}">
             <spring:message var="label" code="snippet.visibility.${value.toString().toLowerCase()}" />
