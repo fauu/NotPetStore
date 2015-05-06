@@ -10,9 +10,7 @@
   <title>
     <jsp:invoke fragment="pageName" /> · Not Pet Store (01 - Foundation)
   </title>
-
   <meta charset="UTF-8">
-
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto">
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Inconsolata">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">

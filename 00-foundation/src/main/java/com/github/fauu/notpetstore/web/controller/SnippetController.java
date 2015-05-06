@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -45,24 +46,29 @@ public class SnippetController {
   @RequestMapping(value = "/browse", method = RequestMethod.GET)
   public String browse(Model model) {
     model.addAttribute("snippets",
-        pastingService.getNotDeletedPublicSnippetsSortedByDateTimeAddedDesc());
+        pastingService.getNonDeletedPublicSnippetsSortedByDateTimeAddedDesc());
 
     return "browse";
   }
 
-  @RequestMapping(value = "/{snippetId}", method = RequestMethod.GET)
-  public String view(@PathVariable String snippetId, Model model) {
-    Snippet snippet
-        = pastingService.getById(snippetId)
-                        .orElseThrow(ResourceNotFoundException::new);
+//  @RequestMapping(value = "/{snippetId}/download",
+//                  method = RequestMethod.GET,
+//                  produces = "text/plain")
+//  @ResponseBody
+//  public String download(@PathVariable String snippetId) {
+//    return pastingService.getNonDeletedSnippetById(snippetId).getContent();
+//  }
 
-    if (snippet.isDeleted()) {
-      throw new RequestedSnippetDeletedException();
-    }
+  @RequestMapping(value = { "/{snippetId}", "/{snippetId}/{variant}"},
+                  method = RequestMethod.GET)
+  public String view(@PathVariable String snippetId,
+                     @PathVariable("variant") Optional<String> variantOptional,
+                     Model model) {
+    model.addAttribute(pastingService.getNonDeletedSnippetById(snippetId));
 
-    model.addAttribute(snippet);
-
-    return "view";
+    return variantOptional.filter(v -> v.equals("raw"))
+                          .map(v -> "viewRaw")
+                          .orElse("view");
   }
 
   @ExceptionHandler(RequestedSnippetDeletedException.class)

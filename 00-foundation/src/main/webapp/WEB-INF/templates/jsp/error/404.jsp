@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<t:main-template>
+<t:mainTemplate>
   <jsp:attribute name="pageName">
     <spring:message code="notFound" />
   </jsp:attribute>
@@ -19,4 +19,4 @@
                                        requestedPageNotFound}" />
     </div>
   </jsp:body>
-</t:main-template>
+</t:mainTemplate>

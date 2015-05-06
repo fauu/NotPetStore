@@ -3,9 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="util" uri="http://github.com/fauu/nps/jsp/tags/util" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<t:main-template>
+<t:mainTemplate>
   <jsp:attribute name="pageName"><spring:message code="browseSnippets" /></jsp:attribute>
 
   <jsp:body>
@@ -34,11 +33,7 @@
               <a href="${snippetUrl}">${not empty snippet.title ? snippet.title : untitled}</a>
             </td>
 
-            <fmt:formatDate var="formattedDateTimeAdded"
-                            value="${util:localDateTimeToDate(snippet.dateTimeAdded)}"
-                            pattern="yyyy-MM-dd HH:mm:ss 'UTC'"
-                            timeZone="UTC"/>
-            <td class="added" title="${formattedDateTimeAdded}">
+            <td class="added">
               <util:relativeLocalDateTime localDateTime="${snippet.dateTimeAdded}" locale="${pageContext.response.locale}" />
             </td>
 
@@ -50,5 +45,5 @@
       </tbody>
     </table>
   </jsp:body>
-</t:main-template>
+</t:mainTemplate>
 

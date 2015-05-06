@@ -3,7 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<t:main-template>
+<t:mainTemplate>
   <jsp:attribute name="pageName">
     <spring:message code="serverError" />
   </jsp:attribute>
@@ -14,4 +14,4 @@
       <spring:message code="errorProcessingRequest" />
     </div>
   </jsp:body>
-</t:main-template>
+</t:mainTemplate>

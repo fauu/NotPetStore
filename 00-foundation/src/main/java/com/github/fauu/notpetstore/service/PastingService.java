@@ -4,6 +4,8 @@ import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.model.form.SnippetForm;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
 import com.github.fauu.notpetstore.util.IdGenerator;
+import com.github.fauu.notpetstore.web.exception.RequestedSnippetDeletedException;
+import com.github.fauu.notpetstore.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +32,19 @@ public class PastingService {
     addDummySnippets();
   }
 
-  public Optional<Snippet> getById(String id) {
-    return snippetRepository.findById(id);
+  public Snippet getNonDeletedSnippetById(String id) {
+    Snippet snippet =
+        snippetRepository.findById(id)
+                         .orElseThrow(ResourceNotFoundException::new);
+
+    if (snippet.isDeleted()) {
+      throw new RequestedSnippetDeletedException();
+    }
+
+    return snippet;
   }
 
-  public List<Snippet> getNotDeletedPublicSnippetsSortedByDateTimeAddedDesc() {
+  public List<Snippet> getNonDeletedPublicSnippetsSortedByDateTimeAddedDesc() {
     return snippetRepository.findByDeletedFalseAndVisibilityPublic()
         .sorted(Comparator.comparing(Snippet::getDateTimeAdded).reversed())
         .collect(toList());

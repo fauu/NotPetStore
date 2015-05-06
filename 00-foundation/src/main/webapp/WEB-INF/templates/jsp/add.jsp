@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:main-template>
+<t:mainTemplate>
   <jsp:attribute name="pageName"><spring:message code="addNewSnippet" /></jsp:attribute>
 
   <jsp:body>
@@ -49,5 +49,5 @@
       <sf:button type="submit"><spring:message code="snippetForm.save" /></sf:button>
     </sf:form>
   </jsp:body>
-</t:main-template>
+</t:mainTemplate>
 
