@@ -1,6 +1,5 @@
 package com.github.fauu.notpetstore.test;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

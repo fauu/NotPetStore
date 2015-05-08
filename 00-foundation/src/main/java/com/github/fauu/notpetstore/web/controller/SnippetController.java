@@ -4,18 +4,19 @@ import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.model.form.SnippetForm;
 import com.github.fauu.notpetstore.service.PastingService;
 import com.github.fauu.notpetstore.web.exception.RequestedSnippetDeletedException;
-import com.github.fauu.notpetstore.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Optional;
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/")
@@ -24,14 +25,14 @@ public class SnippetController {
   @Autowired
   private PastingService pastingService;
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET, value = "/")
 	public String add(Model model) {
     model.addAttribute(new SnippetForm());
 
 		return "add";
 	}
 
-  @RequestMapping(value = "/", method = RequestMethod.POST)
+  @RequestMapping(method = RequestMethod.POST, value = "/")
   public String doAdd(@ModelAttribute @Valid SnippetForm snippetForm,
                       BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
@@ -43,7 +44,7 @@ public class SnippetController {
     return "redirect:/";
   }
 
-  @RequestMapping(value = "/browse", method = RequestMethod.GET)
+  @RequestMapping(method = RequestMethod.GET, value = "/browse")
   public String browse(Model model) {
     model.addAttribute("snippets",
         pastingService.getNonDeletedPublicSnippetsSortedByDateTimeAddedDesc());
@@ -51,29 +52,40 @@ public class SnippetController {
     return "browse";
   }
 
-//  @RequestMapping(value = "/{snippetId}/download",
-//                  method = RequestMethod.GET,
-//                  produces = "text/plain")
-//  @ResponseBody
-//  public String download(@PathVariable String snippetId) {
-//    return pastingService.getNonDeletedSnippetById(snippetId).getContent();
-//  }
-
-  @RequestMapping(value = { "/{snippetId}", "/{snippetId}/{variant}"},
-                  method = RequestMethod.GET)
-  public String view(@PathVariable String snippetId,
-                     @PathVariable("variant") Optional<String> variantOptional,
-                     Model model) {
+  @RequestMapping(method = RequestMethod.GET, value = "/{snippetId}")
+  public String view(@PathVariable String snippetId, Model model) {
     model.addAttribute(pastingService.getNonDeletedSnippetById(snippetId));
 
-    return variantOptional.filter(v -> v.equals("raw"))
-                          .map(v -> "viewRaw")
-                          .orElse("view");
+    return "view";
+  }
+
+  @RequestMapping(method = RequestMethod.GET,
+                  value = "/{snippetId}/raw",
+                  produces = MediaType.TEXT_PLAIN_VALUE)
+  public @ResponseBody String viewRaw(@PathVariable String snippetId) {
+    return pastingService.getNonDeletedSnippetById(snippetId).getContent();
+  }
+
+  // TODO: Generate filename from snippet's title (if present)
+  @RequestMapping(method = RequestMethod.GET, value = "/{snippetId}/download")
+  public void download(@PathVariable String snippetId,
+                       HttpServletResponse response) throws IOException {
+    Snippet snippet = pastingService.getNonDeletedSnippetById(snippetId);
+
+    response.setContentType(MediaType.TEXT_PLAIN_VALUE);
+    response.setHeader("Content-Disposition",
+                       "attachment;filename=" + snippetId + ".txt");
+
+    ServletOutputStream out = response.getOutputStream();
+
+    out.print(snippet.getContent());
+    out.flush();
+
+    out.close();
   }
 
   @ExceptionHandler(RequestedSnippetDeletedException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ModelAndView deleted() {
+  public @ResponseStatus(HttpStatus.NOT_FOUND) ModelAndView deleted() {
     ModelAndView mav = new ModelAndView();
 
     mav.addObject("deletedSnippet", true);

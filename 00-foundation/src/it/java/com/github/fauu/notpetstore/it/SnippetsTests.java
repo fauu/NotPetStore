@@ -39,11 +39,15 @@ public class SnippetsTests extends AbstractIntegrationTests {
     addSnippetRequestEmptyContent
         = post("/").param("title", "Title")
                    .param("content", "")
+                   .param("syntaxHighlighting",
+                       Snippet.SyntaxHighlighting.NONE.name())
                    .param("visibility", Snippet.Visibility.PUBLIC.name());
 
     addSnippetRequestValid
         = post("/").param("title", "Title")
                    .param("content", TestUtil.generateDummyString(140))
+                   .param("syntaxHighlighting",
+                       Snippet.SyntaxHighlighting.NONE.name())
                    .param("visibility", Snippet.Visibility.PUBLIC.name());
 
     snippetRepository.deleteAll();
@@ -166,11 +170,21 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
+  public void view_NonexistentSnippet_ShouldReturn404() throws Exception {
+    mockMvc.perform(get("/id123456789"))
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("error/404"))
+           .andExpect(forwardedUrlPattern("/**/error/404.*"));
+  }
+
+  @Test
   public void view_DeletedSnippet_ShouldReturn404WithDeletedSnippetAttribute()
       throws Exception {
-    snippetRepository.save(dummySnippets.get(2));
+    Snippet dummySnippet = dummySnippets.get(2);
 
-    mockMvc.perform(get("/id3"))
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(get("/" + dummySnippet.getId()))
            .andExpect(status().isNotFound())
            .andExpect(view().name("error/404"))
            .andExpect(forwardedUrlPattern("/**/error/404.*"))
@@ -197,6 +211,77 @@ public class SnippetsTests extends AbstractIntegrationTests {
 
     mockMvc.perform(get("/" + dummySnippet.getId()))
            .andExpect(model().attribute("snippet", is(dummySnippet)));
+  }
+
+  @Test
+  public void viewRaw_NonexistentSnippet_ShouldReturn404() throws Exception {
+    mockMvc.perform(get("/id123456789/raw"))
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("error/404"))
+           .andExpect(forwardedUrlPattern("/**/error/404.*"));
+  }
+
+  @Test
+  public void viewRaw_DeletedSnippet_ShouldReturn404WithDeletedSnippetAttribute()
+      throws Exception {
+    Snippet dummySnippet = dummySnippets.get(2);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(get("/" + dummySnippet.getId() + "/raw"))
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("error/404"))
+           .andExpect(forwardedUrlPattern("/**/error/404.*"))
+           .andExpect(model().attribute("deletedSnippet", is(true)));
+  }
+
+  @Test
+  public void viewRaw_ShouldHaveRawRequestedSnippet() throws Exception {
+    Snippet dummySnippet = dummySnippets.get(0);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(get("/" + dummySnippet.getId() + "/raw"))
+           .andExpect(status().isOk())
+           .andExpect(content().contentTypeCompatibleWith("text/plain"))
+           .andExpect(content().string(dummySnippet.getContent()));
+  }
+
+  @Test
+  public void download_NonexistentSnippet_ShouldReturn404() throws Exception {
+    mockMvc.perform(get("/id123456789/download"))
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("error/404"))
+           .andExpect(forwardedUrlPattern("/**/error/404.*"));
+  }
+
+  @Test
+  public void download_DeletedSnippet_ShouldReturn404WithDeletedSnippetAttribute()
+      throws Exception {
+    Snippet dummySnippet = dummySnippets.get(2);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(get("/" + dummySnippet.getId() + "/download"))
+        .andExpect(status().isNotFound())
+        .andExpect(view().name("error/404"))
+        .andExpect(forwardedUrlPattern("/**/error/404.*"))
+        .andExpect(model().attribute("deletedSnippet", is(true)));
+  }
+
+  @Test
+  public void download_ShouldHaveRequestedSnippetAsFileAttachment()
+      throws Exception {
+    Snippet dummySnippet = dummySnippets.get(0);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(get("/" + dummySnippet.getId() + "/download"))
+           .andExpect(status().isOk())
+           .andExpect(header().string("Content-Disposition",
+               "attachment;filename=" + dummySnippet.getId() + ".txt"))
+           .andExpect(content().contentTypeCompatibleWith("text/plain"))
+           .andExpect(content().string(dummySnippet.getContent()));
   }
 
 }

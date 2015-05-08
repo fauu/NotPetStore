@@ -42,12 +42,12 @@
       <div id="snippet-options-container">
         <ul id="snippet-options">
           <li>
-            <c:url var="downloadUrl" value="${snippetId}/download" />
-            <a href="${downloadUrl}"><i class="fa fa-download"></i> <span>Download</span></a>
-          </li>
-          <li>
             <c:url var="rawUrl" value="${snippetId}/raw" />
             <a href="${rawUrl}"><i class="fa fa-file-text-o fix-valign"></i> <span>View Raw</span></a>
+          </li>
+          <li>
+            <c:url var="downloadUrl" value="${snippetId}/download" />
+            <a href="${downloadUrl}"><i class="fa fa-download"></i> <span>Download</span></a>
           </li>
         </ul>
       </div>
