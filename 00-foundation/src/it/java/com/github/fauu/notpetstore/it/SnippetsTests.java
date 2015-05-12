@@ -3,6 +3,7 @@ package com.github.fauu.notpetstore.it;
 import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
 import com.github.fauu.notpetstore.test.TestUtil;
+import com.github.fauu.notpetstore.web.feedback.ExceptionFeedback;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,11 +129,11 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void doAdd_ShouldRedirectToRoot() throws Exception {
+  public void doAdd_ShouldRedirectToBrowseSnippetsUrl() throws Exception {
     mockMvc.perform(addSnippetRequestValid)
            .andExpect(status().is3xxRedirection())
-           .andExpect(view().name("redirect:/"))
-           .andExpect(redirectedUrl("/"));
+           .andExpect(view().name("redirect:/browse"))
+           .andExpect(redirectedUrl("/browse"));
   }
 
   @Test
@@ -192,15 +193,17 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void view_NonexistentSnippet_ShouldReturn404() throws Exception {
+  public void view_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback() throws Exception {
     mockMvc.perform(get("/id123456789"))
            .andExpect(status().isNotFound())
-           .andExpect(view().name("error/404"))
-           .andExpect(forwardedUrlPattern("/**/error/404.*"));
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(ExceptionFeedback.PAGE_NOT_FOUND_DEFAULT)));
   }
 
   @Test
-  public void view_DeletedSnippet_ShouldReturn404WithDeletedSnippetAttribute()
+  public void view_DeletedSnippet_ShouldReturn404WithRequestedSnippetDeletedExceptionFeedback()
       throws Exception {
     Snippet dummySnippet = dummySnippets.get(2);
 
@@ -208,9 +211,10 @@ public class SnippetsTests extends AbstractIntegrationTests {
 
     mockMvc.perform(get("/" + dummySnippet.getId()))
            .andExpect(status().isNotFound())
-           .andExpect(view().name("error/404"))
-           .andExpect(forwardedUrlPattern("/**/error/404.*"))
-           .andExpect(model().attribute("deletedSnippet", is(true)));
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(ExceptionFeedback.REQUESTED_SNIPPET_DELETED)));
   }
 
   @Test
@@ -236,15 +240,17 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void viewRaw_NonexistentSnippet_ShouldReturn404() throws Exception {
+  public void viewRaw_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback() throws Exception {
     mockMvc.perform(get("/id123456789/raw"))
            .andExpect(status().isNotFound())
-           .andExpect(view().name("error/404"))
-           .andExpect(forwardedUrlPattern("/**/error/404.*"));
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(ExceptionFeedback.PAGE_NOT_FOUND_DEFAULT)));
   }
 
   @Test
-  public void viewRaw_DeletedSnippet_ShouldReturn404WithDeletedSnippetAttribute()
+  public void viewRaw_DeletedSnippet_ShouldReturn404WithRequestedSnippetDeletedExceptionFeedback()
       throws Exception {
     Snippet dummySnippet = dummySnippets.get(2);
 
@@ -252,9 +258,10 @@ public class SnippetsTests extends AbstractIntegrationTests {
 
     mockMvc.perform(get("/" + dummySnippet.getId() + "/raw"))
            .andExpect(status().isNotFound())
-           .andExpect(view().name("error/404"))
-           .andExpect(forwardedUrlPattern("/**/error/404.*"))
-           .andExpect(model().attribute("deletedSnippet", is(true)));
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(ExceptionFeedback.REQUESTED_SNIPPET_DELETED)));
   }
 
   @Test
@@ -270,15 +277,18 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void download_NonexistentSnippet_ShouldReturn404() throws Exception {
+  public void download_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback()
+      throws Exception {
     mockMvc.perform(get("/id123456789/download"))
            .andExpect(status().isNotFound())
-           .andExpect(view().name("error/404"))
-           .andExpect(forwardedUrlPattern("/**/error/404.*"));
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(ExceptionFeedback.PAGE_NOT_FOUND_DEFAULT)));
   }
 
   @Test
-  public void download_DeletedSnippet_ShouldReturn404WithDeletedSnippetAttribute()
+  public void download_DeletedSnippet_ShouldReturn404WithRequestedSnippetDeletedExceptionFeedback()
       throws Exception {
     Snippet dummySnippet = dummySnippets.get(2);
 
@@ -286,9 +296,10 @@ public class SnippetsTests extends AbstractIntegrationTests {
 
     mockMvc.perform(get("/" + dummySnippet.getId() + "/download"))
            .andExpect(status().isNotFound())
-           .andExpect(view().name("error/404"))
-           .andExpect(forwardedUrlPattern("/**/error/404.*"))
-           .andExpect(model().attribute("deletedSnippet", is(true)));
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(ExceptionFeedback.REQUESTED_SNIPPET_DELETED)));
   }
 
   @Test

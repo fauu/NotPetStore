@@ -4,6 +4,8 @@ import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.model.form.SnippetForm;
 import com.github.fauu.notpetstore.service.PastingService;
 import com.github.fauu.notpetstore.web.exception.RequestedSnippetDeletedException;
+import com.github.fauu.notpetstore.web.feedback.ExceptionFeedback;
+import com.github.fauu.notpetstore.web.feedback.UserActionFeedback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -35,7 +38,7 @@ public class SnippetController {
   }
 
 	@RequestMapping(method = RequestMethod.GET, value = "/")
-	public String add(Model model) {
+	public String add(Model model) throws Exception {
     model.addAttribute(new SnippetForm());
 
 		return "add";
@@ -43,14 +46,22 @@ public class SnippetController {
 
   @RequestMapping(method = RequestMethod.POST, value = "/")
   public String doAdd(@ModelAttribute @Valid SnippetForm snippetForm,
-                      BindingResult bindingResult) {
+                      BindingResult bindingResult,
+                      Model model,
+                      RedirectAttributes redirectAttributes) {
     if (bindingResult.hasErrors()) {
+      model.addAttribute("userActionFeedback",
+          UserActionFeedback.SNIPPET_ADD_FORM_INVALLID);
+
       return "add";
     }
 
     pastingService.addSnippet(snippetForm);
 
-    return "redirect:/";
+    redirectAttributes.addFlashAttribute("userActionFeedback",
+        UserActionFeedback.SNIPPET_ADD_SUCCESS);
+
+    return "redirect:/browse";
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/browse")
@@ -97,9 +108,10 @@ public class SnippetController {
   public @ResponseStatus(HttpStatus.NOT_FOUND) ModelAndView deleted() {
     ModelAndView mav = new ModelAndView();
 
-    mav.addObject("deletedSnippet", true);
+    mav.addObject("exceptionFeedback",
+        ExceptionFeedback.REQUESTED_SNIPPET_DELETED);
 
-    mav.setViewName("error/404");
+    mav.setViewName("exception");
 
     return mav;
   }

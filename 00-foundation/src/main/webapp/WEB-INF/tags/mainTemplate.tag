@@ -46,6 +46,7 @@
       </ul>
     </nav>
   </header>
+  <jsp:include page="../jsp/fragments/feedback/userActionFeedback.jsp" />
   <main>
     <jsp:doBody />
   </main>

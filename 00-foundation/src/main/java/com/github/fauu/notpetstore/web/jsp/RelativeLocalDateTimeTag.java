@@ -1,4 +1,4 @@
-package com.github.fauu.notpetstore.web.util.jsp;
+package com.github.fauu.notpetstore.web.jsp;
 
 import org.apache.taglibs.standard.tag.common.fmt.SetLocaleSupport;
 import org.ocpsoft.prettytime.PrettyTime;

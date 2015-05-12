@@ -1,4 +1,4 @@
-package com.github.fauu.notpetstore.web.util.jsp;
+package com.github.fauu.notpetstore.web.jsp;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

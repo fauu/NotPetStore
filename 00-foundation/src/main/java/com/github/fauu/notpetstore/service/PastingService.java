@@ -61,9 +61,11 @@ public class PastingService {
     snippet.setSyntaxHighlighting(snippetForm.getSyntaxHighlighting());
     snippet.setVisibility(snippetForm.getVisibility());
 
-    String encodedOwnerPassword
-        = bCryptPasswordEncoder.encode(snippetForm.getOwnerPassword());
-    snippet.setOwnerPassword(encodedOwnerPassword);
+    String ownerPassowrd = snippetForm.getOwnerPassword();
+    if (ownerPassowrd != null) {
+      String encodedOwnerPassword = bCryptPasswordEncoder.encode(ownerPassowrd);
+      snippet.setOwnerPassword(encodedOwnerPassword);
+    }
 
     snippet.setDateTimeAdded(LocalDateTime.now());
     snippet.setNumViews(0);
@@ -89,6 +91,7 @@ public class PastingService {
     snippet.setTitle("TransientSnippetRepository.java");
     snippet.setContent("package com.github.fauu.notpetstore.repository;\n\nimport com.github.fauu.notpetstore.model.entity.Snippet;\nimport org.springframework.stereotype.Repository;\n\nimport java.util.LinkedList;\nimport java.util.List;\nimport java.util.Optional;\nimport java.util.stream.Stream;\n\n@Repository\npublic class TransientSnippetRepository implements SnippetRepository {\n\n  private List<Snippet> snippetStore;\n\n  public TransientSnippetRepository() {\n    snippetStore = new LinkedList<>();\n  }\n\n  @Override\n  public boolean exists(String id) {\n    return snippetStore.stream()\n                       .anyMatch(s -> s.getId().equals(id));\n  }\n\n  @Override\n  public Optional<Snippet> findById(String id) {\n    return snippetStore.stream()\n                       .filter(s -> s.getId().equals(id))\n                       .findFirst();\n  }\n\n  @Override\n  public Stream<Snippet> findAll() {\n    return snippetStore.stream();\n  }\n\n  @Override\n  public Stream<Snippet> findByDeletedFalseAndVisibilityPublic() {\n    return snippetStore.stream()\n        .filter(s -> !s.isDeleted())\n        .filter(s -> s.getVisibility().equals(Snippet.Visibility.PUBLIC));\n  }\n\n  @Override\n  public Snippet save(Snippet snippet) {\n    snippetStore.removeIf(s -> s.equals(snippet));\n    snippetStore.add(snippet);\n\n    return snippet;\n  }\n\n  @Override\n  public void deleteAll() {\n    snippetStore.clear();\n  }\n\n}");
     snippet.setSyntaxHighlighting(Snippet.SyntaxHighlighting.JAVA);
+    snippet.setOwnerPassword("password");
     snippet.setVisibility(Snippet.Visibility.PUBLIC);
     snippet.setDateTimeAdded(LocalDateTime.now().minusDays(15).minusHours(3));
     snippet.setNumViews(0);
@@ -101,6 +104,7 @@ public class PastingService {
     snippet.setContent("Praesent hendrerit risus at dui congue, id dictum nibh semper. Praesent ornare neque vel ex placerat, sit amet pulvinar massa porttitor. Donec scelerisque vestibulum dolor tempor molestie. Duis condimentum elementum efficitur. Cras sollicitudin condimentum rutrum. Suspendisse sapien metus, porta quis tortor ut, interdum sodales tellus. Nunc sit amet diam tempor, molestie sapien sed, malesuada neque. Nulla facilisi. Pellentesque non dictum felis. Nulla luctus in nunc nec iaculis. Quisque tellus justo, sodales quis nulla non, faucibus ullamcorper urna. Nunc luctus, orci nec sodales finibus, justo tortor blandit quam, a porta risus leo pharetra orci. Sed a justo non eros rhoncus dapibus id efficitur enim. Donec maximus consequat metus vitae tempus. Duis viverra lorem libero, sit amet bibendum justo eleifend nec. Mauris eros lorem, congue non dui sit amet, pulvinar sodales ante.");
     snippet.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
     snippet.setVisibility(Snippet.Visibility.PUBLIC);
+    snippet.setOwnerPassword(null);
     snippet.setDateTimeAdded(LocalDateTime.now().minusHours(5));
     snippet.setNumViews(0);
     snippet.setDeleted(false);
@@ -112,6 +116,7 @@ public class PastingService {
     snippet.setContent("Morbi pharetra, arcu sed molestie faucibus, justo eros tempus eros, accumsan laoreet risus diam eu turpis. Aenean ultrices nisi ex, et blandit nulla tincidunt id. Mauris aliquet eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus in massa a dui sodales finibus. Vivamus sollicitudin viverra nisi, in consectetur velit imperdiet ac. Fusce vehicula leo ut erat lobortis euismod.");
     snippet.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
     snippet.setVisibility(Snippet.Visibility.PUBLIC);
+    snippet.setOwnerPassword("password");
     snippet.setDateTimeAdded(LocalDateTime.now().minusMinutes(3));
     snippet.setNumViews(0);
     snippet.setDeleted(true);
@@ -123,6 +128,7 @@ public class PastingService {
     snippet.setContent("Morbi pharetra, arcu sed molestie faucibus, justo eros tempus eros, accumsan laoreet risus diam eu turpis. Aenean ultrices nisi ex, et blandit nulla tincidunt id. Mauris aliquet eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus in massa a dui sodales finibus. Vivamus sollicitudin viverra nisi, in consectetur velit imperdiet ac. Fusce vehicula leo ut erat lobortis euismod.");
     snippet.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
     snippet.setVisibility(Snippet.Visibility.UNLISTED);
+    snippet.setOwnerPassword("password");
     snippet.setDateTimeAdded(LocalDateTime.now().minusMinutes(1));
     snippet.setNumViews(0);
     snippet.setDeleted(false);

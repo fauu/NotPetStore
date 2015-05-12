@@ -12,13 +12,13 @@
 
   <function>
     <name>localDateTimeToDate</name>
-    <function-class>com.github.fauu.notpetstore.web.util.jsp.LocalDateTimeToDateFunction</function-class>
+    <function-class>com.github.fauu.notpetstore.web.jsp.LocalDateTimeToDateFunction</function-class>
     <function-signature>java.util.Date localDateTimeToDate(java.time.LocalDateTime)Date localDateTimeToDate(java.time.LocalDateTime)</function-signature>
   </function>
 
   <tag>
     <name>relativeLocalDateTime</name>
-    <tag-class>com.github.fauu.notpetstore.web.util.jsp.RelativeLocalDateTimeTag</tag-class>
+    <tag-class>com.github.fauu.notpetstore.web.jsp.RelativeLocalDateTimeTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>localDateTime</name>
