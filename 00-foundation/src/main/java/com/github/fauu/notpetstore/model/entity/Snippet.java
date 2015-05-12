@@ -12,6 +12,8 @@ public class Snippet {
 
   private SyntaxHighlighting syntaxHighlighting;
 
+  private String ownerPassword;
+
   private Visibility visibility;
 
   private LocalDateTime dateTimeAdded;
@@ -50,6 +52,14 @@ public class Snippet {
 
   public void setSyntaxHighlighting(SyntaxHighlighting syntaxHighlighting) {
     this.syntaxHighlighting = syntaxHighlighting;
+  }
+
+  public String getOwnerPassword() {
+    return ownerPassword;
+  }
+
+  public void setOwnerPassword(String ownerPassword) {
+    this.ownerPassword = ownerPassword;
   }
 
   public Visibility getVisibility() {

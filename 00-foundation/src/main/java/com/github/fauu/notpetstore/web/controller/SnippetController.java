@@ -5,11 +5,13 @@ import com.github.fauu.notpetstore.model.form.SnippetForm;
 import com.github.fauu.notpetstore.service.PastingService;
 import com.github.fauu.notpetstore.web.exception.RequestedSnippetDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,6 +26,13 @@ public class SnippetController {
 
   @Autowired
   private PastingService pastingService;
+
+  @InitBinder
+  public void initBinder(WebDataBinder binder) {
+    StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+
+    binder.registerCustomEditor(String.class, stringTrimmerEditor);
+  }
 
 	@RequestMapping(method = RequestMethod.GET, value = "/")
 	public String add(Model model) {

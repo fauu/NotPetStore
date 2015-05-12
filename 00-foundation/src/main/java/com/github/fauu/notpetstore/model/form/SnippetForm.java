@@ -1,8 +1,8 @@
 package com.github.fauu.notpetstore.model.form;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
+import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class SnippetForm {
@@ -10,13 +10,15 @@ public class SnippetForm {
   @Size(max = 80, message = "{snippetForm.error.titleTooLong}")
   private String title;
 
-  @Size(min = 140, max = 5000, message = "{snippetForm.error.contentBadLength}")
+  @NotEmpty(message = "{snippetForm.error.contentEmpty}")
+  @Size(min = 140, max = 5000, message = "{snippetForm.error.contentIncorrectLength}")
   private String content;
 
-  @NotNull
   private Snippet.SyntaxHighlighting syntaxHighlighting;
 
-  @NotNull
+  @Size(min = 5, max = 30, message = "{snippetForm.error.ownerPasswordIncorrectLength}")
+  private String ownerPassword;
+
   private Snippet.Visibility visibility;
 
   private Snippet.SyntaxHighlighting[] syntaxHighlightingValues
@@ -50,6 +52,14 @@ public class SnippetForm {
 
   public void setSyntaxHighlighting(Snippet.SyntaxHighlighting syntaxHighlighting) {
     this.syntaxHighlighting = syntaxHighlighting;
+  }
+
+  public String getOwnerPassword() {
+    return ownerPassword;
+  }
+
+  public void setOwnerPassword(String ownerPassword) {
+    this.ownerPassword = ownerPassword;
   }
 
   public Snippet.Visibility getVisibility() {

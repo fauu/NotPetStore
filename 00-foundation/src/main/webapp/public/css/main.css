@@ -104,6 +104,10 @@ body > main {
   margin: 30px;
 }
 
+label .annotation {
+  font-size: 11px;
+}
+
 #snippet-form {
   text-align: center;
 }
@@ -124,7 +128,10 @@ body > main {
   margin-top: 4px;
 }
 
-#snippet-form #title, #snippet-form #content, #snippet-form #syntax-highlighting {
+#snippet-form #title,
+#snippet-form #content,
+#snippet-form #syntax-highlighting,
+#snippet-form #owner-password {
   border: none;
   border-bottom: 2px solid #e0e0e0;
   padding-bottom: 5px;
@@ -132,12 +139,17 @@ body > main {
   width: 100%;
 }
 
-#snippet-form #title:focus, #snippet-form #content:focus, #snippet-form #syntax-highlighting:focus {
+#snippet-form #title:focus,
+#snippet-form #content:focus,
+#snippet-form #syntax-highlighting:focus,
+#snippet-form #owner-password:focus {
   border-bottom: 2px solid #9574cd;
   transition: all 0.2s linear;
 }
 
-#snippet-form #title {
+#snippet-form #title,
+#snippet-form #syntax-highlighting,
+#snippet-form #owner-password {
   font-size: 20px;
   padding-bottom: 5px;
 }
@@ -150,8 +162,6 @@ body > main {
 
 #snippet-form #syntax-highlighting {
   background: inherit;
-  font-size: 20px;
-  padding-bottom: 5px;
 }
 
 #snippet-form #visibility {

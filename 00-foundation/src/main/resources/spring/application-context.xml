@@ -11,4 +11,6 @@
     <property name="defaultEncoding" value="UTF-8" />
   </bean>
 
+  <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
 </beans>

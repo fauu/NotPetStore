@@ -36,6 +36,18 @@
       </div>
 
       <div class="field">
+        <label for="ownerPassword">
+          <spring:message code="snippet.ownerPassword" />
+          <span class="annotation"><spring:message code="form.optional" /></span>
+        </label>
+        <spring:bind path="ownerPassword">
+          <sf:password path="ownerPassword" id="owner-password" class="${status.error ? 'error' : ''}"/>
+          <sf:errors path="ownerPassword" class="errors" />
+        </spring:bind>
+      </div>
+
+      <div class="field">
+        <label for="visibility"><spring:message code="snippet.visibility" /></label>
         <ul id="visibility">
           <c:forEach var="value" items="${snippetForm.visibilityValues}">
             <spring:message var="label" code="snippet.visibility.${value.toString().toLowerCase()}" />
@@ -46,7 +58,7 @@
         </ul>
       </div>
 
-      <sf:button type="submit"><spring:message code="snippetForm.save" /></sf:button>
+      <sf:button type="submit"><spring:message code="form.save" /></sf:button>
     </sf:form>
   </jsp:body>
 </t:mainTemplate>

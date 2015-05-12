@@ -6,6 +6,7 @@ import com.github.fauu.notpetstore.test.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.time.LocalDateTime;
@@ -25,7 +26,11 @@ public class SnippetsTests extends AbstractIntegrationTests {
   @Autowired
   private SnippetRepository snippetRepository;
 
-  private MockHttpServletRequestBuilder addSnippetRequestEmptyContent;
+  @Autowired
+  private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+  private MockHttpServletRequestBuilder
+      addSnippetRequestEmptyContent;
 
   private MockHttpServletRequestBuilder addSnippetRequestValid;
 
@@ -41,6 +46,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
                    .param("content", "")
                    .param("syntaxHighlighting",
                        Snippet.SyntaxHighlighting.NONE.name())
+                   .param("ownerPassword", "Password")
                    .param("visibility", Snippet.Visibility.PUBLIC.name());
 
     addSnippetRequestValid
@@ -48,6 +54,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
                    .param("content", TestUtil.generateDummyString(140))
                    .param("syntaxHighlighting",
                        Snippet.SyntaxHighlighting.NONE.name())
+                   .param("ownerPassword", "Password")
                    .param("visibility", Snippet.Visibility.PUBLIC.name());
 
     snippetRepository.deleteAll();
@@ -59,7 +66,8 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet1.setTitle("Title 1");
     dummySnippet1.setContent("Content 1");
     dummySnippet1.setVisibility(Snippet.Visibility.PUBLIC);
-    dummySnippet1.setDateTimeAdded(LocalDateTime.of(2015, Month.SEPTEMBER, 9, 0, 0));
+    dummySnippet1.setDateTimeAdded(
+        LocalDateTime.of(2015, Month.SEPTEMBER, 9, 0, 0));
     dummySnippet1.setDeleted(false);
 
     Snippet dummySnippet2 = new Snippet();
@@ -67,7 +75,8 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet2.setTitle("Title 2");
     dummySnippet2.setContent("Content 2");
     dummySnippet2.setVisibility(Snippet.Visibility.PUBLIC);
-    dummySnippet2.setDateTimeAdded(LocalDateTime.of(2015, Month.SEPTEMBER, 10, 0, 0));
+    dummySnippet2.setDateTimeAdded(
+        LocalDateTime.of(2015, Month.SEPTEMBER, 10, 0, 0));
     dummySnippet2.setDeleted(false);
 
     Snippet dummySnippet3 = new Snippet();
@@ -75,7 +84,8 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet3.setTitle("Title 3");
     dummySnippet3.setContent("Content 3");
     dummySnippet3.setVisibility(Snippet.Visibility.PUBLIC);
-    dummySnippet3.setDateTimeAdded(LocalDateTime.of(2015, Month.SEPTEMBER, 11, 0, 0));
+    dummySnippet3.setDateTimeAdded(
+        LocalDateTime.of(2015, Month.SEPTEMBER, 11, 0, 0));
     dummySnippet3.setDeleted(true);
 
     Snippet dummySnippet4 = new Snippet();
@@ -83,7 +93,8 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet4.setTitle("Title 4");
     dummySnippet4.setContent("Content 4");
     dummySnippet4.setVisibility(Snippet.Visibility.UNLISTED);
-    dummySnippet4.setDateTimeAdded(LocalDateTime.of(2015, Month.SEPTEMBER, 12, 0, 0));
+    dummySnippet4.setDateTimeAdded(
+        LocalDateTime.of(2015, Month.SEPTEMBER, 12, 0, 0));
     dummySnippet4.setDeleted(false);
 
     dummySnippets.add(dummySnippet1);
@@ -101,7 +112,8 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void doAdd_EmptyContent_ShouldTryToRenderAddSnippetPage() throws Exception {
+  public void doAdd_EmptyContent_ShouldTryToRenderAddSnippetPage()
+      throws Exception {
     mockMvc.perform(addSnippetRequestEmptyContent)
            .andExpect(status().isOk())
            .andExpect(view().name("add"))
@@ -129,13 +141,24 @@ public class SnippetsTests extends AbstractIntegrationTests {
 
     Snippet snippet = snippetRepository.findAll().collect(toList()).get(0);
 
-    assertThat(snippet.getId().length(), is(8));
-    assertThat(snippet.getId().matches("[0-9a-zA-Z]+"), is(true));
-    assertThat(snippet.getTitle(), is("Title"));
-    assertThat(snippet.getContent(), is(TestUtil.generateDummyString(140)));
-    assertThat(snippet.getVisibility(), is(Snippet.Visibility.PUBLIC));
-    assertThat(snippet.getDateTimeAdded().isBefore(LocalDateTime.now()), is(true));
-    assertThat(snippet.getNumViews(), is(0));
+    assertThat(snippet.getId().length(),
+        is(8));
+    assertThat(snippet.getId().matches("[0-9a-zA-Z]+"),
+        is(true));
+    assertThat(snippet.getTitle(),
+        is("Title"));
+    assertThat(snippet.getContent(),
+        is(TestUtil.generateDummyString(140)));
+    assertThat(snippet.getSyntaxHighlighting(),
+        is(Snippet.SyntaxHighlighting.NONE));
+    assertThat(bCryptPasswordEncoder.matches("Password", snippet.getOwnerPassword()),
+        is(true));
+    assertThat(snippet.getVisibility(),
+        is(Snippet.Visibility.PUBLIC));
+    assertThat(snippet.getDateTimeAdded().isBefore(LocalDateTime.now()),
+        is(true));
+    assertThat(snippet.getNumViews(),
+        is(0));
   }
 
   @Test
@@ -155,8 +178,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
            .andExpect(model().attribute("snippets", hasSize(2)))
            .andExpect(model().attribute("snippets", hasItems(
                hasProperty("title", is("Title 1")),
-               hasProperty("content", is("Content 2"))
-           )));
+               hasProperty("content", is("Content 2")))));
   }
 
   @Test
@@ -263,10 +285,10 @@ public class SnippetsTests extends AbstractIntegrationTests {
     snippetRepository.save(dummySnippet);
 
     mockMvc.perform(get("/" + dummySnippet.getId() + "/download"))
-        .andExpect(status().isNotFound())
-        .andExpect(view().name("error/404"))
-        .andExpect(forwardedUrlPattern("/**/error/404.*"))
-        .andExpect(model().attribute("deletedSnippet", is(true)));
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("error/404"))
+           .andExpect(forwardedUrlPattern("/**/error/404.*"))
+           .andExpect(model().attribute("deletedSnippet", is(true)));
   }
 
   @Test

@@ -7,6 +7,7 @@ import com.github.fauu.notpetstore.util.IdGenerator;
 import com.github.fauu.notpetstore.web.exception.RequestedSnippetDeletedException;
 import com.github.fauu.notpetstore.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -24,6 +25,9 @@ public class PastingService {
 
   @Autowired
   private SnippetRepository snippetRepository;
+
+  @Autowired
+  private BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @PostConstruct
   public void init() {
@@ -50,11 +54,17 @@ public class PastingService {
 
   public Snippet addSnippet(SnippetForm snippetForm) {
     Snippet snippet = new Snippet();
+
     snippet.setId(generateUniqueId(NEW_SNIPPET_ID_LENGTH));
     snippet.setTitle(snippetForm.getTitle());
     snippet.setContent(snippetForm.getContent());
     snippet.setSyntaxHighlighting(snippetForm.getSyntaxHighlighting());
     snippet.setVisibility(snippetForm.getVisibility());
+
+    String encodedOwnerPassword
+        = bCryptPasswordEncoder.encode(snippetForm.getOwnerPassword());
+    snippet.setOwnerPassword(encodedOwnerPassword);
+
     snippet.setDateTimeAdded(LocalDateTime.now());
     snippet.setNumViews(0);
     snippet.setDeleted(false);
