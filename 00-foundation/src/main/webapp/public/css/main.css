@@ -34,6 +34,10 @@ a:active {
   transition: all 0.2s linear;
 }
 
+form .error {
+  border-color: #f44336 !important;
+}
+
 body > header {
   align-items: center;
   background: #9575cd;
@@ -201,10 +205,6 @@ label .annotation {
   vertical-align: middle;
 }
 
-#snippet-form .error {
-  border-color: #f44336 !important;
-}
-
 #snippet-form button {
   background: #ff5722;
   border: none;
@@ -295,27 +295,96 @@ label .annotation {
 #snippet-options-container {
   background: #f8f8f8;
   border-bottom: 1px solid #e0e0e0;
-  padding: 10px 15px;
+  padding: 12px 15px;
 }
 
-#snippet-options {
+.snippet-options {
+  display: inline;
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-#snippet-options li {
+.snippet-options li {
   display: inline;
   margin: 0 15px 0 0;
 }
 
-#snippet-options .fa {
+.snippet-options .fa {
   margin-right: 3px;
   vertical-align: middle;
 }
 
-#snippet-options .fa.fix-valign {
-  vertical-align: inherit;
+.snippet-options .fa.fix-valign {
+  vertical-align: baseline;
+}
+
+.snippet-options.owner {
+  float: right;
+  margin-top: -2px;
+}
+
+.snippet-options.owner li:first-child {
+  margin: 0 9px 0 0;
+}
+
+.snippet-options.owner li:last-child {
+  margin: 0;
+}
+
+#snippet-owner-action-form {
+  display: inline;
+}
+
+#snippet-owner-action-form button {
+  background: inherit;
+  border: none;
+  color: #f44336;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 0;
+  text-align: center;
+  transition: all 0.2s linear;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  vertical-align: middle;
+}
+
+#snippet-owner-action-form button:hover {
+  color: #e57373;
+  transition: all 0.2s linear;
+}
+
+#snippet-owner-action-form label {
+  color: #757575;
+  font-size: 13px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+#owner-password-field i {
+  color: #bdbdbd;
+  margin-left: 5px;
+}
+
+#snippet-owner-action-form #owner-password {
+  background: inherit;
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+  padding: 3px;
+  width: 100px;
+}
+
+#snippet-owner-action-form .separator {
+  color: #212121;
+  content: inherit;
+  margin-right: 20px;
+}
+
+#snippet-owner-action-form .fa {
+  margin-right: 1px;
 }
 
 #snippet-content {

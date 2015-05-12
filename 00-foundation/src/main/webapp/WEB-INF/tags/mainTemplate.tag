@@ -2,13 +2,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<%@ attribute name="pageName" fragment="true" %>
+<%@ attribute name="pageTitle" fragment="true" %>
 <%@ attribute name="extraStylesheetDefs" fragment="true" %>
 
 <html>
 <head>
   <title>
-    <jsp:invoke fragment="pageName" /> · Not Pet Store (01 - Foundation)
+    <jsp:invoke fragment="pageTitle" /> · Not Pet Store (01 - Foundation)
   </title>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto">

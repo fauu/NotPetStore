@@ -5,7 +5,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <t:mainTemplate>
-  <jsp:attribute name="pageName"><spring:message code="addNewSnippet" /></jsp:attribute>
+  <jsp:attribute name="pageTitle"><spring:message code="addNewSnippet" /></jsp:attribute>
 
   <jsp:body>
     <h2><spring:message code="newSnippet" /></h2>
@@ -29,14 +29,14 @@
       </div>
 
       <div class="field">
-        <label for="syntaxHighlighting"><spring:message code="snippet.syntaxHighlighting" /></label>
+        <label for="syntax-highlighting"><spring:message code="snippet.syntaxHighlighting" /></label>
         <sf:select path="syntaxHighlighting" id="syntax-highlighting">
           <sf:options items="${snippetForm.syntaxHighlightingValues}" itemLabel="displayName" />
         </sf:select>
       </div>
 
       <div class="field">
-        <label for="ownerPassword">
+        <label for="owner-password">
           <spring:message code="snippet.ownerPassword" />
           <span class="annotation"><spring:message code="form.optional" /></span>
         </label>

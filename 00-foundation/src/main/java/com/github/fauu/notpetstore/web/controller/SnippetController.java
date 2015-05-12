@@ -104,6 +104,32 @@ public class SnippetController {
     out.close();
   }
 
+  @RequestMapping(method = RequestMethod.POST,
+                  value = "/{snippetId}",
+                  params = {"delete", "ownerPassword"})
+  public String doDelete(@PathVariable String snippetId,
+                         @RequestParam String ownerPassword,
+                         RedirectAttributes redirectAttributes) {
+    Snippet snippet = pastingService.getNonDeletedSnippetById(snippetId);
+
+    if (ownerPassword == null ||
+        !pastingService.verifySnippetOwnerPassword(snippet, ownerPassword)) {
+      redirectAttributes
+          .addAttribute(snippetId)
+          .addFlashAttribute("userActionFeedback",
+              UserActionFeedback.SNIPPET_PERFORM_OWNER_ACTION_PASSWORD_INVALID);
+
+      return "redirect:/{snippetId}";
+    }
+
+    pastingService.deleteSnippet(snippet);
+
+    redirectAttributes.addFlashAttribute("userActionFeedback",
+        UserActionFeedback.SNIPPET_DELETE_SUCCESS);
+
+    return "redirect:/browse";
+  }
+
   @ExceptionHandler(RequestedSnippetDeletedException.class)
   public @ResponseStatus(HttpStatus.NOT_FOUND) ModelAndView deleted() {
     ModelAndView mav = new ModelAndView();

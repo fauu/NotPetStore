@@ -3,7 +3,9 @@ package com.github.fauu.notpetstore.web.feedback;
 public enum UserActionFeedback {
 
   SNIPPET_ADD_FORM_INVALLID(Type.FAILURE, "snippetAddFormInvalid"),
-  SNIPPET_ADD_SUCCESS(Type.SUCCESS, "snippetAddSuccess");
+  SNIPPET_ADD_SUCCESS(Type.SUCCESS, "snippetAddSuccess"),
+  SNIPPET_PERFORM_OWNER_ACTION_PASSWORD_INVALID(Type.FAILURE, "snippetPerformOwnerActionPasswordInvalid"),
+  SNIPPET_DELETE_SUCCESS(Type.SUCCESS, "snippetDeleteSuccess");
 
   private Type type;
 

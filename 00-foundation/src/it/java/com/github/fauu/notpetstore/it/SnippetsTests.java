@@ -172,7 +172,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void browse_ShouldHaveNotDeletedPublicSnippetList() throws Exception {
+  public void browse_ShouldHaveNonDeletedPublicSnippetList() throws Exception {
     dummySnippets.forEach(snippetRepository::save);
 
     mockMvc.perform(get("/browse"))

@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -74,6 +75,18 @@ public class PastingService {
     return snippetRepository.save(snippet);
   }
 
+  public Snippet deleteSnippet(Snippet snippet) {
+    snippet.setDeleted(true);
+
+    return snippetRepository.save(snippet);
+  }
+
+  public boolean verifySnippetOwnerPassword(Snippet snippet,
+                                            String ownerPassword) {
+    return bCryptPasswordEncoder.matches(ownerPassword,
+                                         snippet.getOwnerPassword());
+  }
+
   private String generateUniqueId(int length) {
     String id;
     do {
@@ -91,7 +104,7 @@ public class PastingService {
     snippet.setTitle("TransientSnippetRepository.java");
     snippet.setContent("package com.github.fauu.notpetstore.repository;\n\nimport com.github.fauu.notpetstore.model.entity.Snippet;\nimport org.springframework.stereotype.Repository;\n\nimport java.util.LinkedList;\nimport java.util.List;\nimport java.util.Optional;\nimport java.util.stream.Stream;\n\n@Repository\npublic class TransientSnippetRepository implements SnippetRepository {\n\n  private List<Snippet> snippetStore;\n\n  public TransientSnippetRepository() {\n    snippetStore = new LinkedList<>();\n  }\n\n  @Override\n  public boolean exists(String id) {\n    return snippetStore.stream()\n                       .anyMatch(s -> s.getId().equals(id));\n  }\n\n  @Override\n  public Optional<Snippet> findById(String id) {\n    return snippetStore.stream()\n                       .filter(s -> s.getId().equals(id))\n                       .findFirst();\n  }\n\n  @Override\n  public Stream<Snippet> findAll() {\n    return snippetStore.stream();\n  }\n\n  @Override\n  public Stream<Snippet> findByDeletedFalseAndVisibilityPublic() {\n    return snippetStore.stream()\n        .filter(s -> !s.isDeleted())\n        .filter(s -> s.getVisibility().equals(Snippet.Visibility.PUBLIC));\n  }\n\n  @Override\n  public Snippet save(Snippet snippet) {\n    snippetStore.removeIf(s -> s.equals(snippet));\n    snippetStore.add(snippet);\n\n    return snippet;\n  }\n\n  @Override\n  public void deleteAll() {\n    snippetStore.clear();\n  }\n\n}");
     snippet.setSyntaxHighlighting(Snippet.SyntaxHighlighting.JAVA);
-    snippet.setOwnerPassword("password");
+    snippet.setOwnerPassword(bCryptPasswordEncoder.encode("password"));
     snippet.setVisibility(Snippet.Visibility.PUBLIC);
     snippet.setDateTimeAdded(LocalDateTime.now().minusDays(15).minusHours(3));
     snippet.setNumViews(0);
@@ -116,7 +129,7 @@ public class PastingService {
     snippet.setContent("Morbi pharetra, arcu sed molestie faucibus, justo eros tempus eros, accumsan laoreet risus diam eu turpis. Aenean ultrices nisi ex, et blandit nulla tincidunt id. Mauris aliquet eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus in massa a dui sodales finibus. Vivamus sollicitudin viverra nisi, in consectetur velit imperdiet ac. Fusce vehicula leo ut erat lobortis euismod.");
     snippet.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
     snippet.setVisibility(Snippet.Visibility.PUBLIC);
-    snippet.setOwnerPassword("password");
+    snippet.setOwnerPassword(bCryptPasswordEncoder.encode("password"));
     snippet.setDateTimeAdded(LocalDateTime.now().minusMinutes(3));
     snippet.setNumViews(0);
     snippet.setDeleted(true);
@@ -128,7 +141,7 @@ public class PastingService {
     snippet.setContent("Morbi pharetra, arcu sed molestie faucibus, justo eros tempus eros, accumsan laoreet risus diam eu turpis. Aenean ultrices nisi ex, et blandit nulla tincidunt id. Mauris aliquet eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus in massa a dui sodales finibus. Vivamus sollicitudin viverra nisi, in consectetur velit imperdiet ac. Fusce vehicula leo ut erat lobortis euismod.");
     snippet.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
     snippet.setVisibility(Snippet.Visibility.UNLISTED);
-    snippet.setOwnerPassword("password");
+    snippet.setOwnerPassword(bCryptPasswordEncoder.encode("password"));
     snippet.setDateTimeAdded(LocalDateTime.now().minusMinutes(1));
     snippet.setNumViews(0);
     snippet.setDeleted(false);
