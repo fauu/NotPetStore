@@ -94,6 +94,14 @@ public class Snippet {
     this.deleted = deleted;
   }
 
+  public String getFilename() {
+    if (title == null) {
+      return id + ".txt";
+    } else {
+      return title.replaceAll("\\W", "_").toLowerCase() + ".txt";
+    }
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

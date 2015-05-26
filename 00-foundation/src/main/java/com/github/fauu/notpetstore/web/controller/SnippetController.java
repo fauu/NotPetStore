@@ -94,7 +94,7 @@ public class SnippetController {
 
     response.setContentType(MediaType.TEXT_PLAIN_VALUE);
     response.setHeader("Content-Disposition",
-                       "attachment;filename=" + snippetId + ".txt");
+                       "attachment;filename=" + snippet.getFilename());
 
     ServletOutputStream out = response.getOutputStream();
 

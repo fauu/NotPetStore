@@ -4,7 +4,6 @@ import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
 import com.github.fauu.notpetstore.test.TestUtil;
 import com.github.fauu.notpetstore.web.feedback.ExceptionFeedback;
-import com.github.fauu.notpetstore.web.feedback.UserActionFeedback;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -342,7 +341,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
     mockMvc.perform(get("/" + dummySnippet.getId() + "/download"))
            .andExpect(status().isOk())
            .andExpect(header().string("Content-Disposition",
-               "attachment;filename=" + dummySnippet.getId() + ".txt"))
+               "attachment;filename=" + dummySnippet.getFilename()))
            .andExpect(content().contentTypeCompatibleWith("text/plain"))
            .andExpect(content().string(dummySnippet.getContent()));
   }

@@ -111,8 +111,8 @@ body > #feedback {
 }
 
 #feedback.success {
-  background-color: #dcedc8;
-  color: #33691e;
+  background-color: #ede7f6;
+  color: #7e57c2;
 }
 
 #feedback.failure {

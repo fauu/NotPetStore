@@ -113,7 +113,7 @@ public class PastingService {
 
     snippet = new Snippet();
     snippet.setId(generateUniqueId(NEW_SNIPPET_ID_LENGTH));
-    snippet.setTitle("");
+    snippet.setTitle(null);
     snippet.setContent("Praesent hendrerit risus at dui congue, id dictum nibh semper. Praesent ornare neque vel ex placerat, sit amet pulvinar massa porttitor. Donec scelerisque vestibulum dolor tempor molestie. Duis condimentum elementum efficitur. Cras sollicitudin condimentum rutrum. Suspendisse sapien metus, porta quis tortor ut, interdum sodales tellus. Nunc sit amet diam tempor, molestie sapien sed, malesuada neque. Nulla facilisi. Pellentesque non dictum felis. Nulla luctus in nunc nec iaculis. Quisque tellus justo, sodales quis nulla non, faucibus ullamcorper urna. Nunc luctus, orci nec sodales finibus, justo tortor blandit quam, a porta risus leo pharetra orci. Sed a justo non eros rhoncus dapibus id efficitur enim. Donec maximus consequat metus vitae tempus. Duis viverra lorem libero, sit amet bibendum justo eleifend nec. Mauris eros lorem, congue non dui sit amet, pulvinar sodales ante.");
     snippet.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
     snippet.setVisibility(Snippet.Visibility.PUBLIC);
