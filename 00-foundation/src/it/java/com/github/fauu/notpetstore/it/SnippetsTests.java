@@ -4,6 +4,7 @@ import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
 import com.github.fauu.notpetstore.test.TestUtil;
 import com.github.fauu.notpetstore.web.feedback.ExceptionFeedback;
+import com.github.fauu.notpetstore.web.feedback.UserActionFeedback;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,10 +32,15 @@ public class SnippetsTests extends AbstractIntegrationTests {
   @Autowired
   private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-  private MockHttpServletRequestBuilder
-      addSnippetRequestEmptyContent;
+  private MockHttpServletRequestBuilder addSnippetRequestEmptyContent;
 
   private MockHttpServletRequestBuilder addSnippetRequestValid;
+
+  private MockHttpServletRequestBuilder deleteSnippetRequestWrongOwnerPassword;
+
+  private MockHttpServletRequestBuilder deleteSnippetWoOwnerPasswordSetRequest;
+
+  private MockHttpServletRequestBuilder deleteSnippetRequestValid;
 
   private List<Snippet> dummySnippets;
 
@@ -41,22 +48,6 @@ public class SnippetsTests extends AbstractIntegrationTests {
   @Before
   public void setUp() {
     super.setUp();
-
-    addSnippetRequestEmptyContent
-        = post("/").param("title", "Title")
-                   .param("content", "")
-                   .param("syntaxHighlighting",
-                       Snippet.SyntaxHighlighting.NONE.name())
-                   .param("ownerPassword", "Password")
-                   .param("visibility", Snippet.Visibility.PUBLIC.name());
-
-    addSnippetRequestValid
-        = post("/").param("title", "Title")
-                   .param("content", TestUtil.generateDummyString(140))
-                   .param("syntaxHighlighting",
-                       Snippet.SyntaxHighlighting.NONE.name())
-                   .param("ownerPassword", "Password")
-                   .param("visibility", Snippet.Visibility.PUBLIC.name());
 
     snippetRepository.deleteAll();
 
@@ -66,6 +57,8 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet1.setId("id1");
     dummySnippet1.setTitle("Title 1");
     dummySnippet1.setContent("Content 1");
+    dummySnippet1.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
+    dummySnippet1.setOwnerPassword(bCryptPasswordEncoder.encode("pass"));
     dummySnippet1.setVisibility(Snippet.Visibility.PUBLIC);
     dummySnippet1.setDateTimeAdded(
         LocalDateTime.of(2015, Month.SEPTEMBER, 9, 0, 0));
@@ -75,6 +68,8 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet2.setId("id2");
     dummySnippet2.setTitle("Title 2");
     dummySnippet2.setContent("Content 2");
+    dummySnippet2.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
+    dummySnippet2.setOwnerPassword(null);
     dummySnippet2.setVisibility(Snippet.Visibility.PUBLIC);
     dummySnippet2.setDateTimeAdded(
         LocalDateTime.of(2015, Month.SEPTEMBER, 10, 0, 0));
@@ -84,6 +79,8 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet3.setId("id3");
     dummySnippet3.setTitle("Title 3");
     dummySnippet3.setContent("Content 3");
+    dummySnippet3.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
+    dummySnippet3.setOwnerPassword(null);
     dummySnippet3.setVisibility(Snippet.Visibility.PUBLIC);
     dummySnippet3.setDateTimeAdded(
         LocalDateTime.of(2015, Month.SEPTEMBER, 11, 0, 0));
@@ -93,6 +90,8 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet4.setId("id4");
     dummySnippet4.setTitle("Title 4");
     dummySnippet4.setContent("Content 4");
+    dummySnippet4.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
+    dummySnippet4.setOwnerPassword(null);
     dummySnippet4.setVisibility(Snippet.Visibility.UNLISTED);
     dummySnippet4.setDateTimeAdded(
         LocalDateTime.of(2015, Month.SEPTEMBER, 12, 0, 0));
@@ -102,6 +101,37 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippets.add(dummySnippet2);
     dummySnippets.add(dummySnippet3);
     dummySnippets.add(dummySnippet4);
+
+    addSnippetRequestEmptyContent =
+        post("/").param("title", "Title")
+                 .param("content", "")
+                 .param("syntaxHighlighting",
+                     Snippet.SyntaxHighlighting.NONE.name())
+                 .param("ownerPassword", "Password")
+                 .param("visibility", Snippet.Visibility.PUBLIC.name());
+
+    addSnippetRequestValid =
+        post("/").param("title", "Title")
+                 .param("content", TestUtil.generateDummyString(140))
+                 .param("syntaxHighlighting",
+                     Snippet.SyntaxHighlighting.NONE.name())
+                 .param("ownerPassword", "Password")
+                 .param("visibility", Snippet.Visibility.PUBLIC.name());
+
+    deleteSnippetRequestWrongOwnerPassword =
+        post("/" + dummySnippets.get(0).getId())
+            .param("delete", "")
+            .param("ownerPassword", "wrongpass");
+
+    deleteSnippetWoOwnerPasswordSetRequest =
+        post("/" + dummySnippets.get(1).getId())
+            .param("delete", "")
+            .param("ownerPassword", "somepass");
+
+    deleteSnippetRequestValid =
+        post("/" + dummySnippets.get(0).getId())
+            .param("delete", "")
+            .param("ownerPassword", "pass");
   }
 
   @Test
@@ -315,6 +345,79 @@ public class SnippetsTests extends AbstractIntegrationTests {
                "attachment;filename=" + dummySnippet.getId() + ".txt"))
            .andExpect(content().contentTypeCompatibleWith("text/plain"))
            .andExpect(content().string(dummySnippet.getContent()));
+  }
+
+  @Test
+  public void doDelete_WrongOwnerPassword_ShouldRedirectToViewSnippetPage()
+      throws Exception {
+    Snippet dummySnippet = dummySnippets.get(0);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(deleteSnippetRequestWrongOwnerPassword)
+           .andExpect(status().is3xxRedirection())
+           .andExpect(view().name("redirect:/{snippetId}"))
+           .andExpect(redirectedUrlPattern("/" + dummySnippet.getId() + "*"));
+  }
+
+  @Test
+  public void doDelete_WrongOwnerPassword_ShouldNotDeleteSnippet()
+      throws Exception {
+    Snippet dummySnippet = dummySnippets.get(0);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(deleteSnippetRequestWrongOwnerPassword);
+
+    Optional<Snippet> optionalSnippet =
+        snippetRepository.findById(dummySnippet.getId());
+
+    assertThat(optionalSnippet.isPresent(), is(true));
+    assertThat(optionalSnippet.get().isDeleted(), is(false));
+  }
+
+  @Test
+  public void doDelete_SnippetWoOwnerPasswordSet_ShouldNotDeleteSnippet()
+      throws Exception {
+    Snippet dummySnippet = dummySnippets.get(1);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(deleteSnippetWoOwnerPasswordSetRequest);
+
+    Optional<Snippet> optionalSnippet =
+        snippetRepository.findById(dummySnippet.getId());
+
+    assertThat(optionalSnippet.isPresent(), is(true));
+    assertThat(optionalSnippet.get().isDeleted(), is(false));
+  }
+
+  @Test
+  public void doDelete_Valid_ShouldRedirectToBrowseSnippetsPage()
+      throws Exception {
+    Snippet dummySnippet = dummySnippets.get(0);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(deleteSnippetRequestValid)
+           .andExpect(status().is3xxRedirection())
+           .andExpect(view().name("redirect:/browse"))
+           .andExpect(redirectedUrl("/browse"));
+  }
+
+  @Test
+  public void doDelete_Valid_ShouldDeleteSnippet() throws Exception {
+    Snippet dummySnippet = dummySnippets.get(0);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(deleteSnippetRequestValid);
+
+    Optional<Snippet> optionalSnippet =
+        snippetRepository.findById(dummySnippet.getId());
+
+    assertThat(optionalSnippet.isPresent(), is(true));
+    assertThat(optionalSnippet.get().isDeleted(), is(true));
   }
 
 }
