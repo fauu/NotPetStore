@@ -3,6 +3,7 @@ package com.github.fauu.notpetstore.web.controller;
 import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.model.form.SnippetForm;
 import com.github.fauu.notpetstore.service.PastingService;
+import com.github.fauu.notpetstore.service.SnippetVisitRecordingService;
 import com.github.fauu.notpetstore.web.exception.RequestedSnippetDeletedException;
 import com.github.fauu.notpetstore.web.feedback.ExceptionFeedback;
 import com.github.fauu.notpetstore.web.feedback.UserActionFeedback;
@@ -17,11 +18,13 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.CookieGenerator;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/")
@@ -29,6 +32,12 @@ public class SnippetController {
 
   @Autowired
   private PastingService pastingService;
+
+  @Autowired
+  private SnippetVisitRecordingService snippetVisitRecordingService;
+
+  @Autowired
+  private CookieGenerator visitorIdCookieGenerator;
 
   @InitBinder
   public void initBinder(WebDataBinder binder) {
@@ -73,8 +82,22 @@ public class SnippetController {
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/{snippetId}")
-  public String view(@PathVariable String snippetId, Model model) {
-    model.addAttribute(pastingService.getNonDeletedSnippetById(snippetId));
+  public String view(@PathVariable String snippetId,
+                     @CookieValue(value = "npsVisitorId", required = false)
+                        String visitorId,
+                     Model model,
+                     HttpServletResponse response) {
+    Snippet snippet = pastingService.getNonDeletedSnippetById(snippetId);
+
+    Optional<String> optionalNewVisitorId =
+        snippetVisitRecordingService
+            .recordSnippetVisit(snippet, Optional.ofNullable(visitorId));
+
+    if (optionalNewVisitorId.isPresent()) {
+      visitorIdCookieGenerator.addCookie(response, optionalNewVisitorId.get());
+    }
+
+    model.addAttribute(snippet);
 
     return "view";
   }

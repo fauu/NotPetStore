@@ -19,7 +19,7 @@ public class SnippetTests {
   }
 
   @Test
-  public void filename_TitledSnippet_ShouldBeLowercaseTitleWithDotTxtExtension()
+  public void filename_ShouldBeLowercaseTitleWithDotTxtExtension()
       throws Exception {
     snippet.setTitle("Title");
 
@@ -27,7 +27,7 @@ public class SnippetTests {
   }
 
   @Test
-  public void filename_TitledSnippet_ShouldReplaceNonAlphanumericCharactersWithUnderscores()
+  public void filename_ShouldReplaceNonAlphanumericCharactersWithUnderscores()
     throws Exception {
     snippet.setTitle("This is a ';:\\|_-@/Title");
 

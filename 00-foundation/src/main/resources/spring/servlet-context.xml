@@ -22,12 +22,17 @@
   <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
     <property name="defaultLocale" value="en" />
     <property name="cookieName" value="npsLocale" />
-    <property name="cookieMaxAge" value="3600" />
+    <property name="cookieMaxAge" value="31556926" />
   </bean>
   <mvc:interceptors>
     <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
       <property name="paramName" value="lang" />
     </bean>
   </mvc:interceptors>
+
+  <bean id="visitorIdCookieGenerator" class="org.springframework.web.util.CookieGenerator">
+    <property name="cookieName" value="npsVisitorId" />
+    <property name="cookieMaxAge" value="31556926" />
+  </bean>
 
 </beans>

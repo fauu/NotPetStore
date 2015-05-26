@@ -1,7 +1,9 @@
 package com.github.fauu.notpetstore.it;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
+import com.github.fauu.notpetstore.model.entity.SnippetVisit;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
+import com.github.fauu.notpetstore.repository.SnippetVisitRepository;
 import com.github.fauu.notpetstore.test.TestUtil;
 import com.github.fauu.notpetstore.web.feedback.ExceptionFeedback;
 import org.junit.Before;
@@ -10,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,6 +31,9 @@ public class SnippetsTests extends AbstractIntegrationTests {
 
   @Autowired
   private SnippetRepository snippetRepository;
+
+  @Autowired
+  private SnippetVisitRepository snippetVisitRepository;
 
   @Autowired
   private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -61,6 +68,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet1.setVisibility(Snippet.Visibility.PUBLIC);
     dummySnippet1.setDateTimeAdded(
         LocalDateTime.of(2015, Month.SEPTEMBER, 9, 0, 0));
+    dummySnippet1.setNumViews(0);
     dummySnippet1.setDeleted(false);
 
     Snippet dummySnippet2 = new Snippet();
@@ -72,6 +80,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet2.setVisibility(Snippet.Visibility.PUBLIC);
     dummySnippet2.setDateTimeAdded(
         LocalDateTime.of(2015, Month.SEPTEMBER, 10, 0, 0));
+    dummySnippet2.setNumViews(0);
     dummySnippet2.setDeleted(false);
 
     Snippet dummySnippet3 = new Snippet();
@@ -83,6 +92,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet3.setVisibility(Snippet.Visibility.PUBLIC);
     dummySnippet3.setDateTimeAdded(
         LocalDateTime.of(2015, Month.SEPTEMBER, 11, 0, 0));
+    dummySnippet3.setNumViews(0);
     dummySnippet3.setDeleted(true);
 
     Snippet dummySnippet4 = new Snippet();
@@ -94,6 +104,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet4.setVisibility(Snippet.Visibility.UNLISTED);
     dummySnippet4.setDateTimeAdded(
         LocalDateTime.of(2015, Month.SEPTEMBER, 12, 0, 0));
+    dummySnippet4.setNumViews(0);
     dummySnippet4.setDeleted(false);
 
     dummySnippets.add(dummySnippet1);
@@ -269,6 +280,38 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
+  public void view_NewVisitor_ShouldHaveVisitorIdCookie() throws Exception {
+    Snippet dummySnippet = dummySnippets.get(0);
+
+    snippetRepository.save(dummySnippet);
+
+    mockMvc.perform(get("/" + dummySnippet.getId()))
+           .andExpect(cookie().exists("npsVisitorId"));
+  }
+
+  @Test
+  public void view_ReturningVisitor_ShouldHaveSnippetWithNotIncrementedNumViews()
+      throws Exception {
+    Snippet dummySnippet = dummySnippets.get(0);
+
+    snippetRepository.save(dummySnippet);
+
+    SnippetVisit previousVisit = new SnippetVisit();
+    previousVisit.setSnippetId(dummySnippet.getId());
+    previousVisit.setVisitorId(UUID.randomUUID());
+    previousVisit.setDateTime(LocalDateTime.now().minusDays(1));
+
+    snippetVisitRepository.save(previousVisit);
+
+    Cookie visitorIdCookie =
+        new Cookie("npsVisitorId", previousVisit.getVisitorId().toString());
+
+    mockMvc.perform(get("/" + dummySnippet.getId()).cookie(visitorIdCookie))
+           .andExpect(model().attribute("snippet",
+               hasProperty("numViews", is(dummySnippet.getNumViews()))));
+  }
+
+  @Test
   public void viewRaw_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback() throws Exception {
     mockMvc.perform(get("/id123456789/raw"))
            .andExpect(status().isNotFound())
@@ -392,7 +435,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void doDelete_Valid_ShouldRedirectToBrowseSnippetsPage()
+  public void doDelete_ShouldRedirectToBrowseSnippetsPage()
       throws Exception {
     Snippet dummySnippet = dummySnippets.get(0);
 
@@ -405,7 +448,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void doDelete_Valid_ShouldDeleteSnippet() throws Exception {
+  public void doDelete_ShouldDeleteSnippet() throws Exception {
     Snippet dummySnippet = dummySnippets.get(0);
 
     snippetRepository.save(dummySnippet);
