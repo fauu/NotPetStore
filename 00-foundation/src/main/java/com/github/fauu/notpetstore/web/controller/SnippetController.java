@@ -4,7 +4,7 @@ import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.model.form.SnippetForm;
 import com.github.fauu.notpetstore.service.PastingService;
 import com.github.fauu.notpetstore.service.SnippetVisitRecordingService;
-import com.github.fauu.notpetstore.web.exception.RequestedSnippetDeletedException;
+import com.github.fauu.notpetstore.service.exception.RequestedSnippetDeletedException;
 import com.github.fauu.notpetstore.web.feedback.ExceptionFeedback;
 import com.github.fauu.notpetstore.web.feedback.UserActionFeedback;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +29,9 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/")
 public class SnippetController {
+
+  // TODO: Externalize this?
+  private static final int SNIPPET_PAGE_SIZE = 10;
 
   @Autowired
   private PastingService pastingService;
@@ -74,9 +77,14 @@ public class SnippetController {
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/browse")
-  public String browse(Model model) {
-    model.addAttribute("snippets",
-        pastingService.getNonDeletedPublicSnippetsSortedByDateTimeAddedDesc());
+  public String browse() {
+    return "forward:/browse/page/1";
+  }
+
+  @RequestMapping(method = RequestMethod.GET, value = "/browse/page/{pageNo}")
+  public String browsePage(@PathVariable int pageNo, Model model) {
+    model.addAttribute("snippetPage",
+        pastingService.getPageOfNonDeletedPublicSnippets(pageNo, SNIPPET_PAGE_SIZE));
 
     return "browse";
   }

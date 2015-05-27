@@ -65,20 +65,20 @@ header #site-sub-title {
   margin-left: -2px;
 }
 
-header #main-nav {
+header nav[role="main"] {
   margin-left: auto;
 }
 
-#main-nav ul {
+nav[role="main"] ul {
   list-style-type: none;
 }
 
-#main-nav li {
+nav[role="main"] li {
   display: inline;
   margin-left: 5px;
 }
 
-#main-nav a {
+nav[role="main"] a {
   align-items: center;
   background: none;
   border-radius: 2px;
@@ -90,17 +90,17 @@ header #main-nav {
   transition: all 0.2s linear;
 }
 
-#main-nav a:hover {
+nav[role="main"] a:hover {
   background: #b39ddb;
   transition: all 0.2s linear;
 }
 
-#main-nav a:active {
+nav[role="main"] a:active {
   background: #d1c4e9;
   transition: all 0.2s linear;
 }
 
-#main-nav .icon {
+nav[role="main"] .icon {
   margin-bottom: 5px;
 }
 

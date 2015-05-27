@@ -1,9 +1,11 @@
 package com.github.fauu.notpetstore.web.controller.advice;
 
-import com.github.fauu.notpetstore.web.exception.ResourceNotFoundException;
+import com.github.fauu.notpetstore.service.exception.BadRequestException;
+import com.github.fauu.notpetstore.service.exception.ResourceNotFoundException;
 import com.github.fauu.notpetstore.web.feedback.ExceptionFeedback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,6 +32,19 @@ public class GlobalExceptionHandlingControllerAdvice {
 
     return mav;
   }
+
+  @ExceptionHandler({TypeMismatchException.class,
+                     BadRequestException.class})
+  public @ResponseStatus(HttpStatus.BAD_REQUEST) ModelAndView badRequest() {
+    ModelAndView mav = new ModelAndView();
+
+    mav.addObject("exceptionFeedback", ExceptionFeedback.BAD_REQUEST_DEFAULT);
+
+    mav.setViewName("exception");
+
+    return mav;
+  }
+
 
   @ExceptionHandler(Throwable.class)
   public @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) ModelAndView any(Throwable e) {

@@ -1,6 +1,7 @@
 package com.github.fauu.notpetstore.repository;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
+import com.github.fauu.notpetstore.model.support.Page;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -13,7 +14,7 @@ public interface SnippetRepository {
 
   Stream<Snippet> findAll();
 
-  Stream<Snippet> findByDeletedFalseAndVisibilityPublic();
+  Page<Snippet> findPageByDeletedFalseAndVisibilityPublic(int pageNo, int pageSize);
 
   Snippet save(Snippet snippet);
 

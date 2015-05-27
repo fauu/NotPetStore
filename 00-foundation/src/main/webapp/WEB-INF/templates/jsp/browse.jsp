@@ -25,7 +25,7 @@
         </tr>
       </thead>
       <tbody>
-        <c:forEach var="snippet" items="${snippets}">
+        <c:forEach var="snippet" items="${snippetPage.items}">
           <tr>
             <td class="title">
               <c:url var="snippetUrl" value="/${snippet.id}" />
@@ -44,6 +44,19 @@
         </c:forEach>
       </tbody>
     </table>
+
+    <nav role="page">
+      <ul>
+        <c:forEach begin="1" end="${snippetPage.numPagesTotal}" varStatus="loop">
+          <li>
+            <c:url var="pageUrl" value="/browse/page/${loop.index}" />
+            <a href="${pageUrl}">
+              <c:out value="${loop.index}" />
+            </a>
+          </li>
+        </c:forEach>
+      </ul>
+    </nav>
   </jsp:body>
 </t:mainTemplate>
 

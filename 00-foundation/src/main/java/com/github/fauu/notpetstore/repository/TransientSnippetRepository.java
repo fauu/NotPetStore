@@ -1,11 +1,13 @@
 package com.github.fauu.notpetstore.repository;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
+import com.github.fauu.notpetstore.model.support.Page;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Repository
@@ -35,11 +37,18 @@ public class TransientSnippetRepository implements SnippetRepository {
     return snippetStore.stream();
   }
 
+
   @Override
-  public Stream<Snippet> findByDeletedFalseAndVisibilityPublic() {
-    return snippetStore.stream()
-        .filter(s -> !s.isDeleted())
-        .filter(s -> s.getVisibility().equals(Snippet.Visibility.PUBLIC));
+  public Page<Snippet> findPageByDeletedFalseAndVisibilityPublic(int pageNo, int pageSize) {
+    List<Snippet> items =
+        snippetStore.stream()
+            .filter(s -> !s.isDeleted())
+            .filter(s -> s.getVisibility().equals(Snippet.Visibility.PUBLIC))
+            .skip((pageNo - 1) * pageSize)
+            .limit(pageSize)
+            .collect(Collectors.toList());
+
+    return new Page<>(pageNo, items, pageSize, snippetStore.size());
   }
 
   @Override

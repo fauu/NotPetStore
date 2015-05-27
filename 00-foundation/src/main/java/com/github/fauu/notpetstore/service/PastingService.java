@@ -2,20 +2,19 @@ package com.github.fauu.notpetstore.service;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.model.form.SnippetForm;
+import com.github.fauu.notpetstore.model.support.Page;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
+import com.github.fauu.notpetstore.service.exception.BadRequestException;
 import com.github.fauu.notpetstore.util.IdGenerator;
-import com.github.fauu.notpetstore.web.exception.RequestedSnippetDeletedException;
-import com.github.fauu.notpetstore.web.exception.ResourceNotFoundException;
+import com.github.fauu.notpetstore.service.exception.RequestedSnippetDeletedException;
+import com.github.fauu.notpetstore.service.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.Random;
 
 @Service
 public class PastingService {
@@ -46,10 +45,26 @@ public class PastingService {
     return snippet;
   }
 
-  public List<Snippet> getNonDeletedPublicSnippetsSortedByDateTimeAddedDesc() {
-    return snippetRepository.findByDeletedFalseAndVisibilityPublic()
-        .sorted(Comparator.comparing(Snippet::getDateTimeAdded).reversed())
-        .collect(toList());
+//  public List<Snippet> getNonDeletedPublicSnippetsSortedByDateTimeAddedDesc() {
+//    return snippetRepository.findByDeletedFalseAndVisibilityPublic()
+//        .sorted(Comparator.comparing(Snippet::getDateTimeAdded).reversed())
+//        .collect(toList());
+//  }
+
+  public Page<Snippet> getPageOfNonDeletedPublicSnippets(int pageNo, int pageSize) {
+    if (pageNo < 1) {
+      throw new BadRequestException();
+    }
+
+    Page<Snippet> snippetPage =
+        snippetRepository.findPageByDeletedFalseAndVisibilityPublic(pageNo,
+                                                                    pageSize);
+
+    if (snippetPage.getNo() > snippetPage.getNumPagesTotal()) {
+      throw new ResourceNotFoundException();
+    }
+
+    return snippetPage;
   }
 
   public Snippet addSnippet(SnippetForm snippetForm) {
@@ -145,6 +160,21 @@ public class PastingService {
     snippet.setNumViews(0);
     snippet.setDeleted(false);
     snippetRepository.save(snippet);
+
+    Random random = new Random();
+    for (int i = 0; i < 50; i++) {
+      snippet = new Snippet();
+      snippet.setId(generateUniqueId(NEW_SNIPPET_ID_LENGTH));
+      snippet.setTitle("Test Snippet " + random.nextInt(10000));
+      snippet.setContent("Morbi pharetra, arcu sed molestie faucibus, justo eros tempus eros, accumsan laoreet risus diam eu turpis. Aenean ultrices nisi ex, et blandit nulla tincidunt id. Mauris aliquet eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus in massa a dui sodales finibus. Vivamus sollicitudin viverra nisi, in consectetur velit imperdiet ac. Fusce vehicula leo ut erat lobortis euismod.");
+      snippet.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
+      snippet.setVisibility(Snippet.Visibility.PUBLIC);
+      snippet.setOwnerPassword(bCryptPasswordEncoder.encode("password"));
+      snippet.setDateTimeAdded(LocalDateTime.now().minusDays(i));
+      snippet.setNumViews(random.nextInt(200));
+      snippet.setDeleted(false);
+      snippetRepository.save(snippet);
+    }
   }
 
 }
