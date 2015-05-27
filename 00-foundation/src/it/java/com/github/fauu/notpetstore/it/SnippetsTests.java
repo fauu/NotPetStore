@@ -5,6 +5,7 @@ import com.github.fauu.notpetstore.model.entity.SnippetVisit;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
 import com.github.fauu.notpetstore.repository.SnippetVisitRepository;
 import com.github.fauu.notpetstore.test.TestUtil;
+import com.github.fauu.notpetstore.util.IdGenerator;
 import com.github.fauu.notpetstore.web.feedback.ExceptionFeedback;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class SnippetsTests extends AbstractIntegrationTests {
@@ -203,34 +205,68 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void browse_ShouldTryToRenderBrowseSnippetsPage() throws Exception {
+  public void browse_ShouldForwardToBrowseSnippetsPage1Page() throws Exception {
     mockMvc.perform(get("/browse"))
            .andExpect(status().isOk())
-           .andExpect(view().name("browse"))
-           .andExpect(forwardedUrlPattern("/**/browse.*"));
+           .andExpect(view().name("forward:/browse/page/1"))
+           .andExpect(forwardedUrl("/browse/page/1"));
+  }
+
+  @Test
+  public void browse_InvalidPageNo_ShouldReturn400() throws Exception {
+    mockMvc.perform(get("/browse/page/-1"))
+           .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void browse_NonexistentPage_ShouldReturn404() throws Exception {
+    dummySnippets.forEach(snippetRepository::save);
+
+    mockMvc.perform(get("/browse/page/100"))
+           .andExpect(status().isNotFound());
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void browse_ShouldHaveNonDeletedPublicSnippetList() throws Exception {
+  public void browse_NonEmptyPage_ShouldHaveNonDeletedPublicSnippetPage() throws Exception {
     dummySnippets.forEach(snippetRepository::save);
 
-    mockMvc.perform(get("/browse"))
-           .andExpect(model().attribute("snippets", hasSize(2)))
-           .andExpect(model().attribute("snippets", hasItems(
-               hasProperty("title", is("Title 1")),
-               hasProperty("content", is("Content 2")))));
+    mockMvc.perform(get("/browse/page/1"))
+           .andExpect(model().attribute("snippetPage",
+               hasProperty("items", hasSize(2))))
+           .andExpect(model().attribute("snippetPage",
+               hasProperty("items", hasItems(
+                   hasProperty("title", is("Title 1")),
+                   hasProperty("content", is("Content 2"))))));
   }
 
   @Test
-  public void browse_ShouldHaveSnippetListSortedByDateTimeAddedDesc()
-      throws Exception {
-    dummySnippets.stream().limit(2).forEachOrdered(snippetRepository::save);
+  public void browse_FullPage_ShouldHaveSnippetPageOfSize10() throws Exception {
+    Snippet dummySnippet;
+    for (int i = 0; i < 15; i++) {
+      dummySnippet = new Snippet();
 
-    mockMvc.perform(get("/browse"))
-           .andExpect(model().attribute("snippets",
-               contains(dummySnippets.get(1), dummySnippets.get(0))));
+      dummySnippet.setId(IdGenerator.generate(8));
+      dummySnippet.setVisibility(Snippet.Visibility.PUBLIC);
+      dummySnippet.setDeleted(false);
+
+      snippetRepository.save(dummySnippet);
+    }
+
+    mockMvc.perform(get("/browse/page/1"))
+           .andExpect(model().attribute("snippetPage",
+               hasProperty("items", hasSize(10))));
   }
+
+//  @Test
+//  public void browse_ShouldHaveSnippetListSortedByDateTimeAddedDesc()
+//      throws Exception {
+//    dummySnippets.stream().limit(2).forEachOrdered(snippetRepository::save);
+//
+//    mockMvc.perform(get("/browse"))
+//           .andExpect(model().attribute("snippets",
+//               contains(dummySnippets.get(1), dummySnippets.get(0))));
+//  }
 
   @Test
   public void view_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback() throws Exception {
