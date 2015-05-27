@@ -45,18 +45,44 @@
       </tbody>
     </table>
 
-    <nav role="page">
-      <ul>
-        <c:forEach begin="1" end="${snippetPage.numPagesTotal}" varStatus="loop">
-          <li>
-            <c:url var="pageUrl" value="/browse/page/${loop.index}" />
-            <a href="${pageUrl}">
-              <c:out value="${loop.index}" />
+    <c:if test="${snippetPage.numPagesTotal > 1}">
+      <nav id="page-nav">
+        <c:url var="pageUrlRoot" value="/browse/page/" />
+
+        <div class="previous-links">
+          <c:if test="${snippetPage.no > 1}">
+            <a href="${pageUrlRoot}1" class="first">
+              <i class="fa fa-backward"></i> First
             </a>
-          </li>
-        </c:forEach>
-      </ul>
-    </nav>
+
+            <a href="${pageUrlRoot}${snippetPage.no - 1}" class="previous">
+              <i class="fa fa-chevron-left"></i> Previous
+            </a>
+          </c:if>
+        </div>
+
+        <div class="current">
+          <span class="page-no">
+            <c:out value="Page ${snippetPage.no}" />
+          </span>
+          <span class="page-count">
+            <c:out value="of ${snippetPage.numPagesTotal}" />
+          </span>
+        </div>
+
+        <div class="next-links">
+          <c:if test="${snippetPage.no < snippetPage.numPagesTotal}">
+            <a href="${pageUrlRoot}${snippetPage.no + 1}" class="next">
+              Next <i class="fa fa-chevron-right"></i>
+            </a>
+
+            <a href="${pageUrlRoot}${snippetPage.numPagesTotal}" class="last">
+              Last <i class="fa fa-forward"></i>
+            </a>
+          </c:if>
+        </div>
+      </nav>
+    </c:if>
   </jsp:body>
 </t:mainTemplate>
 

@@ -26,7 +26,7 @@
       <img id="site-logo" src="${logoUrl}" />
       <h1 id="site-title">Not Pet Store <span id="site-sub-title">or Naive Pasting System</span></h1>
     </a>
-    <nav role="main">
+    <nav id="main-nav">
       <ul>
         <li>
           <a href="${homeUrl}">
