@@ -242,6 +242,20 @@ label .annotation {
   padding: 18px 20px;
 }
 
+#snippet-list th a {
+  color: inherit;
+}
+
+#snippet-list th i {
+  color: #bdbdbd;
+  font-size: 17px;
+  vertical-align: middle;
+}
+
+#snippet-list th.sorted i {
+  color: #ff7043;
+}
+
 #snippet-list td {
   padding: 15px 20px;
 }

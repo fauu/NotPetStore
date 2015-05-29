@@ -19,8 +19,16 @@
           <th class="added">
             <spring:message code="addedDateTime" />
           </th>
-          <th class="views">
-            <spring:message code="numViews" />
+          <th class="views ${param.sort == "popular" ? 'sorted' : ''}">
+            <spring:url var="numViewsSortUrl" value="/browse/page/${snippetPage.no}">
+              <c:if test="${empty param.sort}">
+                <spring:param name="sort" value="popular" />
+              </c:if>
+            </spring:url>
+            <a href="${numViewsSortUrl}">
+              <spring:message code="numViews" />
+              <i class="material-icons">keyboard_arrow_down</i>
+            </a>
           </th>
         </tr>
       </thead>
@@ -47,15 +55,25 @@
 
     <c:if test="${snippetPage.numPagesTotal > 1}">
       <nav id="page-nav">
-        <c:url var="pageUrlRoot" value="/browse/page/" />
+        <spring:url var="pageUrlTemplate" value="/browse/page/{pageNo}">
+          <c:if test="${not empty param.sort}">
+            <spring:param name="sort" value="${param.sort}" />
+          </c:if>
+        </spring:url>
 
         <div class="previous-links">
           <c:if test="${snippetPage.no > 1}">
-            <a href="${pageUrlRoot}1" class="first">
+            <spring:url var="firstPageUrl" value="${pageUrlTemplate}">
+              <spring:param name="pageNo" value="1" />
+            </spring:url>
+            <a href="${firstPageUrl}" class="first">
               <i class="fa fa-backward"></i> First
             </a>
 
-            <a href="${pageUrlRoot}${snippetPage.no - 1}" class="previous">
+            <spring:url var="previousPageUrl" value="${pageUrlTemplate}">
+              <spring:param name="pageNo" value="${snippetPage.no - 1}" />
+            </spring:url>
+            <a href="${previousPageUrl}" class="previous">
               <i class="fa fa-chevron-left"></i> Previous
             </a>
           </c:if>
@@ -72,11 +90,17 @@
 
         <div class="next-links">
           <c:if test="${snippetPage.no < snippetPage.numPagesTotal}">
-            <a href="${pageUrlRoot}${snippetPage.no + 1}" class="next">
+            <spring:url var="nextPageUrl" value="${pageUrlTemplate}">
+              <spring:param name="pageNo" value="${snippetPage.no + 1}" />
+            </spring:url>
+            <a href="${nextPageUrl}" class="next">
               Next <i class="fa fa-chevron-right"></i>
             </a>
 
-            <a href="${pageUrlRoot}${snippetPage.numPagesTotal}" class="last">
+            <spring:url var="lastPageUrl" value="${pageUrlTemplate}">
+              <spring:param name="pageNo" value="${snippetPage.numPagesTotal}" />
+            </spring:url>
+            <a href="${lastPageUrl}" class="last">
               Last <i class="fa fa-forward"></i>
             </a>
           </c:if>
