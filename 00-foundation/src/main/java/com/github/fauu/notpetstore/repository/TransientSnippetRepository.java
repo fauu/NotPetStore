@@ -5,12 +5,14 @@ import com.github.fauu.notpetstore.model.support.Page;
 import com.github.fauu.notpetstore.model.support.PageRequest;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 @Repository
 public class TransientSnippetRepository implements SnippetRepository {
@@ -32,6 +34,15 @@ public class TransientSnippetRepository implements SnippetRepository {
     return snippetStore.stream()
                        .filter(s -> s.getId().equals(id))
                        .findFirst();
+  }
+
+  @Override
+  public List<Snippet> findByDeletedFalseAndDateTimeExpiresNotAfter(LocalDateTime dateTime) {
+    return snippetStore.stream()
+                       .filter(s -> !s.isDeleted() &&
+                                    s.getDateTimeExpires() != null &&
+                                    !s.getDateTimeExpires().isAfter(dateTime))
+                       .collect(toList());
   }
 
   @Override
@@ -59,7 +70,7 @@ public class TransientSnippetRepository implements SnippetRepository {
                     .sorted(combinedComparator)
                     .skip((pageRequest.getPageNo() - 1) * pageRequest.getPageSize())
                     .limit(pageRequest.getPageSize())
-                    .collect(Collectors.toList());
+                    .collect(toList());
 
     return new Page<>(pageRequest.getPageNo(),
                       items,
@@ -73,6 +84,14 @@ public class TransientSnippetRepository implements SnippetRepository {
     snippetStore.add(snippet);
 
     return snippet;
+  }
+
+  @Override
+  public List<Snippet> save(List<Snippet> snippets) {
+    snippetStore.removeAll(snippets);
+    snippetStore.addAll(snippets);
+
+    return snippets;
   }
 
   @Override

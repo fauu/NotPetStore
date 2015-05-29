@@ -14,7 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -63,13 +66,21 @@ public class PastingService {
   }
 
   public Snippet addSnippet(SnippetForm snippetForm) {
+    LocalDateTime now = LocalDateTime.now();
+
     Snippet snippet = new Snippet();
 
     snippet.setId(generateUniqueId(NEW_SNIPPET_ID_LENGTH));
+
     snippet.setTitle(snippetForm.getTitle());
+
     snippet.setContent(snippetForm.getContent());
+
     snippet.setSyntaxHighlighting(snippetForm.getSyntaxHighlighting());
-    snippet.setVisibility(snippetForm.getVisibility());
+
+    Optional<Duration> timeUntilExpiration =
+        snippetForm.getExpirationMoment().getTimeUntil();
+    snippet.setDateTimeExpires(timeUntilExpiration.map(now::plus).orElse(null));
 
     String ownerPassowrd = snippetForm.getOwnerPassword();
     if (ownerPassowrd != null) {
@@ -77,8 +88,12 @@ public class PastingService {
       snippet.setOwnerPassword(encodedOwnerPassword);
     }
 
-    snippet.setDateTimeAdded(LocalDateTime.now());
+    snippet.setVisibility(snippetForm.getVisibility());
+
+    snippet.setDateTimeAdded(now);
+
     snippet.setNumViews(0);
+
     snippet.setDeleted(false);
 
     return snippetRepository.save(snippet);

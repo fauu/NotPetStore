@@ -36,6 +36,13 @@
       </div>
 
       <div class="field">
+        <label for="expires"><spring:message code="snippetForm.expires" /></label>
+        <sf:select path="expirationMoment" id="expires">
+          <sf:options items="${snippetForm.expirationMomentValues}" itemLabel="displayName" />
+        </sf:select>
+      </div>
+
+      <div class="field">
         <label for="owner-password">
           <spring:message code="snippet.ownerPassword" />
           <span class="annotation"><spring:message code="form.optional" /></span>

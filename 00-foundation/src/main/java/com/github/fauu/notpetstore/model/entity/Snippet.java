@@ -1,7 +1,12 @@
 package com.github.fauu.notpetstore.model.entity;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 public class Snippet {
@@ -13,6 +18,8 @@ public class Snippet {
   private String content;
 
   private SyntaxHighlighting syntaxHighlighting;
+
+  private LocalDateTime dateTimeExpires;
 
   private String ownerPassword;
 
@@ -54,6 +61,14 @@ public class Snippet {
 
   public void setSyntaxHighlighting(SyntaxHighlighting syntaxHighlighting) {
     this.syntaxHighlighting = syntaxHighlighting;
+  }
+
+  public LocalDateTime getDateTimeExpires() {
+    return dateTimeExpires;
+  }
+
+  public void setDateTimeExpires(LocalDateTime dateTimeExpires) {
+    this.dateTimeExpires = dateTimeExpires;
   }
 
   public String getOwnerPassword() {

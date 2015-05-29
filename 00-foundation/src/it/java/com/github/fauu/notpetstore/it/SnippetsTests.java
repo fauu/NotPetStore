@@ -2,6 +2,7 @@ package com.github.fauu.notpetstore.it;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.model.entity.SnippetVisit;
+import com.github.fauu.notpetstore.model.form.SnippetForm;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
 import com.github.fauu.notpetstore.repository.SnippetVisitRepository;
 import com.github.fauu.notpetstore.test.TestUtil;
@@ -124,6 +125,8 @@ public class SnippetsTests extends AbstractIntegrationTests {
                  .param("content", TestUtil.generateDummyString(140))
                  .param("syntaxHighlighting",
                      Snippet.SyntaxHighlighting.NONE.name())
+                 .param("expirationMoment",
+                     SnippetForm.ExpirationMoment.TEN_MINUTES.name())
                  .param("ownerPassword", "Password")
                  .param("visibility", Snippet.Visibility.PUBLIC.name());
 
@@ -183,20 +186,33 @@ public class SnippetsTests extends AbstractIntegrationTests {
 
     assertThat(snippet.getId().length(),
         is(8));
+
     assertThat(snippet.getId().matches("[0-9a-zA-Z]+"),
         is(true));
+
     assertThat(snippet.getTitle(),
         is("Title"));
+
     assertThat(snippet.getContent(),
         is(TestUtil.generateDummyString(140)));
+
     assertThat(snippet.getSyntaxHighlighting(),
         is(Snippet.SyntaxHighlighting.NONE));
+
+    assertThat(snippet.getDateTimeExpires()
+                      .minusMinutes(10)
+                      .isEqual(snippet.getDateTimeAdded()),
+               is(true));
+
     assertThat(bCryptPasswordEncoder.matches("Password", snippet.getOwnerPassword()),
         is(true));
+
     assertThat(snippet.getVisibility(),
         is(Snippet.Visibility.PUBLIC));
+
     assertThat(snippet.getDateTimeAdded().isBefore(LocalDateTime.now()),
         is(true));
+
     assertThat(snippet.getNumViews(),
         is(0));
   }

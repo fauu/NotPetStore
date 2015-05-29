@@ -151,6 +151,7 @@ label .annotation {
 #snippet-form #title,
 #snippet-form #content,
 #snippet-form #syntax-highlighting,
+#snippet-form #expires,
 #snippet-form #owner-password {
   border: none;
   border-bottom: 2px solid #e0e0e0;
@@ -162,6 +163,7 @@ label .annotation {
 #snippet-form #title:focus,
 #snippet-form #content:focus,
 #snippet-form #syntax-highlighting:focus,
+#snippet-form #expires:focus,
 #snippet-form #owner-password:focus {
   border-bottom: 2px solid #9574cd;
   transition: all 0.2s linear;
@@ -169,6 +171,7 @@ label .annotation {
 
 #snippet-form #title,
 #snippet-form #syntax-highlighting,
+#snippet-form #expires,
 #snippet-form #owner-password {
   font-size: 20px;
   padding-bottom: 5px;
@@ -180,7 +183,8 @@ label .annotation {
   height: 400px;
 }
 
-#snippet-form #syntax-highlighting {
+#snippet-form #syntax-highlighting,
+#snippet-form #expires {
   background: inherit;
 }
 

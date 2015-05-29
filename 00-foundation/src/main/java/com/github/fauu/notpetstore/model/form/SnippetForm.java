@@ -4,6 +4,9 @@ import com.github.fauu.notpetstore.model.entity.Snippet;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
+import java.time.Duration;
+import java.time.temporal.TemporalAmount;
+import java.util.Optional;
 
 public class SnippetForm {
 
@@ -16,15 +19,12 @@ public class SnippetForm {
 
   private Snippet.SyntaxHighlighting syntaxHighlighting;
 
+  private SnippetForm.ExpirationMoment expirationMoment;
+
   @Size(min = 5, max = 30, message = "{snippetForm.error.ownerPasswordIncorrectLength}")
   private String ownerPassword;
 
   private Snippet.Visibility visibility;
-
-  private Snippet.SyntaxHighlighting[] syntaxHighlightingValues
-      = Snippet.SyntaxHighlighting.values();
-
-  private Snippet.Visibility[] visibilityValues = Snippet.Visibility.values();
 
   public SnippetForm() {
     visibility = Snippet.Visibility.PUBLIC;
@@ -54,6 +54,14 @@ public class SnippetForm {
     this.syntaxHighlighting = syntaxHighlighting;
   }
 
+  public ExpirationMoment getExpirationMoment() {
+    return expirationMoment;
+  }
+
+  public void setExpirationMoment(ExpirationMoment expirationMoment) {
+    this.expirationMoment = expirationMoment;
+  }
+
   public String getOwnerPassword() {
     return ownerPassword;
   }
@@ -70,12 +78,16 @@ public class SnippetForm {
     this.visibility = visibility;
   }
 
-  public Snippet.Visibility[] getVisibilityValues() {
-    return visibilityValues;
+  public Snippet.SyntaxHighlighting[] getSyntaxHighlightingValues() {
+    return Snippet.SyntaxHighlighting.values();
   }
 
-  public Snippet.SyntaxHighlighting[] getSyntaxHighlightingValues() {
-    return syntaxHighlightingValues;
+  public ExpirationMoment[] getExpirationMomentValues() {
+    return ExpirationMoment.values();
+  }
+
+  public Snippet.Visibility[] getVisibilityValues() {
+    return Snippet.Visibility.values();
   }
 
   @Override
@@ -105,5 +117,32 @@ public class SnippetForm {
     result = 31 * result + (content != null ? content.hashCode() : 0);
     return result;
   }
+
+  public enum ExpirationMoment {
+    INDEFINITE(Optional.<Duration>empty(), "Never"),
+    TEN_MINUTES(Optional.of(Duration.ofMinutes(10L)),  "In 10 minutes"),
+    ONE_HOUR(Optional.of(Duration.ofHours(1L)), "In an hour"),
+    ONE_DAY(Optional.of(Duration.ofDays(1)), "In a day"),
+    ONE_WEEK(Optional.of(Duration.ofDays(7)), "In a week"),
+    ONE_MONTH(Optional.of(Duration.ofDays(30)), "In a month");
+
+    private Optional<Duration> timeUntil;
+
+    private String displayName;
+
+    ExpirationMoment(Optional<Duration> timeUntil, String displayName) {
+      this.timeUntil = timeUntil;
+      this.displayName = displayName;
+    }
+
+    public Optional<Duration> getTimeUntil() {
+      return timeUntil;
+    }
+
+    public String getDisplayName() {
+      return displayName;
+    }
+  }
+
 
 }
