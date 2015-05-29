@@ -6,9 +6,9 @@ import com.github.fauu.notpetstore.model.support.Page;
 import com.github.fauu.notpetstore.model.support.PageRequest;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
 import com.github.fauu.notpetstore.service.exception.BadRequestException;
-import com.github.fauu.notpetstore.util.IdGenerator;
 import com.github.fauu.notpetstore.service.exception.RequestedSnippetDeletedException;
 import com.github.fauu.notpetstore.service.exception.ResourceNotFoundException;
+import com.github.fauu.notpetstore.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
 import java.util.Optional;
 import java.util.Random;
 

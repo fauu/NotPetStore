@@ -2,7 +2,6 @@ package com.github.fauu.notpetstore.service;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
-import com.github.fauu.notpetstore.web.controller.advice.GlobalExceptionHandlingControllerAdvice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,8 @@ public class SnippetExpiringService {
 
     snippetRepository.save(expiredSnippets);
 
-    LOG.info("Deleted " + expiredSnippets.size() + " expired snippet(s)");
+    LOG.debug("Executed deleteExpiredSnippets() in SnippetExpiringService: " +
+              "Deleted " + expiredSnippets.size() + " expired snippet(s)");
   }
 
 }

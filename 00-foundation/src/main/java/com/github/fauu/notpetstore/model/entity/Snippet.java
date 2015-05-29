@@ -1,12 +1,7 @@
 package com.github.fauu.notpetstore.model.entity;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 
 public class Snippet {
