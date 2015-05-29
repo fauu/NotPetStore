@@ -2,8 +2,10 @@ package com.github.fauu.notpetstore.repository;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.model.support.Page;
+import com.github.fauu.notpetstore.model.support.PageRequest;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -39,16 +41,30 @@ public class TransientSnippetRepository implements SnippetRepository {
 
 
   @Override
-  public Page<Snippet> findPageByDeletedFalseAndVisibilityPublic(int pageNo, int pageSize) {
+  public Page<Snippet>
+  findPageOfSortedByDeletedFalseAndVisibilityPublic(PageRequest pageRequest,
+                                                    Snippet.SortType sortType) {
+    Comparator<Snippet> dateTimeAddedPresortComparator =
+        Comparator.comparing(Snippet::getDateTimeAdded).reversed();
+
+    Comparator<Snippet> combinedComparator =
+        sortType.getComparator().isPresent() ?
+        sortType.getComparator().get().thenComparing(dateTimeAddedPresortComparator) :
+        dateTimeAddedPresortComparator;
+
     List<Snippet> items =
         snippetStore.stream()
-            .filter(s -> !s.isDeleted())
-            .filter(s -> s.getVisibility().equals(Snippet.Visibility.PUBLIC))
-            .skip((pageNo - 1) * pageSize)
-            .limit(pageSize)
-            .collect(Collectors.toList());
+                    .filter(s -> !s.isDeleted() &&
+                                 s.getVisibility().equals(Snippet.Visibility.PUBLIC))
+                    .sorted(combinedComparator)
+                    .skip((pageRequest.getPageNo() - 1) * pageRequest.getPageSize())
+                    .limit(pageRequest.getPageSize())
+                    .collect(Collectors.toList());
 
-    return new Page<>(pageNo, items, pageSize, snippetStore.size());
+    return new Page<>(pageRequest.getPageNo(),
+                      items,
+                      pageRequest.getPageSize(),
+                      snippetStore.size());
   }
 
   @Override

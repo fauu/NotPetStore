@@ -3,6 +3,7 @@ package com.github.fauu.notpetstore.service;
 import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.model.form.SnippetForm;
 import com.github.fauu.notpetstore.model.support.Page;
+import com.github.fauu.notpetstore.model.support.PageRequest;
 import com.github.fauu.notpetstore.repository.SnippetRepository;
 import com.github.fauu.notpetstore.service.exception.BadRequestException;
 import com.github.fauu.notpetstore.util.IdGenerator;
@@ -45,20 +46,14 @@ public class PastingService {
     return snippet;
   }
 
-//  public List<Snippet> getNonDeletedPublicSnippetsSortedByDateTimeAddedDesc() {
-//    return snippetRepository.findByDeletedFalseAndVisibilityPublic()
-//        .sorted(Comparator.comparing(Snippet::getDateTimeAdded).reversed())
-//        .collect(toList());
-//  }
-
-  public Page<Snippet> getPageOfNonDeletedPublicSnippets(int pageNo, int pageSize) {
-    if (pageNo < 1) {
+  public Page<Snippet> getPageOfSortedNonDeletedPublicSnippets(PageRequest pageRequest,
+                                                               Snippet.SortType sortType) {
+    if (pageRequest.getPageNo() < 1) {
       throw new BadRequestException();
     }
 
     Page<Snippet> snippetPage =
-        snippetRepository.findPageByDeletedFalseAndVisibilityPublic(pageNo,
-                                                                    pageSize);
+        snippetRepository.findPageOfSortedByDeletedFalseAndVisibilityPublic(pageRequest, sortType);
 
     if (snippetPage.getNo() > snippetPage.getNumPagesTotal()) {
       throw new ResourceNotFoundException();

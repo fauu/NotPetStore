@@ -16,10 +16,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -70,7 +67,7 @@ public class SnippetsTests extends AbstractIntegrationTests {
     dummySnippet1.setVisibility(Snippet.Visibility.PUBLIC);
     dummySnippet1.setDateTimeAdded(
         LocalDateTime.of(2015, Month.SEPTEMBER, 9, 0, 0));
-    dummySnippet1.setNumViews(0);
+    dummySnippet1.setNumViews(10);
     dummySnippet1.setDeleted(false);
 
     Snippet dummySnippet2 = new Snippet();
@@ -205,11 +202,11 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void browse_ShouldForwardToBrowseSnippetsPage1Page() throws Exception {
+  public void browse_ShouldRedirectToBrowseSnippetsPage1Page() throws Exception {
     mockMvc.perform(get("/browse"))
-           .andExpect(status().isOk())
-           .andExpect(view().name("forward:/browse/page/1"))
-           .andExpect(forwardedUrl("/browse/page/1"));
+           .andExpect(status().is3xxRedirection())
+           .andExpect(view().name("redirect:/browse/page/1"))
+           .andExpect(redirectedUrl("/browse/page/1"));
   }
 
   @Test
@@ -241,12 +238,38 @@ public class SnippetsTests extends AbstractIntegrationTests {
   }
 
   @Test
+  public void browse_NonEmptyPage_ShouldHaveSnippetPageSortedByDateTimeAddedDesc()
+      throws Exception {
+    dummySnippets.stream().limit(2).forEachOrdered(snippetRepository::save);
+
+    mockMvc.perform(get("/browse/page/1"))
+           .andExpect(model().attribute("snippetPage",
+               hasProperty("items",
+                   contains(dummySnippets.get(1), dummySnippets.get(0)))));
+  }
+
+  @Test
+  public void browse_NonEmptyPageSortCodePopular_ShouldHaveSnippetPageSortedByNumViewsDesc()
+      throws Exception {
+    dummySnippets.stream().limit(2).forEachOrdered(snippetRepository::save);
+
+    mockMvc.perform(get("/browse/page/1?sort=popular"))
+        .andExpect(model().attribute("snippetPage",
+            hasProperty("items",
+                contains(dummySnippets.get(0), dummySnippets.get(1)))));
+  }
+
+  @Test
   public void browse_FullPage_ShouldHaveSnippetPageOfSize10() throws Exception {
     Snippet dummySnippet;
+    Random random = new Random();
     for (int i = 0; i < 15; i++) {
       dummySnippet = new Snippet();
 
       dummySnippet.setId(IdGenerator.generate(8));
+      dummySnippet.setDateTimeAdded(
+          LocalDateTime.now().minusDays(random.nextInt(100)));
+      dummySnippet.setNumViews(random.nextInt(100));
       dummySnippet.setVisibility(Snippet.Visibility.PUBLIC);
       dummySnippet.setDeleted(false);
 
@@ -257,16 +280,6 @@ public class SnippetsTests extends AbstractIntegrationTests {
            .andExpect(model().attribute("snippetPage",
                hasProperty("items", hasSize(10))));
   }
-
-//  @Test
-//  public void browse_ShouldHaveSnippetListSortedByDateTimeAddedDesc()
-//      throws Exception {
-//    dummySnippets.stream().limit(2).forEachOrdered(snippetRepository::save);
-//
-//    mockMvc.perform(get("/browse"))
-//           .andExpect(model().attribute("snippets",
-//               contains(dummySnippets.get(1), dummySnippets.get(0))));
-//  }
 
   @Test
   public void view_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback() throws Exception {

@@ -2,6 +2,7 @@ package com.github.fauu.notpetstore.web.controller;
 
 import com.github.fauu.notpetstore.model.entity.Snippet;
 import com.github.fauu.notpetstore.model.form.SnippetForm;
+import com.github.fauu.notpetstore.model.support.PageRequest;
 import com.github.fauu.notpetstore.service.PastingService;
 import com.github.fauu.notpetstore.service.SnippetVisitRecordingService;
 import com.github.fauu.notpetstore.service.exception.RequestedSnippetDeletedException;
@@ -78,13 +79,17 @@ public class SnippetController {
 
   @RequestMapping(method = RequestMethod.GET, value = "/browse")
   public String browse() {
-    return "forward:/browse/page/1";
+    return "redirect:/browse/page/1";
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/browse/page/{pageNo}")
-  public String browsePage(@PathVariable int pageNo, Model model) {
+  public String browsePage(@PathVariable int pageNo,
+                           @RequestParam(required = false) String sort,
+                           Model model) {
     model.addAttribute("snippetPage",
-        pastingService.getPageOfNonDeletedPublicSnippets(pageNo, SNIPPET_PAGE_SIZE));
+        pastingService.getPageOfSortedNonDeletedPublicSnippets(
+            new PageRequest(pageNo, SNIPPET_PAGE_SIZE),
+            Snippet.SortType.fromCode(sort)));
 
     return "browse";
   }
@@ -117,7 +122,6 @@ public class SnippetController {
     return pastingService.getNonDeletedSnippetById(snippetId).getContent();
   }
 
-  // TODO: Generate filename from snippet's title (if present)
   @RequestMapping(method = RequestMethod.GET, value = "/{snippetId}/download")
   public void download(@PathVariable String snippetId,
                        HttpServletResponse response) throws IOException {

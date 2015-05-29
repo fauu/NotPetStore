@@ -1,6 +1,8 @@
 package com.github.fauu.notpetstore.model.entity;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.Optional;
 
 public class Snippet {
 
@@ -161,6 +163,49 @@ public class Snippet {
     @Override
     public String toString() {
       return displayName;
+    }
+  }
+
+  public enum SortType {
+    DEFAULT("default"),
+    POPULAR("popular");
+
+    private String code;
+
+    SortType(String code) {
+      this.code = code;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public static SortType fromCode(String code) {
+      if (code != null) {
+        for (SortType st : SortType.values()) {
+          if (code.equalsIgnoreCase(st.code)) {
+            return st;
+          }
+        }
+      }
+
+      return DEFAULT;
+    }
+
+    public Optional<Comparator<Snippet>> getComparator() {
+      Comparator<Snippet> comparator = null;
+      switch (this) {
+        case DEFAULT:
+          break;
+        case POPULAR:
+          comparator = (Snippet s, Snippet os) ->
+                         (int) (os.getNumViews() - s.getNumViews());
+          break;
+        default:
+          throw new IllegalStateException("Encountered unhandled value of SortType");
+      }
+
+      return Optional.ofNullable(comparator);
     }
   }
 
