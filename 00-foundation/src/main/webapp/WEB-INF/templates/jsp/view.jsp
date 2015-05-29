@@ -9,7 +9,7 @@
 <c:set var="title" value="${not empty snippet.title ? snippet.title : untitled}" />
 
 <t:mainTemplate>
-  <jsp:attribute name="pageTitle"><c:out value="${title}" /></jsp:attribute>
+  <jsp:attribute name="siteTitle"><c:out value="${title}" /></jsp:attribute>
 
   <jsp:attribute name="extraStylesheetDefs">
     <c:url var="prismStylesheetUrl" value="/public/third-party/css/prism.css" />

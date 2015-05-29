@@ -1,72 +1,75 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="springform" uri="http://www.springframework.org/tags/form" %>
 
 <t:mainTemplate>
-  <jsp:attribute name="pageTitle"><spring:message code="addNewSnippet" /></jsp:attribute>
+  <jsp:attribute name="siteTitle">
+    <spring:message code="addNewSnippet" />
+  </jsp:attribute>
 
   <jsp:body>
-    <h2><spring:message code="newSnippet" /></h2>
+    <h2>
+      <spring:message code="newSnippet" />
+    </h2>
 
     <c:url var="actionPath" value="/" />
-    <sf:form action="${actionPath}" commandName="snippetForm" method="POST" id="snippet-form">
-      <div class="field">
+    <springform:form id="snippet-form" method="POST" action="${actionPath}" commandName="snippetForm">
+      <div class="field-container">
         <spring:message var="titlePlaceholder" code="snippetForm.titlePlaceholder" />
         <spring:bind path="title">
-          <sf:input path="title" placeholder="${titlePlaceholder}" class="${status.error ? 'error' : ''}"/>
-          <sf:errors path="title" class="errors" />
+          <springform:input id="snippet-title-field" class="${status.error ? 'field-invalid' : ''}" path="title" placeholder="${titlePlaceholder}" />
+          <springform:errors class="field-errors" path="title" />
         </spring:bind>
       </div>
 
-      <div class="field">
+      <div class="field-container">
         <spring:message var="contentPlaceholder" code="snippetForm.contentPlaceholder" />
         <spring:bind path="content">
-          <sf:textarea path="content" placeholder="${contentPlaceholder}" class="${status.error ? 'error' : ''}" />
-          <sf:errors path="content" class="errors" />
+          <springform:textarea id="snippet-content-field" class="${status.error ? 'field-invalid' : ''}" path="content" placeholder="${contentPlaceholder}" />
+          <springform:errors class="field-errors" path="content" />
         </spring:bind>
       </div>
 
-      <div class="field">
-        <label for="syntax-highlighting"><spring:message code="snippet.syntaxHighlighting" /></label>
-        <sf:select path="syntaxHighlighting" id="syntax-highlighting">
-          <sf:options items="${snippetForm.syntaxHighlightingValues}" itemLabel="displayName" />
-        </sf:select>
+      <div class="field-container">
+        <label id="snippet-syntax-highlighting-field-label" class="field-label" for="snippet-syntax-highlighting-field"><spring:message code="snippet.syntaxHighlighting" /></label>
+        <springform:select id="snippet-syntax-highlighting-field" path="syntaxHighlighting">
+          <springform:options items="${snippetForm.syntaxHighlightingValues}" itemLabel="displayName" />
+        </springform:select>
       </div>
 
-      <div class="field">
-        <label for="expires"><spring:message code="snippetForm.expires" /></label>
-        <sf:select path="expirationMoment" id="expires">
-          <sf:options items="${snippetForm.expirationMomentValues}" itemLabel="displayName" />
-        </sf:select>
+      <div class="field-container">
+        <label id="snippet-expires-field-label" class="field-label" for="snippet-expires-field"><spring:message code="snippetForm.expires" /></label>
+        <springform:select id="snippet-expires-field" path="expirationMoment">
+          <springform:options items="${snippetForm.expirationMomentValues}" itemLabel="displayName" />
+        </springform:select>
       </div>
 
-      <div class="field">
-        <label for="owner-password">
+      <div class="field-container">
+        <label id="snippet-owner-password-field-label" class="field-label" for="snippet-owner-password-field">
           <spring:message code="snippet.ownerPassword" />
-          <span class="annotation"><spring:message code="form.optional" /></span>
+          <span class="field-annotation"><spring:message code="form.optional" /></span>
         </label>
         <spring:bind path="ownerPassword">
-          <sf:password path="ownerPassword" id="owner-password" class="${status.error ? 'error' : ''}"/>
-          <sf:errors path="ownerPassword" class="errors" />
+          <springform:password id="snippet-owner-password-field" class="${status.error ? 'error' : ''}" path="ownerPassword" />
+          <springform:errors class="field-errors" path="ownerPassword" />
         </spring:bind>
       </div>
 
-      <div class="field">
-        <label for="visibility"><spring:message code="snippet.visibility" /></label>
-        <ul id="visibility">
+      <div class="field-container">
+        <label id="snippet-visibility-field-label" class="field-label" for="snippet-visibility-options"><spring:message code="snippet.visibility" /></label>
+        <ul id="snippet-visibility-options">
           <c:forEach var="value" items="${snippetForm.visibilityValues}">
             <spring:message var="label" code="snippet.visibility.${value.toString().toLowerCase()}" />
-            <li>
-              <sf:radiobutton path="visibility" value="${value}" label="${label}" />
-            </li>
+            <li class="snippet-visibility-option-container">
+              <springform:radiobutton class="snippet-visibility-option" path="visibility" value="${value}" label="${label}" />
           </c:forEach>
         </ul>
       </div>
 
-      <sf:button type="submit"><spring:message code="form.save" /></sf:button>
-    </sf:form>
+      <springform:button id="snippet-submit-button" type="submit"><spring:message code="form.save" /></springform:button>
+    </springform:form>
   </jsp:body>
 </t:mainTemplate>
 

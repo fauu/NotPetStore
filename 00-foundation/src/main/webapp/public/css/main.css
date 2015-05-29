@@ -1,8 +1,10 @@
+/* Common
+   ========================================================================== */
+
 body {
   background: #f9f9f9;
   color: #212121;
-  font-family: Roboto, sans-serif;
-  font-size: 14px;
+  font: 14px Roboto, sans-serif;
   margin: 0;
 }
 
@@ -34,11 +36,16 @@ a:active {
   transition: all 0.2s linear;
 }
 
-form .error {
-  border-color: #f44336 !important;
+select {
+  background: inherit;
 }
 
-body > header {
+/* Main layout
+   ========================================================================== */
+
+/* Header */
+
+#site-header {
   align-items: center;
   background: #9575cd;
   color: #fff;
@@ -47,38 +54,38 @@ body > header {
   padding: 0 30px;
 }
 
-header #site-title-group {
+#site-id-group {
   align-items: center;
   color: #fff;
   display: inline-flex;
   text-decoration: none;
 }
 
-header #site-title {
+#site-title {
   display: inline;
   margin: 0 0 0 20px;
 }
 
-header #site-sub-title {
+#site-subtitle {
   color: rgba(0, 0, 0, 0.3);
   font-size: 14px;
   margin-left: -2px;
 }
 
-header #main-nav {
+#main-nav {
   margin-left: auto;
 }
 
-#main-nav ul {
+#main-nav-links {
   list-style-type: none;
 }
 
-#main-nav li {
+.main-nav-link-container {
   display: inline;
   margin-left: 5px;
 }
 
-#main-nav a {
+.main-nav-link {
   align-items: center;
   background: none;
   border-radius: 2px;
@@ -90,69 +97,76 @@ header #main-nav {
   transition: all 0.2s linear;
 }
 
-#main-nav a:hover {
+.main-nav-link:hover {
   background: #b39ddb;
   transition: all 0.2s linear;
 }
 
-#main-nav a:active {
+.main-nav-link:active {
   background: #d1c4e9;
   transition: all 0.2s linear;
 }
 
-#main-nav .icon {
+.main-nav-link-icon {
   margin-bottom: 5px;
 }
 
-body > #feedback {
+/* User action feedback */
+
+#user-action-feedback {
   font-size: 17px;
   text-align: center;
   padding: 20px 30px;
 }
 
-#feedback.success {
+#user-action-feedback.success {
   background-color: #ede7f6;
   color: #7e57c2;
 }
 
-#feedback.failure {
+#user-action-feedback.failure {
   background-color: #ffcdd2;
   color: #b71c1c;
 }
 
-body > main {
+/* Content */
+
+#site-content {
   margin: 30px;
 }
 
-label .annotation {
-  font-size: 11px;
-}
+/* Snippet form
+   ========================================================================== */
 
 #snippet-form {
   text-align: center;
 }
 
-#snippet-form .field {
+.field-container {
   margin-bottom: 30px;
   text-align: left;
 }
 
-.field label {
+.field-label {
   display: block;
   margin-bottom: 7px;
 }
 
-.field .errors {
+.field-annotation {
+  font-size: 11px;
+}
+
+.field-errors {
   color: #f44336;
   display: block;
   margin-top: 4px;
 }
 
-#snippet-form #title,
-#snippet-form #content,
-#snippet-form #syntax-highlighting,
-#snippet-form #expires,
-#snippet-form #owner-password {
+#snippet-title-field,
+#snippet-content-field,
+#snippet-syntax-highlighting-field,
+#snippet-expires-field,
+#snippet-owner-password-field {
   border: none;
   border-bottom: 2px solid #e0e0e0;
   padding-bottom: 5px;
@@ -160,61 +174,56 @@ label .annotation {
   width: 100%;
 }
 
-#snippet-form #title:focus,
-#snippet-form #content:focus,
-#snippet-form #syntax-highlighting:focus,
-#snippet-form #expires:focus,
-#snippet-form #owner-password:focus {
-  border-bottom: 2px solid #9574cd;
-  transition: all 0.2s linear;
-}
-
-#snippet-form #title,
-#snippet-form #syntax-highlighting,
-#snippet-form #expires,
-#snippet-form #owner-password {
+#snippet-title-field,
+#snippet-syntax-highlighting-field,
+#snippet-expires-field,
+#snippet-owner-password-field {
   font-size: 20px;
   padding-bottom: 5px;
 }
 
-#snippet-form #content {
-  font-family: Consolas, Inconsolata, Monaco, monospace;
-  font-size: 15px;
+#snippet-title-field:focus,
+#snippet-content-field:focus,
+#snippet-syntax-highlighting-field:focus,
+#snippet-expires-field:focus,
+#snippet-owner-password-field:focus {
+  border-bottom: 2px solid #9574cd;
+  transition: all 0.2s linear;
+}
+
+#snippet-content-field {
+  font: 15px Consolas, Inconsolata, Monaco, monospace;
   height: 400px;
 }
 
-#snippet-form #syntax-highlighting,
-#snippet-form #expires {
-  background: inherit;
-}
-
-#snippet-form #visibility {
+#snippet-visibility-field {
   font-size: 18px;
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-#snippet-form #visibility label {
+#snippet-visibility-field-label {
   display: inline;
 }
 
-#snippet-form li {
+#snippet-visibility-option-container {
   display: inline;
   margin-right: 25px;
 }
 
-#snippet-form input[type="radio"] {
+#snippet-visibility-option {
   margin: -3px 5px 0 0;
   vertical-align: middle;
 }
 
-#snippet-form button {
+#snippet-submit-button {
   background: #ff5722;
   border: none;
   border-radius: 2px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16),
-              0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  box-shadow:
+      0 2px 5px 0 rgba(0, 0, 0, 0.16),
+      0 2px 10px 0 rgba(0, 0, 0, 0.12);
   color: #fff;
   font-size: 16px;
   height: 46px;
@@ -224,7 +233,7 @@ label .annotation {
   transition: all 0.2s linear;
 }
 
-#snippet-form button:hover {
+#snippet-submit-button:hover {
   background: #ff7043;
   box-shadow: 0 4px 7px 0 rgba(0, 0, 0, 0.24),
               0 4px 15px 0 rgba(0, 0, 0, 0.18);
@@ -232,10 +241,13 @@ label .annotation {
   transition: all 0.2s linear;
 }
 
-#snippet-form button:active {
+#snippet-submit-button:active {
   background: #ffab91;
   transition: all 0.2s linear;
 }
+
+/* Snippet list
+   ========================================================================== */
 
 #snippet-list {
   border-collapse: collapse;
@@ -412,6 +424,10 @@ label .annotation {
 
 #snippet-owner-action-form {
   display: inline;
+}
+
+form .error {
+  border-color: #f44336 !important;
 }
 
 #snippet-owner-action-form button {

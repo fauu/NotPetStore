@@ -5,7 +5,7 @@
 <%@ taglib prefix="util" uri="http://github.com/fauu/nps/jsp/tags/util" %>
 
 <t:mainTemplate>
-  <jsp:attribute name="pageTitle"><spring:message code="browseSnippets" /></jsp:attribute>
+  <jsp:attribute name="siteTitle"><spring:message code="browseSnippets" /></jsp:attribute>
 
   <jsp:body>
     <h2><spring:message code="snippets" /></h2>

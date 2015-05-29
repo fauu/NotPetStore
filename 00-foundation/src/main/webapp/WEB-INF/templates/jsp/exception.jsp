@@ -5,7 +5,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <t:mainTemplate>
-  <jsp:attribute name="pageTitle">
+  <jsp:attribute name="siteTitle">
     <spring:message code="exceptionFeedback.ofStatusCode.${exceptionFeedback.statusCode}" />
   </jsp:attribute>
 
