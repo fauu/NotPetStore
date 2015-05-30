@@ -56,4 +56,40 @@ public class Page<T> {
                                                     (double) maxSize);
   }
 
+  public boolean isMoreAvailable() {
+    return getNumPagesTotal() > 1;
+  }
+
+  public boolean isPreviousAvailable() {
+    return no > 1;
+  }
+
+  public boolean isNextAvailable() {
+    return no < getNumPagesTotal();
+  }
+
+  public int getFirstNo() {
+    return 1;
+  }
+
+  public int getPreviousNo() {
+    if (!isPreviousAvailable()) {
+      return -1;
+    }
+
+    return no - 1;
+  }
+
+  public int getNextNo() {
+    if (!isNextAvailable()) {
+      return -1;
+    }
+
+    return no + 1;
+  }
+
+  public int getLastNo() {
+    return getNumPagesTotal();
+  }
+
 }
