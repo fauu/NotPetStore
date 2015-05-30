@@ -3,7 +3,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 
-
 <c:if test="${not empty userActionFeedback}">
 
   <div class="user-feedback-box is-${userActionFeedback.type.code}">

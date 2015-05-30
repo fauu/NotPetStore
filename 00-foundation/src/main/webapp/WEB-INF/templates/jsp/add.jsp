@@ -4,8 +4,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="springform" uri="http://www.springframework.org/tags/form" %>
 
-
-
 <t:mainTemplate>
 
   <jsp:attribute name="pageTitle">

@@ -50,9 +50,9 @@
 
     <div class="text-card">
 
-      <div class="text-card-options-container">
+      <div class="text-card-options-box">
 
-        <ul class="text-card-options link-list">
+        <ul class="link-list">
 
           <li class="text-card-option link-list-element">
 
@@ -83,25 +83,23 @@
           <c:url var="actionPath" value="${snippetId}" />
           <form id="snippet-owner-action-form" class="inline-form" method="POST" action="${actionPath}">
 
-            <ul class="text-card-options-container secondary">
+            <label class="field-label-inline" for="snippet-owner-password-field">
+              <spring:message code="snippet.ownerPassword" />:
+            </label>
 
-              <li class="link-list-element">
+            <c:set var="ownerPasswordFieldStateClass"
+                   value="${userActionFeedback == 'SNIPPET_PERFORM_OWNER_ACTION_PASSWORD_INVALID' ? 'is-invalid' : ''}" />
+            <input id="snippet-owner-password-field" class="${ownerPasswordFieldStateClass}" type="password" name="ownerPassword" />
 
-                <label for="snippet-owner-password-field">
-                  <spring:message code="snippet.ownerPassword" />:
-                </label>
+            <i class="flow-direction-indicator material-icons">forward</i>
 
-                <c:set var="ownerPasswordFieldStateClass"
-                       value="${userActionFeedback == 'SNIPPET_PERFORM_OWNER_PASSWORD_INVALID' ? 'is-invalid' : ''}" />
-                <input id="snippet-owner-password-field" class="${ownerPasswordFieldStateClass}" type="password" name="ownerPassword" />
-
-                <i class="fa fa-long-arrow-right"></i>
+            <ul class="link-list">
 
               <li class="link-list-element">
 
                 <button id="snippet-delete-button" type="submit" name="delete">
 
-                  <i class="material-icons">delete</i>
+                  <i class="material-icons fix-valign">delete</i>
 
                   <spring:message code="form.delete" />
 
@@ -115,7 +113,7 @@
 
       </div>
 
-      <pre id="snippet-content"><code class="line-numbers language-${snippet.syntaxHighlighting.code}"><c:out value="${snippet.content}" /></code></pre>
+      <pre class="text-card-content"><code class="line-numbers language-${snippet.syntaxHighlighting.code}"><c:out value="${snippet.content}" /></code></pre>
 
     </div>
 
