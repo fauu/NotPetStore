@@ -4,7 +4,7 @@
 <%@ attribute name="extraScriptLinks" fragment="true" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 
 <!DOCTYPE html>
 
@@ -39,7 +39,7 @@
           <c:url var="iconNewUrl" value="/public/img/icon-new.png" />
           <img class="main-nav-link-icon" src="${iconNewUrl}" alt="New Snippet icon">
 
-          <spring:message code="mainNav.addNewSnippet" />
+          <s:message code="mainNav.addNewSnippet" />
         </a>
       <li class="main-nav-link-container link-list-element">
         <c:url var="browseUrl" value="/browse" />
@@ -47,7 +47,7 @@
           <c:url var="iconBrowseUrl" value="/public/img/icon-browse.png" />
           <img class="main-nav-link-icon" src="${iconBrowseUrl}" alt="Browse Snippets icon">
 
-          <spring:message code="mainNav.browseSnippets" />
+          <s:message code="mainNav.browseSnippets" />
         </a>
     </ul>
   </nav>

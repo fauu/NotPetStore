@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -24,21 +24,21 @@ public class AddSnippetsIntegrationTests extends SnippetsIntegrationTests {
   static {
     ADD_SNIPPET_REQUEST_EMPTY_CONTENT =
         post("/").param("title", "Title")
-            .param("content", "")
-            .param("syntaxHighlighting",
-                Snippet.SyntaxHighlighting.NONE.name())
-            .param("ownerPassword", "Password")
-            .param("visibility", Snippet.Visibility.PUBLIC.name());
+                 .param("content", "")
+                 .param("syntaxHighlighting",
+                     Snippet.SyntaxHighlighting.NONE.name())
+                 .param("ownerPassword", "Password")
+                 .param("visibility", Snippet.Visibility.PUBLIC.name());
 
     ADD_SNIPPET_REQUEST_VALID =
         post("/").param("title", "Title")
-            .param("content", TestUtil.generateDummyString(140))
-            .param("syntaxHighlighting",
-                Snippet.SyntaxHighlighting.NONE.name())
-            .param("expirationMoment",
-                SnippetForm.ExpirationMoment.TEN_MINUTES.name())
-            .param("ownerPassword", "Password")
-            .param("visibility", Snippet.Visibility.PUBLIC.name());
+                 .param("content", TestUtil.generateDummyString(140))
+                 .param("syntaxHighlighting",
+                     Snippet.SyntaxHighlighting.NONE.name())
+                 .param("expirationMoment",
+                     SnippetForm.ExpirationMoment.TEN_MINUTES.name())
+                 .param("ownerPassword", "Password")
+                 .param("visibility", Snippet.Visibility.PUBLIC.name());
   }
 
   @Test
@@ -66,11 +66,9 @@ public class AddSnippetsIntegrationTests extends SnippetsIntegrationTests {
   }
 
   @Test
-  public void doAdd_ShouldRedirectToBrowseSnippetsUrl() throws Exception {
+  public void INCOMPLETE_doAdd_ShouldRedirectToAddedSnippetViewPage() throws Exception {
     mockMvc.perform(ADD_SNIPPET_REQUEST_VALID)
-           .andExpect(status().is3xxRedirection())
-           .andExpect(view().name("redirect:/browse"))
-           .andExpect(redirectedUrl("/browse"));
+           .andExpect(status().is3xxRedirection());
   }
 
   @Test

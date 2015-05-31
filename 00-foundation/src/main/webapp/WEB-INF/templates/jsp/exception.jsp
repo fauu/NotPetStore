@@ -2,11 +2,11 @@
 
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 
 <t:mainTemplate>
   <jsp:attribute name="pageTitle">
-    <spring:message code="exceptionFeedback.ofStatusCode.${exceptionFeedback.statusCode}" />
+    <s:message code="exceptionFeedback.ofStatusCode.${exceptionFeedback.statusCode}" />
   </jsp:attribute>
 
   <jsp:body>
@@ -15,7 +15,7 @@
         <c:out value="${exceptionFeedback.statusCode}" />
       </strong>
 
-      <spring:message code="exceptionFeedback.${exceptionFeedback.code}" />
+      <s:message code="exceptionFeedback.${exceptionFeedback.code}" />
     </div>
   </jsp:body>
 </t:mainTemplate>

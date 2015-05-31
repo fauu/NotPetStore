@@ -2,32 +2,32 @@
 
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="util" uri="http://github.com/fauu/nps/jsp/tags/util" %>
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="u" uri="http://github.com/fauu/nps/jsp/tags/util" %>
 
 <t:mainTemplate>
   <jsp:attribute name="pageTitle">
-    <spring:message code="browseSnippets" />
+    <s:message code="browseSnippets" />
   </jsp:attribute>
 
   <jsp:body>
-    <h2><spring:message code="snippets" /></h2>
+    <h2><s:message code="snippets" /></h2>
 
     <table id="snippet-table">
       <thead>
         <tr>
           <th class="snippet-title">
-            <spring:message code="title" />
+            <s:message code="title" />
           <th class="snippet-added">
-            <spring:message code="addedDateTime" />
+            <s:message code="addedDateTime" />
           <th class="snippet-views ${param.sort == "popular" ? 'is-sorted-by' : ''}">
-            <spring:url var="numViewsSortUrl" value="/browse/page/${snippetPage.no}">
+            <s:url var="numViewsSortUrl" value="/browse/page/${snippetPage.no}">
               <c:if test="${empty param.sort}">
-                <spring:param name="sort" value="popular" />
+                <s:param name="sort" value="popular" />
               </c:if>
-            </spring:url>
+            </s:url>
             <a class="table-sort-link" href="${numViewsSortUrl}">
-              <spring:message code="numViews" />
+              <s:message code="numViews" />
 
               <i class="table-sort-icon material-icons">keyboard_arrow_down</i>
             </a>
@@ -36,35 +36,35 @@
           <tr>
             <td class="snippet-title">
               <c:url var="snippetUrl" value="/${snippet.id}" />
-              <spring:message var="untitled" code="untitled" />
+              <s:message var="untitled" code="untitled" />
               <a href="${snippetUrl}">${not empty snippet.title ? snippet.title : untitled}</a>
             <td class="snippet-added">
-              <util:relativeLocalDateTime localDateTime="${snippet.dateTimeAdded}" locale="${pageContext.response.locale}" />
+              <u:relativeLocalDateTime localDateTime="${snippet.dateTimeAdded}" locale="${pageContext.response.locale}" />
             <td class="snippet-views">
               <c:out value="${snippet.numViews}" />
         </c:forEach>
     </table>
 
     <c:if test="${snippetPage.moreAvailable}">
-      <spring:url var="pageUrlTemplate" value="/browse/page/{pageNo}">
+      <s:url var="pageUrlTemplate" value="/browse/page/{pageNo}">
         <c:if test="${not empty param.sort}">
-          <spring:param name="sort" value="${param.sort}" />
+          <s:param name="sort" value="${param.sort}" />
         </c:if>
-      </spring:url>
+      </s:url>
 
       <nav id="page-nav">
         <div class="page-nav-element back-links">
           <c:if test="${snippetPage.previousAvailable}">
-            <spring:url var="firstPageUrl" value="${pageUrlTemplate}">
-              <spring:param name="pageNo" value="${snippetPage.firstNo}" />
-            </spring:url>
+            <s:url var="firstPageUrl" value="${pageUrlTemplate}">
+              <s:param name="pageNo" value="${snippetPage.firstNo}" />
+            </s:url>
             <a class="page-nav-link first" href="${firstPageUrl}">
               <i class="page-nav-icon material-icons">fast_rewind</i> First
             </a>
 
-            <spring:url var="previousPageUrl" value="${pageUrlTemplate}">
-              <spring:param name="pageNo" value="${snippetPage.previousNo}" />
-            </spring:url>
+            <s:url var="previousPageUrl" value="${pageUrlTemplate}">
+              <s:param name="pageNo" value="${snippetPage.previousNo}" />
+            </s:url>
             <a class="page-nav-link previous" href="${previousPageUrl}">
               <i class="page-nav-icon material-icons">keyboard_arrow_left</i> Previous
             </a>
@@ -83,16 +83,16 @@
 
         <div class="page-nav-element forward-links">
           <c:if test="${snippetPage.nextAvailable}">
-            <spring:url var="nextPageUrl" value="${pageUrlTemplate}">
-              <spring:param name="pageNo" value="${snippetPage.nextNo}" />
-            </spring:url>
+            <s:url var="nextPageUrl" value="${pageUrlTemplate}">
+              <s:param name="pageNo" value="${snippetPage.nextNo}" />
+            </s:url>
             <a class="page-nav-link next" href="${nextPageUrl}">
               Next <i class="page-nav-icon material-icons">keyboard_arrow_right</i>
             </a>
 
-            <spring:url var="lastPageUrl" value="${pageUrlTemplate}">
-              <spring:param name="pageNo" value="${snippetPage.lastNo}" />
-            </spring:url>
+            <s:url var="lastPageUrl" value="${pageUrlTemplate}">
+              <s:param name="pageNo" value="${snippetPage.lastNo}" />
+            </s:url>
             <a class="page-nav-link last" href="${lastPageUrl}">
               Last <i class="page-nav-icon material-icons">fast_forward</i>
             </a>

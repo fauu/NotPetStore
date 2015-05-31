@@ -2,11 +2,11 @@
 
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="util" uri="http://github.com/fauu/nps/jsp/tags/util" %>
+<%@ taglib prefix="f" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="u" uri="http://github.com/fauu/nps/jsp/tags/util" %>
 
-<spring:message var="untitled" code="untitled" />
+<s:message var="untitled" code="untitled" />
 <c:set var="snippetTitle" value="${not empty snippet.title ? snippet.title : untitled}" />
 
 <t:mainTemplate>
@@ -29,26 +29,26 @@
       <c:out value="${snippetTitle}" />
     </h2>
 
-    <c:set var="dateTimeAddedAsDate" value="${util:localDateTimeToDate(snippet.dateTimeAdded)}" />
-    <fmt:setLocale value="${pageContext.response.locale}" scope="session"/>
-    <fmt:formatDate var="formattedDateTimeAdded"
+    <c:set var="dateTimeAddedAsDate" value="${u:localDateTimeToDate(snippet.dateTimeAdded)}" />
+    <f:setLocale value="${pageContext.response.locale}" scope="session"/>
+    <f:formatDate var="formattedDateTimeAdded"
                     value="${dateTimeAddedAsDate}"
                     pattern="yyyy-MM-dd HH:mm:ss 'UTC'"
                     timeZone="UTC" />
-    <fmt:formatDate var="formattedDateTimeAddedHumanized"
+    <f:formatDate var="formattedDateTimeAddedHumanized"
                     value="${dateTimeAddedAsDate}"
                     dateStyle="long"
                     timeZone="UTC" />
     <div class="page-details">
-      <spring:message var="anonymous" code="user.anonymous" />
+      <s:message var="anonymous" code="user.anonymous" />
 
-      <spring:message code="addedByXOn" arguments="Anonymous" />
+      <s:message code="addedByXOn" arguments="Anonymous" />
 
       <time class="with-help" datetime="${snippet.dateTimeAdded}" title="${formattedDateTimeAdded}">
         <c:out value="${formattedDateTimeAddedHumanized}" />
       </time>
 
-      <span class="separator"></span> <spring:message code="numViews" />: <c:out value="${snippet.numViews}" />
+      <span class="separator"></span> <s:message code="numViews" />: <c:out value="${snippet.numViews}" />
     </div>
 
     <div class="text-card">
@@ -59,14 +59,21 @@
             <a href="${rawUrl}">
               <i class="material-icons fix-valign">open_in_new</i>
 
-              <span><spring:message code="snippetOptions.viewRaw" /></span>
+              <span><s:message code="snippetOptions.viewRaw" /></span>
             </a>
           <li class="text-card-option link-list-element">
             <c:url var="downloadUrl" value="${snippetId}/download" />
             <a href="${downloadUrl}">
               <i class="material-icons">file_download</i>
 
-              <span><spring:message code="snippetOptions.download" /></span>
+              <span><s:message code="snippetOptions.download" /></span>
+            </a>
+          <li class="text-card-option link-list-element">
+            <c:url var="forkUrl" value="fork/${snippetId}" />
+            <a href="${forkUrl}">
+              <i class="material-icons fix-valign">call_split</i>
+
+              <span><s:message code="snippetOptions.fork" /></span>
             </a>
         </ul>
 
@@ -74,7 +81,7 @@
           <c:url var="actionPath" value="${snippetId}" />
           <form id="snippet-owner-action-form" class="inline-form" method="POST" action="${actionPath}">
             <label class="field-label-inline" for="snippet-owner-password-field">
-              <spring:message code="snippet.ownerPassword" />:
+              <s:message code="snippet.ownerPassword" />:
             </label>
 
             <c:set var="ownerPasswordFieldStateClass"
@@ -88,7 +95,7 @@
                 <button id="snippet-delete-button" type="submit" name="delete">
                   <i class="material-icons fix-valign">delete</i>
 
-                  <spring:message code="form.delete" />
+                  <s:message code="form.delete" />
                 </button>
             </ul>
           </form>

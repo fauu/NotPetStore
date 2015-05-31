@@ -69,12 +69,13 @@ public class SnippetController {
       return "add";
     }
 
-    pastingService.addSnippet(snippetForm);
+    Snippet addedSnippet = pastingService.addSnippet(snippetForm);
 
-    redirectAttributes.addFlashAttribute("userActionFeedback",
-        UserActionFeedback.SNIPPET_ADD_SUCCESS);
+    redirectAttributes.addAttribute("snippetId", addedSnippet.getId())
+                      .addFlashAttribute("userActionFeedback",
+                          UserActionFeedback.SNIPPET_ADD_SUCCESS);
 
-    return "redirect:/browse";
+    return "redirect:/{snippetId}";
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/browse")
@@ -163,6 +164,22 @@ public class SnippetController {
         UserActionFeedback.SNIPPET_DELETE_SUCCESS);
 
     return "redirect:/browse";
+  }
+
+  @RequestMapping(method = RequestMethod.GET, value = "/fork/{snippetId}")
+  public String fork(@PathVariable String snippetId, Model model) {
+    Snippet snippet = pastingService.getNonDeletedSnippetById(snippetId);
+
+    SnippetForm snippetForm = new SnippetForm();
+
+    snippetForm.setTitle(snippet.getTitle());
+    snippetForm.setContent(snippet.getContent());
+    snippetForm.setSyntaxHighlighting(snippet.getSyntaxHighlighting());
+    snippetForm.setVisibility(snippet.getVisibility());
+
+    model.addAttribute(snippetForm);
+
+    return "add";
   }
 
   @ExceptionHandler(RequestedSnippetDeletedException.class)

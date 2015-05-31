@@ -17,7 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
   @Test
-  public void view_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback() throws Exception {
+  public void view_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback()
+      throws Exception {
     mockMvc.perform(get("/id123456789"))
            .andExpect(status().isNotFound())
            .andExpect(view().name("exception"))
@@ -96,7 +97,8 @@ public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
   }
 
   @Test
-  public void viewRaw_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback() throws Exception {
+  public void viewRaw_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback()
+      throws Exception {
     mockMvc.perform(get("/id123456789/raw"))
            .andExpect(status().isNotFound())
            .andExpect(view().name("exception"))
