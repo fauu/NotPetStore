@@ -48,14 +48,20 @@ public class PastingService {
     return snippet;
   }
 
-  public Page<Snippet> getPageOfSortedNonDeletedPublicSnippets(PageRequest pageRequest,
-                                                               Snippet.SortType sortType) {
+  public Page<Snippet>
+  getPageOfNonDeletedPublicSnippets(PageRequest pageRequest,
+                                    Snippet.SortType sortType,
+                                    Optional<Snippet.SyntaxHighlighting>
+                                        syntaxHighlightingFilter) {
     if (pageRequest.getPageNo() < 1) {
       throw new BadRequestException();
     }
 
     Page<Snippet> snippetPage =
-        snippetRepository.findPageOfSortedByDeletedFalseAndVisibilityPublic(pageRequest, sortType);
+        snippetRepository
+            .findPageByDeletedFalseAndVisibilityPublic(pageRequest,
+                                                       sortType,
+                                                       syntaxHighlightingFilter);
 
     if (snippetPage.getNo() > snippetPage.getNumPagesTotal()) {
       throw new ResourceNotFoundException();

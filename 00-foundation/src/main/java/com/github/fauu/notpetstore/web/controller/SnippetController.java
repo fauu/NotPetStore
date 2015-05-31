@@ -86,11 +86,22 @@ public class SnippetController {
   @RequestMapping(method = RequestMethod.GET, value = "/browse/page/{pageNo}")
   public String browsePage(@PathVariable int pageNo,
                            @RequestParam(required = false) String sort,
+                           @RequestParam(value = "syntax", required = false)
+                               String syntaxHighlightingFilterCode,
                            Model model) {
+
+    Optional<Snippet.SyntaxHighlighting> syntaxHighlightingFilter =
+        Snippet.SyntaxHighlighting.fromCode(syntaxHighlightingFilterCode);
+
     model.addAttribute("snippetPage",
-        pastingService.getPageOfSortedNonDeletedPublicSnippets(
+        pastingService.getPageOfNonDeletedPublicSnippets(
             new PageRequest(pageNo, SNIPPET_PAGE_SIZE),
-            Snippet.SortType.fromCode(sort)));
+            Snippet.SortType.fromCode(sort),
+            syntaxHighlightingFilter));
+
+    model.addAttribute("filteredSyntaxName",
+        syntaxHighlightingFilter.map(Snippet.SyntaxHighlighting::getDisplayName)
+                                .orElse(null));
 
     return "browse";
   }

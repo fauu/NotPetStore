@@ -170,12 +170,25 @@ public class Snippet {
       return displayName;
     }
 
+    public static Optional<SyntaxHighlighting> fromCode(String code) {
+      if (code != null) {
+        for (SyntaxHighlighting sh : SyntaxHighlighting.values()) {
+          if (code.equalsIgnoreCase(sh.code)) {
+            return Optional.of(sh);
+          }
+        }
+      }
+
+      return Optional.<SyntaxHighlighting>empty();
+    }
+
     @Override
     public String toString() {
       return displayName;
     }
   }
 
+  // TODO: Move this out of Snippet class
   public enum SortType {
     DEFAULT("default"),
     POPULAR("popular");

@@ -10,8 +10,10 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.toList;
 
 @Repository
@@ -53,29 +55,48 @@ public class TransientSnippetRepository implements SnippetRepository {
 
   @Override
   public Page<Snippet>
-  findPageOfSortedByDeletedFalseAndVisibilityPublic(PageRequest pageRequest,
-                                                    Snippet.SortType sortType) {
+  findPageByDeletedFalseAndVisibilityPublic(PageRequest pageRequest,
+                                            Snippet.SortType sortType,
+                                            Optional<Snippet.SyntaxHighlighting>
+                                                syntaxHighlightingFilter) {
     Comparator<Snippet> dateTimeAddedPresortComparator =
         Comparator.comparing(Snippet::getDateTimeAdded).reversed();
 
-    Comparator<Snippet> combinedComparator =
+    Comparator<Snippet> combinedSortComparator =
         sortType.getComparator().isPresent() ?
-        sortType.getComparator().get().thenComparing(dateTimeAddedPresortComparator) :
-        dateTimeAddedPresortComparator;
+            sortType.getComparator()
+                    .get()
+                    .thenComparing(dateTimeAddedPresortComparator) :
+            dateTimeAddedPresortComparator;
 
-    List<Snippet> items =
+    Predicate<Snippet> nonDeletedAndPublicPredicate =
+        s -> !s.isDeleted() &&
+             s.getVisibility().equals(Snippet.Visibility.PUBLIC);
+
+    Predicate<Snippet> combinedFilterPredicate =
+        syntaxHighlightingFilter.isPresent() ?
+            nonDeletedAndPublicPredicate
+                .and(s -> s.getSyntaxHighlighting()
+                           .equals(syntaxHighlightingFilter.get())) :
+            nonDeletedAndPublicPredicate;
+
+    List<Snippet> allItems =
         snippetStore.stream()
-                    .filter(s -> !s.isDeleted() &&
-                                 s.getVisibility().equals(Snippet.Visibility.PUBLIC))
-                    .sorted(combinedComparator)
-                    .skip((pageRequest.getPageNo() - 1) * pageRequest.getPageSize())
-                    .limit(pageRequest.getPageSize())
+                    .filter(combinedFilterPredicate)
+                    .sorted(combinedSortComparator)
                     .collect(toList());
 
+    int fromIndex = (pageRequest.getPageNo() - 1) * pageRequest.getPageSize();
+    int toIndex = fromIndex + pageRequest.getPageSize();
+    if (toIndex > allItems.size()) {
+      toIndex = allItems.size();
+    }
+    List<Snippet> pageItems = allItems.subList(fromIndex, toIndex);
+
     return new Page<>(pageRequest.getPageNo(),
-                      items,
+                      pageItems,
                       pageRequest.getPageSize(),
-                      snippetStore.size());
+                      allItems.size());
   }
 
   @Override

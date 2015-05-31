@@ -61,14 +61,34 @@ public class BrowseSnippetsIntegrationTests extends SnippetsIntegrationTests {
   }
 
   @Test
-  public void browse_NonEmptyPageSortCodePopular_ShouldHaveSnippetPageSortedByNumViewsDesc()
+  public void browse_SortCodePopular_ShouldHaveSnippetPageSortedByNumViewsDesc()
       throws Exception {
     dummySnippets.stream().limit(2).forEachOrdered(snippetRepository::save);
 
     mockMvc.perform(get("/browse/page/1?sort=popular"))
-        .andExpect(model().attribute("snippetPage",
-            hasProperty("items",
-                contains(dummySnippets.get(0), dummySnippets.get(1)))));
+           .andExpect(model().attribute("snippetPage",
+               hasProperty("items",
+                   contains(dummySnippets.get(0), dummySnippets.get(1)))));
+  }
+
+  @Test
+  public void browse_SyntaxHighlightingFilterJava_ShouldHaveJavaFilteredSyntaxName()
+      throws Exception {
+    dummySnippets.stream().limit(2).forEachOrdered(snippetRepository::save);
+
+    mockMvc.perform(get("/browse/page/1?syntax=java"))
+           .andExpect(model().attribute("filteredSyntaxName",
+               is(Snippet.SyntaxHighlighting.fromCode("java"))));
+  }
+
+  @Test
+  public void browse_SyntaxHighlightingFilterJava_ShouldHaveSnippetPageWithOnlyJavaSnippets()
+      throws Exception {
+    dummySnippets.stream().limit(2).forEachOrdered(snippetRepository::save);
+
+    mockMvc.perform(get("/browse/page/1?syntax=java"))
+           .andExpect(model().attribute("snippetPage",
+               hasProperty("items", contains(dummySnippets.get(1)))));
   }
 
   @Test

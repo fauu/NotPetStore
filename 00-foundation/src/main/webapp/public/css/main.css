@@ -46,6 +46,10 @@ h2 {
   margin-bottom: 5px;
 }
 
+.page-details {
+  margin-bottom: 20px;
+}
+
 a {
   color: #ff5722;
   text-decoration: none;
@@ -57,9 +61,12 @@ a:hover {
   transition: color .3s;
 }
 
-a:active {
-  color: #d1c4e9;
-  transition: color .3s;
+.secondary-link {
+  color: #9575cd;
+}
+
+.secondary-link:hover {
+  color: #b39ddb;
 }
 
 ul {
@@ -501,6 +508,10 @@ th.snippet-title {
   width: 70%;
 }
 
+th.snippet-syntax {
+  min-width: 145px;
+}
+
 th.snippet-added {
   min-width: 140px;
 }
@@ -547,17 +558,9 @@ td.snippet-title {
     text-align: right;
   }
 
-    .page-nav-link {
-      color: #9575cd;
+    .page-nav-icon {
+      font-size: 22px;
     }
-
-    .page-nav-link:hover {
-      color: #b39ddb;
-    }
-
-      .page-nav-icon {
-        font-size: 22px;
-      }
 
     .page-nav-link.first .page-nav-icon,
     .page-nav-link.last .page-nav-icon {
@@ -587,7 +590,6 @@ td.snippet-title {
   box-shadow:
       0 2px 2px 0 rgba(0, 0, 0, .16),
       0 0 2px 0 rgba(0, 0, 0, .12);
-  margin-top: 20px;
 }
 
   .text-card-options-box {

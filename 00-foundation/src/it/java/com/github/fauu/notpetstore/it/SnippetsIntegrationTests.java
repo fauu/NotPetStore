@@ -50,7 +50,7 @@ public abstract class SnippetsIntegrationTests extends IntegrationTests {
     dummySnippet2.setId("id2");
     dummySnippet2.setTitle("Title 2");
     dummySnippet2.setContent("Content 2");
-    dummySnippet2.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
+    dummySnippet2.setSyntaxHighlighting(Snippet.SyntaxHighlighting.JAVA);
     dummySnippet2.setOwnerPassword(null);
     dummySnippet2.setVisibility(Snippet.Visibility.PUBLIC);
     dummySnippet2.setDateTimeAdded(
