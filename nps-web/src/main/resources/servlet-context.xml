@@ -1,0 +1,43 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+  <context:component-scan base-package="com.github.fauu.notpetstore">
+    <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+  </context:component-scan>
+
+  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="/WEB-INF/templates/jsp/"/>
+    <property name="suffix" value=".jsp"/>
+  </bean>
+  <mvc:resources mapping="/public/**" location="/public/" />
+
+  <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+    <property name="validationMessageSource" ref="messageSource" />
+  </bean>
+  <mvc:annotation-driven validator="validator"/>
+
+  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+    <property name="defaultLocale" value="en" />
+    <property name="cookieName" value="npsLocale" />
+    <property name="cookieMaxAge" value="31556926" />
+  </bean>
+  <mvc:interceptors>
+    <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+      <property name="paramName" value="lang" />
+    </bean>
+  </mvc:interceptors>
+
+  <bean id="visitorIdCookieGenerator" class="org.springframework.web.util.CookieGenerator">
+    <property name="cookieName" value="npsVisitorId" />
+    <property name="cookieMaxAge" value="31556926" />
+  </bean>
+
+</beans>
