@@ -1,5 +1,6 @@
 package com.github.fauu.notpetstore.common.backing;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface Repository<T, ID> {
@@ -11,6 +12,8 @@ public interface Repository<T, ID> {
   boolean exists(ID id);
 
   Optional<T> findOne(ID id);
+
+  List<T> findAll();
 
   void deleteAll();
 

@@ -4,6 +4,7 @@ import com.github.fauu.notpetstore.common.Page;
 import com.github.fauu.notpetstore.common.PageRequest;
 import com.github.fauu.notpetstore.common.backing.InMemoryRepository;
 import com.github.fauu.notpetstore.snippet.Snippet;
+import com.github.fauu.notpetstore.snippet.SnippetSortType;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -39,7 +40,7 @@ class InMemorySnippetRepository extends InMemoryRepository<Snippet, String>
   @Override
   public Page<Snippet>
   findByDeletedFalseAndVisibilityPublic(PageRequest pageRequest,
-                                        Snippet.SortType sortType,
+                                        SnippetSortType sortType,
                                         Optional<Snippet.SyntaxHighlighting>
                                             syntaxHighlightingFilter) {
     Comparator<Snippet> dateTimeAddedPresortComparator =

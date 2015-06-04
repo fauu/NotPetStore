@@ -41,7 +41,7 @@ class SnippetService {
   }
 
   public Page<Snippet> getListableSnippets(PageRequest pageRequest,
-                                           Snippet.SortType sortType,
+                                           SnippetSortType sortType,
                                            Optional<Snippet.SyntaxHighlighting>
                                                syntaxHighlightingFilter) {
     if (pageRequest.getPageNo() < 1) {

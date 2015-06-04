@@ -3,110 +3,145 @@ package com.github.fauu.notpetstore.snippet.backing;
 import com.github.fauu.notpetstore.TestUtil;
 import com.github.fauu.notpetstore.snippet.Snippet;
 import com.github.fauu.notpetstore.snippet.SnippetForm;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-import static java.util.stream.Collectors.toList;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class AddSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
-  private static final MockHttpServletRequestBuilder ADD_SNIPPET_REQUEST_EMPTY_CONTENT;
+  private static final
+  MockHttpServletRequestBuilder ADD_SNIPPET_REQUEST_EMPTY_CONTENT;
 
-  private static final MockHttpServletRequestBuilder ADD_SNIPPET_REQUEST_VALID;
+  private static final
+  MockHttpServletRequestBuilder ADD_SNIPPET_REQUEST_VALID;
+
+  private static final String DUMMY_TITLE = "Title";
+
+  private static final String DUMMY_CONTENT = TestUtil.generateDummyString(140);
+
+  private static final Snippet.SyntaxHighlighting DUMMY_SYNTAX_HIGHLIGHTING =
+      Snippet.SyntaxHighlighting.NONE;
+
+  private static final String DUMMY_OWNER_PASSWORD = "Password";
+
+  private static final Snippet.Visibility DUMMY_VISIBILITY =
+      Snippet.Visibility.PUBLIC;
+
 
   static {
     ADD_SNIPPET_REQUEST_EMPTY_CONTENT =
-        MockMvcRequestBuilders.post("/").param("title", "Title")
+        post("/").param("title", DUMMY_TITLE)
                  .param("content", "")
-                 .param("syntaxHighlighting",
-                     Snippet.SyntaxHighlighting.NONE.name())
-                 .param("ownerPassword", "Password")
-                 .param("visibility", Snippet.Visibility.PUBLIC.name());
+                 .param("syntaxHighlighting", DUMMY_SYNTAX_HIGHLIGHTING.name())
+                 .param("ownerPassword", DUMMY_OWNER_PASSWORD)
+                 .param("visibility", DUMMY_VISIBILITY.name());
 
     ADD_SNIPPET_REQUEST_VALID =
-        MockMvcRequestBuilders.post("/").param("title", "Title")
-                 .param("content", TestUtil.generateDummyString(140))
-                 .param("syntaxHighlighting",
-                     Snippet.SyntaxHighlighting.NONE.name())
+        post("/").param("title", DUMMY_TITLE)
+                 .param("content", DUMMY_CONTENT)
+                 .param("syntaxHighlighting", DUMMY_SYNTAX_HIGHLIGHTING.name())
                  .param("expirationMoment",
-                     SnippetForm.ExpirationMoment.TEN_MINUTES.name())
-                 .param("ownerPassword", "Password")
-                 .param("visibility", Snippet.Visibility.PUBLIC.name());
+                     SnippetForm.ExpirationMoment.IN_TEN_MINUTES.name())
+                 .param("ownerPassword", DUMMY_OWNER_PASSWORD)
+                 .param("visibility", DUMMY_VISIBILITY.name());
   }
+
+  @Value("${snippet.idSymbols}")
+  private char[] snippetIdSymbols;
+
+  @Value("${snippet.idLength}")
+  private int snippetIdLength;
 
   @Test
   public void add_ShouldTryToRenderAddSnippetPage() throws Exception {
-    mockMvc.perform(MockMvcRequestBuilders.get("/"))
-           .andExpect(MockMvcResultMatchers.status().isOk())
-           .andExpect(MockMvcResultMatchers.view().name("add"))
-           .andExpect(MockMvcResultMatchers.forwardedUrlPattern("/**/add.*"));
+    mockMvc.perform(get("/"))
+           .andExpect(status().isOk())
+           .andExpect(view().name("add"))
+           .andExpect(forwardedUrlPattern("/**/add.*"));
   }
 
   @Test
   public void doAdd_EmptyContent_ShouldTryToRenderAddSnippetPage()
       throws Exception {
     mockMvc.perform(ADD_SNIPPET_REQUEST_EMPTY_CONTENT)
-           .andExpect(MockMvcResultMatchers.status().isOk())
-           .andExpect(MockMvcResultMatchers.view().name("add"))
-           .andExpect(MockMvcResultMatchers.forwardedUrlPattern("/**/add.*"));
+           .andExpect(status().isOk())
+           .andExpect(view().name("add"))
+           .andExpect(forwardedUrlPattern("/**/add.*"));
   }
 
   @Test
   public void doAdd_EmptyContent_ShouldHaveValidationErrorForContent()
       throws Exception {
     mockMvc.perform(ADD_SNIPPET_REQUEST_EMPTY_CONTENT)
-           .andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("snippetForm", "content"));
+           .andExpect(model().attributeHasFieldErrors("snippetForm",
+                                                      "content"));
   }
 
   @Test
-  public void INCOMPLETE_doAdd_ShouldRedirectToAddedSnippetViewPage() throws Exception {
+  public void INCOMPLETE_doAdd_ShouldRedirectToAddedSnippetViewPage()
+      throws Exception {
     mockMvc.perform(ADD_SNIPPET_REQUEST_VALID)
-           .andExpect(MockMvcResultMatchers.status().is3xxRedirection());
+           .andExpect(status().is3xxRedirection());
   }
 
   @Test
   public void doAdd_ShouldStoreSnippet() throws Exception {
     mockMvc.perform(ADD_SNIPPET_REQUEST_VALID);
 
-    Snippet snippet = snippetRepository.findAll().collect(toList()).get(0);
+    Snippet snippet = snippetRepository.findAll().get(0);
 
-    MatcherAssert.assertThat(snippet.getId().length(),
-        Matchers.is(8));
+    assertThat(snippet.getId().length(),
+        is(snippetIdLength));
 
-    MatcherAssert.assertThat(snippet.getId().matches("[0-9a-zA-Z]+"),
-        Matchers.is(true));
+    Set<Character> snippetIdSymbolsAsSet = new HashSet<>();
+    for (char c : snippetIdSymbols) {
+      snippetIdSymbolsAsSet.add(c);
+    }
+    assertThat(snippet.getId()
+                      .chars()
+                      .allMatch(c -> snippetIdSymbolsAsSet.contains((char) c)),
+        is(true));
 
-    MatcherAssert.assertThat(snippet.getTitle(),
-        Matchers.is("Title"));
+    assertThat(snippet.getTitle(),
+        is(DUMMY_TITLE));
 
-    MatcherAssert.assertThat(snippet.getContent(),
-        Matchers.is(TestUtil.generateDummyString(140)));
+    assertThat(snippet.getContent(),
+        is(DUMMY_CONTENT));
 
-    MatcherAssert.assertThat(snippet.getSyntaxHighlighting(),
-        Matchers.is(Snippet.SyntaxHighlighting.NONE));
+    assertThat(snippet.getSyntaxHighlighting(),
+        is(DUMMY_SYNTAX_HIGHLIGHTING));
 
-    MatcherAssert.assertThat(snippet.getDateTimeExpires()
+    assertThat(snippet.getDateTimeExpires()
             .minusMinutes(10)
             .isEqual(snippet.getDateTimeAdded()),
-        Matchers.is(true));
+        is(true));
 
-    MatcherAssert.assertThat(bCryptPasswordEncoder.matches("Password", snippet.getOwnerPassword()),
-        Matchers.is(true));
+    assertThat(bCryptPasswordEncoder.matches(DUMMY_OWNER_PASSWORD,
+            snippet.getOwnerPassword()),
+        is(true));
 
-    MatcherAssert.assertThat(snippet.getVisibility(),
-        Matchers.is(Snippet.Visibility.PUBLIC));
+    assertThat(snippet.getVisibility(),
+        is(DUMMY_VISIBILITY));
 
-    MatcherAssert.assertThat(snippet.getDateTimeAdded().isBefore(LocalDateTime.now()),
-        Matchers.is(true));
+    LocalDateTime now = LocalDateTime.now();
+    assertThat(snippet.getDateTimeAdded()
+                      .isAfter(now.minusMinutes(1)),
+        is(true));
+    assertThat(snippet.getDateTimeAdded()
+                      .isBefore(now),
+        is(true));
 
-    MatcherAssert.assertThat(snippet.getNumViews(),
-        Matchers.is(0));
+    assertThat(snippet.getNumViews(),
+        is(0));
   }
 
 }

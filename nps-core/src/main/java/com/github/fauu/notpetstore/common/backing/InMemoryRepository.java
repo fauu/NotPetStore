@@ -2,8 +2,7 @@ package com.github.fauu.notpetstore.common.backing;
 
 import com.github.fauu.notpetstore.common.Identifiable;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class InMemoryRepository<T extends Identifiable<ID>, ID>
     implements Repository<T, ID> {
@@ -34,6 +33,12 @@ public abstract class InMemoryRepository<T extends Identifiable<ID>, ID>
   @Override
   public Optional<T> findOne(ID id) {
     return Optional.ofNullable(items.get(id));
+  }
+
+  // TODO: Pick a suitable return type
+  @Override
+  public List<T> findAll() {
+    return new ArrayList<>(items.values());
   }
 
   @Override

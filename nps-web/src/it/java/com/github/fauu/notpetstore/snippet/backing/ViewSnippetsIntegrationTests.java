@@ -1,28 +1,34 @@
 package com.github.fauu.notpetstore.snippet.backing;
 
-import com.github.fauu.notpetstore.common.feedback.ExceptionFeedback;
 import com.github.fauu.notpetstore.snippet.Snippet;
 import com.github.fauu.notpetstore.snippet.SnippetVisit;
-import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.github.fauu.notpetstore.common.feedback.ExceptionFeedback.PAGE_NOT_FOUND_DEFAULT;
+import static com.github.fauu.notpetstore.common.feedback.ExceptionFeedback.REQUESTED_SNIPPET_DELETED;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
+
+  @Value("${web.visitorIdCookieName}")
+  private String visitorIdCookieName;
 
   @Test
   public void view_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback()
       throws Exception {
-    mockMvc.perform(MockMvcRequestBuilders.get("/id123456789"))
-           .andExpect(MockMvcResultMatchers.status().isNotFound())
-           .andExpect(MockMvcResultMatchers.view().name("exception"))
-           .andExpect(MockMvcResultMatchers.forwardedUrlPattern("/**/exception.*"))
-           .andExpect(MockMvcResultMatchers.model().attribute("exceptionFeedback",
-               Matchers.is(ExceptionFeedback.PAGE_NOT_FOUND_DEFAULT)));
+    mockMvc.perform(get("/id123456789"))
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(PAGE_NOT_FOUND_DEFAULT)));
   }
 
   @Test
@@ -32,12 +38,12 @@ public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
     snippetRepository.save(dummySnippet);
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/" + dummySnippet.getId()))
-           .andExpect(MockMvcResultMatchers.status().isNotFound())
-           .andExpect(MockMvcResultMatchers.view().name("exception"))
-           .andExpect(MockMvcResultMatchers.forwardedUrlPattern("/**/exception.*"))
-           .andExpect(MockMvcResultMatchers.model().attribute("exceptionFeedback",
-               Matchers.is(ExceptionFeedback.REQUESTED_SNIPPET_DELETED)));
+    mockMvc.perform(get("/" + dummySnippet.getId()))
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(REQUESTED_SNIPPET_DELETED)));
   }
 
   @Test
@@ -46,10 +52,10 @@ public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
     snippetRepository.save(dummySnippet);
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/" + dummySnippet.getId()))
-           .andExpect(MockMvcResultMatchers.status().isOk())
-           .andExpect(MockMvcResultMatchers.view().name("view"))
-           .andExpect(MockMvcResultMatchers.forwardedUrlPattern("/**/view.*"));
+    mockMvc.perform(get("/" + dummySnippet.getId()))
+           .andExpect(status().isOk())
+           .andExpect(view().name("view"))
+           .andExpect(forwardedUrlPattern("/**/view.*"));
   }
 
   @Test
@@ -58,8 +64,8 @@ public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
     snippetRepository.save(dummySnippet);
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/" + dummySnippet.getId()))
-           .andExpect(MockMvcResultMatchers.model().attribute("snippet", Matchers.is(dummySnippet)));
+    mockMvc.perform(get("/" + dummySnippet.getId()))
+           .andExpect(model().attribute("snippet", is(dummySnippet)));
   }
 
   @Test
@@ -68,8 +74,8 @@ public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
     snippetRepository.save(dummySnippet);
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/" + dummySnippet.getId()))
-           .andExpect(MockMvcResultMatchers.cookie().exists("npsVisitorId"));
+    mockMvc.perform(get("/" + dummySnippet.getId()))
+           .andExpect(cookie().exists(visitorIdCookieName));
   }
 
   @Test
@@ -79,30 +85,31 @@ public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
     snippetRepository.save(dummySnippet);
 
-    SnippetVisit previousVisit = new SnippetVisit();
-    previousVisit.setSnippetId(dummySnippet.getId());
-    previousVisit.setVisitorId(UUID.randomUUID());
-    previousVisit.setDateTime(LocalDateTime.now().minusDays(1));
+    SnippetVisit previousVisit =
+        new SnippetVisit(dummySnippet.getId(),
+                         UUID.randomUUID(),
+                         LocalDateTime.now().minusDays(1));
 
     snippetVisitRepository.save(previousVisit);
 
     Cookie visitorIdCookie =
-        new Cookie("npsVisitorId", previousVisit.getVisitorId().toString());
+        new Cookie(visitorIdCookieName,
+                   previousVisit.getVisitorId().toString());
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/" + dummySnippet.getId()).cookie(visitorIdCookie))
-           .andExpect(MockMvcResultMatchers.model().attribute("snippet",
-               Matchers.hasProperty("numViews", Matchers.is(dummySnippet.getNumViews()))));
+    mockMvc.perform(get("/" + dummySnippet.getId()).cookie(visitorIdCookie))
+           .andExpect(model().attribute("snippet",
+               hasProperty("numViews", is(dummySnippet.getNumViews()))));
   }
 
   @Test
   public void viewRaw_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback()
       throws Exception {
-    mockMvc.perform(MockMvcRequestBuilders.get("/id123456789/raw"))
-           .andExpect(MockMvcResultMatchers.status().isNotFound())
-           .andExpect(MockMvcResultMatchers.view().name("exception"))
-           .andExpect(MockMvcResultMatchers.forwardedUrlPattern("/**/exception.*"))
-           .andExpect(MockMvcResultMatchers.model().attribute("exceptionFeedback",
-               Matchers.is(ExceptionFeedback.PAGE_NOT_FOUND_DEFAULT)));
+    mockMvc.perform(get("/id123456789/raw"))
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(PAGE_NOT_FOUND_DEFAULT)));
   }
 
   @Test
@@ -112,12 +119,12 @@ public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
     snippetRepository.save(dummySnippet);
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/" + dummySnippet.getId() + "/raw"))
-           .andExpect(MockMvcResultMatchers.status().isNotFound())
-           .andExpect(MockMvcResultMatchers.view().name("exception"))
-           .andExpect(MockMvcResultMatchers.forwardedUrlPattern("/**/exception.*"))
-           .andExpect(MockMvcResultMatchers.model().attribute("exceptionFeedback",
-               Matchers.is(ExceptionFeedback.REQUESTED_SNIPPET_DELETED)));
+    mockMvc.perform(get("/" + dummySnippet.getId() + "/raw"))
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(REQUESTED_SNIPPET_DELETED)));
   }
 
   @Test
@@ -126,10 +133,10 @@ public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
     snippetRepository.save(dummySnippet);
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/" + dummySnippet.getId() + "/raw"))
-           .andExpect(MockMvcResultMatchers.status().isOk())
-           .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith("text/plain"))
-           .andExpect(MockMvcResultMatchers.content().string(dummySnippet.getContent()));
+    mockMvc.perform(get("/" + dummySnippet.getId() + "/raw"))
+           .andExpect(status().isOk())
+           .andExpect(content().contentTypeCompatibleWith("text/plain"))
+           .andExpect(content().string(dummySnippet.getContent()));
   }
 
 }

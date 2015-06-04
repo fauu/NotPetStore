@@ -6,6 +6,7 @@ import com.github.fauu.notpetstore.common.feedback.UserActionFeedback;
 import com.github.fauu.notpetstore.snippet.RequestedSnippetDeletedException;
 import com.github.fauu.notpetstore.snippet.Snippet;
 import com.github.fauu.notpetstore.snippet.SnippetForm;
+import com.github.fauu.notpetstore.snippet.SnippetSortType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
 @RequestMapping("/")
@@ -93,7 +95,7 @@ class SnippetController {
     model.addAttribute("snippetPage",
         snippetService.getListableSnippets(
             new PageRequest(pageNo, SNIPPET_PAGE_SIZE),
-            Snippet.SortType.fromCode(sort),
+            SnippetSortType.fromCode(sort),
             syntaxHighlightingFilter));
 
     model.addAttribute("filteredSyntaxName",
@@ -138,7 +140,7 @@ class SnippetController {
 
     response.setContentType(MediaType.TEXT_PLAIN_VALUE);
     response.setHeader("Content-Disposition",
-                       "attachment;filename=" + snippet.getFilename());
+                       "attachment;filename=" + snippet.getFilename() + ".txt");
 
     ServletOutputStream out = response.getOutputStream();
 

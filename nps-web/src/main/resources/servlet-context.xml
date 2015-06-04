@@ -25,8 +25,8 @@
   <mvc:annotation-driven validator="validator"/>
 
   <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
-    <property name="defaultLocale" value="en" />
-    <property name="cookieName" value="npsLocale" />
+    <property name="defaultLocale" value="${web.defaultLocale}" />
+    <property name="cookieName" value="${web.localeCookieName}" />
     <property name="cookieMaxAge" value="31556926" />
   </bean>
   <mvc:interceptors>
@@ -36,7 +36,7 @@
   </mvc:interceptors>
 
   <bean id="visitorIdCookieGenerator" class="org.springframework.web.util.CookieGenerator">
-    <property name="cookieName" value="npsVisitorId" />
+    <property name="cookieName" value="${web.visitorIdCookieName}" />
     <property name="cookieMaxAge" value="31556926" />
   </bean>
 

@@ -4,6 +4,7 @@ import com.github.fauu.notpetstore.common.Page;
 import com.github.fauu.notpetstore.common.PageRequest;
 import com.github.fauu.notpetstore.common.backing.Repository;
 import com.github.fauu.notpetstore.snippet.Snippet;
+import com.github.fauu.notpetstore.snippet.SnippetSortType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +20,7 @@ interface SnippetRepository extends Repository<Snippet, String> {
 
   Page<Snippet>
   findByDeletedFalseAndVisibilityPublic(PageRequest pageRequest,
-                                        Snippet.SortType sortType,
+                                        SnippetSortType sortType,
                                         Optional<Snippet.SyntaxHighlighting>
                                             syntaxHighlightingFilter);
 

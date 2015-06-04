@@ -13,8 +13,7 @@ import java.util.Optional;
 @Service
 class SnippetFormAdapter {
 
-  private @Autowired
-  SnippetUniqueIdGenerator snippetUniqueIdGenerator;
+  private @Autowired SnippetUniqueIdGenerator snippetUniqueIdGenerator;
 
   private @Autowired BCryptPasswordEncoder bCryptPasswordEncoder;
 

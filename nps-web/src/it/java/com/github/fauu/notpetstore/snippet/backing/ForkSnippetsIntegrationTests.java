@@ -2,10 +2,14 @@ package com.github.fauu.notpetstore.snippet.backing;
 
 import com.github.fauu.notpetstore.common.feedback.ExceptionFeedback;
 import com.github.fauu.notpetstore.snippet.Snippet;
+import com.github.fauu.notpetstore.snippet.SnippetForm;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class ForkSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
@@ -13,11 +17,11 @@ public class ForkSnippetsIntegrationTests extends SnippetsIntegrationTests {
   public void fork_NonexistentSnippet_ShouldReturn404WithPageNotFoundDefaultExceptionFeedback()
       throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/fork/id123456789"))
-           .andExpect(MockMvcResultMatchers.status().isNotFound())
-           .andExpect(MockMvcResultMatchers.view().name("exception"))
-           .andExpect(MockMvcResultMatchers.forwardedUrlPattern("/**/exception.*"))
-           .andExpect(MockMvcResultMatchers.model().attribute("exceptionFeedback",
-               Matchers.is(ExceptionFeedback.PAGE_NOT_FOUND_DEFAULT)));
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(ExceptionFeedback.PAGE_NOT_FOUND_DEFAULT)));
   }
 
   @Test
@@ -28,11 +32,11 @@ public class ForkSnippetsIntegrationTests extends SnippetsIntegrationTests {
     snippetRepository.save(dummySnippet);
 
     mockMvc.perform(MockMvcRequestBuilders.get("/fork/" + dummySnippet.getId()))
-           .andExpect(MockMvcResultMatchers.status().isNotFound())
-           .andExpect(MockMvcResultMatchers.view().name("exception"))
-           .andExpect(MockMvcResultMatchers.forwardedUrlPattern("/**/exception.*"))
-           .andExpect(MockMvcResultMatchers.model().attribute("exceptionFeedback",
-               Matchers.is(ExceptionFeedback.REQUESTED_SNIPPET_DELETED)));
+           .andExpect(status().isNotFound())
+           .andExpect(view().name("exception"))
+           .andExpect(forwardedUrlPattern("/**/exception.*"))
+           .andExpect(model().attribute("exceptionFeedback",
+               is(ExceptionFeedback.REQUESTED_SNIPPET_DELETED)));
   }
 
   @Test
@@ -42,9 +46,9 @@ public class ForkSnippetsIntegrationTests extends SnippetsIntegrationTests {
     snippetRepository.save(dummySnippet);
 
     mockMvc.perform(MockMvcRequestBuilders.get("/fork/" + dummySnippet.getId()))
-           .andExpect(MockMvcResultMatchers.status().isOk())
-           .andExpect(MockMvcResultMatchers.view().name("add"))
-           .andExpect(MockMvcResultMatchers.forwardedUrlPattern("/**/add.*"));
+           .andExpect(status().isOk())
+           .andExpect(view().name("add"))
+           .andExpect(forwardedUrlPattern("/**/add.*"));
   }
 
   @Test
@@ -54,14 +58,15 @@ public class ForkSnippetsIntegrationTests extends SnippetsIntegrationTests {
     snippetRepository.save(dummySnippet);
 
     mockMvc.perform(MockMvcRequestBuilders.get("/fork/" + dummySnippet.getId()))
-           .andExpect(MockMvcResultMatchers.model().attribute("snippetForm", Matchers.allOf(
-               Matchers.hasProperty("title", Matchers.is(dummySnippet.getTitle())),
-               Matchers.hasProperty("content", Matchers.is(dummySnippet.getContent())),
-               Matchers.hasProperty("syntaxHighlighting",
-                   Matchers.is(dummySnippet.getSyntaxHighlighting())),
-               Matchers.hasProperty("expirationMoment", Matchers.isEmptyOrNullString()),
-               Matchers.hasProperty("visibility", Matchers.is(dummySnippet.getVisibility())),
-               Matchers.hasProperty("ownerPassword", Matchers.isEmptyOrNullString())
+           .andExpect(model().attribute("snippetForm", allOf(
+               hasProperty("title", is(dummySnippet.getTitle())),
+               hasProperty("content", is(dummySnippet.getContent())),
+               hasProperty("syntaxHighlighting",
+                   is(dummySnippet.getSyntaxHighlighting())),
+               hasProperty("expirationMoment",
+                   is(SnippetForm.ExpirationMoment.NEVER)),
+               hasProperty("visibility", is(dummySnippet.getVisibility())),
+               hasProperty("ownerPassword", isEmptyOrNullString())
            )));
   }
 

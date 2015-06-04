@@ -14,10 +14,10 @@ class SnippetUniqueIdGenerator {
 
   private @Autowired StringGenerator stringGenerator;
 
-  @Value("${snippetUniqueIdGenerator.idLength}")
+  @Value("${snippet.idLength}")
   private int idLength;
 
-  @Value("${snippetUniqueIdGenerator.idSymbols}")
+  @Value("${snippet.idSymbols}")
   private char[] idSymbols;
 
   public String generateUniqueId() {

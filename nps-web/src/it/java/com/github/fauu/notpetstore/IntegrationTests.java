@@ -16,8 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 public abstract class IntegrationTests {
 
-  @Autowired
-  protected WebApplicationContext webApplicationContext;
+  protected @Autowired WebApplicationContext webApplicationContext;
 
   protected MockMvc mockMvc;
 

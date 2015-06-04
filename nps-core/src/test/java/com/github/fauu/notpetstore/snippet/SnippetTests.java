@@ -2,17 +2,23 @@ package com.github.fauu.notpetstore.snippet;
 
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class SnippetTests {
 
-  private Snippet snippet = new Snippet();
+  private Snippet snippet;
+
+  {
+    snippet = new Snippet("id", "content", LocalDateTime.now());
+  }
 
   @Test
   public void filename_UntitledSnippet_ShouldBeIdWithDotTxtExtensions()
       throws Exception {
-    snippet.setId("id");
+    snippet.setTitle(null);
 
     assertThat(snippet.getFilename(), is("id.txt"));
   }
@@ -26,7 +32,7 @@ public class SnippetTests {
   }
 
   @Test
-  public void filename_ShouldReplaceNonAlphanumericCharactersWithUnderscores()
+  public void filename_ShouldReplaceNonAlphanumericTitleCharactersWithUnderscores()
     throws Exception {
     snippet.setTitle("This is a ';:\\|_-@/Title");
 

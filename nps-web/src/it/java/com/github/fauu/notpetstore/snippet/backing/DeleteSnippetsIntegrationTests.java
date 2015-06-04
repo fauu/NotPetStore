@@ -1,15 +1,16 @@
 package com.github.fauu.notpetstore.snippet.backing;
 
 import com.github.fauu.notpetstore.snippet.Snippet;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Optional;
+
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class DeleteSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
@@ -25,17 +26,17 @@ public class DeleteSnippetsIntegrationTests extends SnippetsIntegrationTests {
     super.setUp();
 
     deleteSnippetRequestWrongOwnerPassword =
-        MockMvcRequestBuilders.post("/" + dummySnippets.get(0).getId())
+        post("/" + dummySnippets.get(0).getId())
             .param("delete", "")
             .param("ownerPassword", "wrongpass");
 
     deleteSnippetWoOwnerPasswordSetRequest =
-        MockMvcRequestBuilders.post("/" + dummySnippets.get(1).getId())
+        post("/" + dummySnippets.get(1).getId())
             .param("delete", "")
             .param("ownerPassword", "somepass");
 
     deleteSnippetRequestValid =
-        MockMvcRequestBuilders.post("/" + dummySnippets.get(0).getId())
+        post("/" + dummySnippets.get(0).getId())
             .param("delete", "")
             .param("ownerPassword", "pass");
   }
@@ -48,9 +49,9 @@ public class DeleteSnippetsIntegrationTests extends SnippetsIntegrationTests {
     snippetRepository.save(dummySnippet);
 
     mockMvc.perform(deleteSnippetRequestWrongOwnerPassword)
-           .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-           .andExpect(MockMvcResultMatchers.view().name("redirect:/{snippetId}"))
-           .andExpect(MockMvcResultMatchers.redirectedUrlPattern("/" + dummySnippet.getId() + "*"));
+           .andExpect(status().is3xxRedirection())
+           .andExpect(view().name("redirect:/{snippetId}"))
+           .andExpect(redirectedUrlPattern("/" + dummySnippet.getId() + "*"));
   }
 
   @Test
@@ -63,10 +64,10 @@ public class DeleteSnippetsIntegrationTests extends SnippetsIntegrationTests {
     mockMvc.perform(deleteSnippetRequestWrongOwnerPassword);
 
     Optional<Snippet> optionalSnippet =
-        snippetRepository.findById(dummySnippet.getId());
+        snippetRepository.findOne(dummySnippet.getId());
 
-    MatcherAssert.assertThat(optionalSnippet.isPresent(), Matchers.is(true));
-    MatcherAssert.assertThat(optionalSnippet.get().isDeleted(), Matchers.is(false));
+    assertThat(optionalSnippet.isPresent(), is(true));
+    assertThat(optionalSnippet.get().isDeleted(), is(false));
   }
 
   @Test
@@ -79,10 +80,10 @@ public class DeleteSnippetsIntegrationTests extends SnippetsIntegrationTests {
     mockMvc.perform(deleteSnippetWoOwnerPasswordSetRequest);
 
     Optional<Snippet> optionalSnippet =
-        snippetRepository.findById(dummySnippet.getId());
+        snippetRepository.findOne(dummySnippet.getId());
 
-    MatcherAssert.assertThat(optionalSnippet.isPresent(), Matchers.is(true));
-    MatcherAssert.assertThat(optionalSnippet.get().isDeleted(), Matchers.is(false));
+    assertThat(optionalSnippet.isPresent(), is(true));
+    assertThat(optionalSnippet.get().isDeleted(), is(false));
   }
 
   @Test
@@ -93,9 +94,9 @@ public class DeleteSnippetsIntegrationTests extends SnippetsIntegrationTests {
     snippetRepository.save(dummySnippet);
 
     mockMvc.perform(deleteSnippetRequestValid)
-           .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-           .andExpect(MockMvcResultMatchers.view().name("redirect:/browse"))
-           .andExpect(MockMvcResultMatchers.redirectedUrl("/browse"));
+           .andExpect(status().is3xxRedirection())
+           .andExpect(view().name("redirect:/browse"))
+           .andExpect(redirectedUrl("/browse"));
   }
 
   @Test
@@ -107,10 +108,10 @@ public class DeleteSnippetsIntegrationTests extends SnippetsIntegrationTests {
     mockMvc.perform(deleteSnippetRequestValid);
 
     Optional<Snippet> optionalSnippet =
-        snippetRepository.findById(dummySnippet.getId());
+        snippetRepository.findOne(dummySnippet.getId());
 
-    MatcherAssert.assertThat(optionalSnippet.isPresent(), Matchers.is(true));
-    MatcherAssert.assertThat(optionalSnippet.get().isDeleted(), Matchers.is(true));
+    assertThat(optionalSnippet.isPresent(), is(true));
+    assertThat(optionalSnippet.get().isDeleted(), is(true));
   }
 
 }

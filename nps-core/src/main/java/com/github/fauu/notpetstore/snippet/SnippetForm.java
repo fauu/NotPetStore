@@ -19,16 +19,19 @@ public @Data class SnippetForm {
   @Size(min = 140, max = 5000, message = "{snippetForm.error.contentIncorrectLength}")
   private @NonNull String content;
 
-  private @NonNull Snippet.SyntaxHighlighting syntaxHighlighting =
-      Snippet.SyntaxHighlighting.NONE;
+  private @NonNull Snippet.SyntaxHighlighting syntaxHighlighting;
 
-  private @NonNull SnippetForm.ExpirationMoment expirationMoment =
-      ExpirationMoment.INDEFINITE;
+  private @NonNull SnippetForm.ExpirationMoment expirationMoment;
 
   @Size(min = 5, max = 30, message = "{snippetForm.error.ownerPasswordIncorrectLength}")
   private String ownerPassword;
 
   private @NonNull Snippet.Visibility visibility;
+
+  {
+    syntaxHighlighting = Snippet.SyntaxHighlighting.NONE;
+    expirationMoment = ExpirationMoment.NEVER;
+  }
 
   public SnippetForm(Snippet snippet, boolean hideSensitiveData) {
     title = snippet.getTitle();
@@ -53,12 +56,23 @@ public @Data class SnippetForm {
 
   // TODO: Move this out?
   public enum ExpirationMoment {
-    INDEFINITE(Optional.<Duration>empty(), "Never"),
-    TEN_MINUTES(Optional.of(Duration.ofMinutes(10L)),  "In 10 minutes"),
-    ONE_HOUR(Optional.of(Duration.ofHours(1L)), "In an hour"),
-    ONE_DAY(Optional.of(Duration.ofDays(1)), "In a day"),
-    ONE_WEEK(Optional.of(Duration.ofDays(7)), "In a week"),
-    ONE_MONTH(Optional.of(Duration.ofDays(30)), "In a month");
+    NEVER
+        (Optional.<Duration>empty(), "Never"),
+
+    IN_TEN_MINUTES
+        (Optional.of(Duration.ofMinutes(10L)),  "In 10 minutes"),
+
+    IN_ONE_HOUR
+        (Optional.of(Duration.ofHours(1L)), "In an hour"),
+
+    IN_ONE_DAY
+        (Optional.of(Duration.ofDays(1)), "In a day"),
+
+    IN_ONE_WEEK
+        (Optional.of(Duration.ofDays(7)), "In a week"),
+
+    IN_ONE_MONTH
+        (Optional.of(Duration.ofDays(30)), "In a month");
 
     private Optional<Duration> timeUntil;
 

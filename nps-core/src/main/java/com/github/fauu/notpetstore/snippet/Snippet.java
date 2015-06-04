@@ -2,11 +2,11 @@ package com.github.fauu.notpetstore.snippet;
 
 import com.github.fauu.notpetstore.common.Identifiable;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
-import lombok.val;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.Optional;
 
 public @Data class Snippet implements Identifiable<String> {
@@ -17,36 +17,38 @@ public @Data class Snippet implements Identifiable<String> {
 
   private @NonNull String content;
 
-  private SyntaxHighlighting syntaxHighlighting = SyntaxHighlighting.NONE;
+  private SyntaxHighlighting syntaxHighlighting;
 
   private LocalDateTime dateTimeExpires;
 
   private String ownerPassword;
 
-  private Visibility visibility = Visibility.UNLISTED;
+  private Visibility visibility;
 
   private @NonNull LocalDateTime dateTimeAdded;
 
-  private int numViews = 0;
+  private int numViews;
 
-  private boolean deleted = false;
+  private boolean deleted;
 
-  public String getFilename() {
-    return (title == null ? id : title.replaceAll("\\W", "_").toLowerCase())
-               + ".txt";
+  {
+    syntaxHighlighting = SyntaxHighlighting.NONE;
+    visibility = Visibility.UNLISTED;
+    numViews = 0;
+    deleted = false;
   }
 
-  // TODO: Decide whether Visibility and SyntaxHighlighting should be moved outside
+  public String getFilename() {
+    return (title == null ? id : title.replaceAll("\\W", "_").toLowerCase());
+  }
 
+  @RequiredArgsConstructor
+  @Getter
   public enum Visibility {
     PUBLIC("Public"),
     UNLISTED("Unlisted");
 
-    private String displayName;
-
-    Visibility(String displayName) {
-      this.displayName = displayName;
-    }
+    private final @NonNull String displayName;
 
     @Override
     public String toString() {
@@ -54,6 +56,8 @@ public @Data class Snippet implements Identifiable<String> {
     }
   }
 
+  @RequiredArgsConstructor
+  @Getter
   public enum SyntaxHighlighting {
     NONE("none", "None"),
     MARKUP("markup", "Markup (HTML)"),
@@ -62,26 +66,13 @@ public @Data class Snippet implements Identifiable<String> {
     JAVASCRIPT("javascript", "JavaScript"),
     JAVA("java", "Java");
 
-    private String code;
+    private final @NonNull String code;
 
-    private String displayName;
-
-    SyntaxHighlighting(String code, String displayName) {
-      this.code = code;
-      this.displayName = displayName;
-    }
-
-    public String getCode() {
-      return code;
-    }
-
-    public String getDisplayName() {
-      return displayName;
-    }
+    private final @NonNull String displayName;
 
     public static Optional<SyntaxHighlighting> fromCode(String code) {
       if (code != null) {
-        for (val sh : SyntaxHighlighting.values()) {
+        for (SyntaxHighlighting sh : SyntaxHighlighting.values()) {
           if (code.equalsIgnoreCase(sh.code)) {
             return Optional.of(sh);
           }
@@ -94,50 +85,6 @@ public @Data class Snippet implements Identifiable<String> {
     @Override
     public String toString() {
       return displayName;
-    }
-  }
-
-  // TODO: Move this out of Snippet class
-  public enum SortType {
-    DEFAULT("default"),
-    POPULAR("popular");
-
-    private String code;
-
-    SortType(String code) {
-      this.code = code;
-    }
-
-    public String getCode() {
-      return code;
-    }
-
-    public static SortType fromCode(String code) {
-      if (code != null) {
-        for (val st : SortType.values()) {
-          if (code.equalsIgnoreCase(st.code)) {
-            return st;
-          }
-        }
-      }
-
-      return DEFAULT;
-    }
-
-    public Optional<Comparator<Snippet>> getComparator() {
-      Comparator<Snippet> comparator = null;
-      switch (this) {
-        case DEFAULT:
-          break;
-        case POPULAR:
-          comparator = (Snippet s, Snippet os) ->
-                         (int) (os.getNumViews() - s.getNumViews());
-          break;
-        default:
-          throw new IllegalStateException("Encountered unhandled value of SortType");
-      }
-
-      return Optional.ofNullable(comparator);
     }
   }
 
