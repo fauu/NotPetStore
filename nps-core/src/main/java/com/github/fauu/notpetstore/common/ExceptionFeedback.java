@@ -1,4 +1,4 @@
-package com.github.fauu.notpetstore.common.feedback;
+package com.github.fauu.notpetstore.common;
 
 import lombok.Getter;
 import lombok.NonNull;

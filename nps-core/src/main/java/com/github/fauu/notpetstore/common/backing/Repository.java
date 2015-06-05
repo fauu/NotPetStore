@@ -7,7 +7,7 @@ public interface Repository<T, ID> {
 
   <S extends T> S save(S entity);
 
-  <S extends T> Iterable<S> save(Iterable<S> entities);
+  <S extends T> List<S> save(Iterable<S> entities);
 
   boolean exists(ID id);
 

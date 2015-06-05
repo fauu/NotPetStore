@@ -2,7 +2,13 @@ package com.github.fauu.notpetstore.common.backing;
 
 import com.github.fauu.notpetstore.common.Identifiable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
+
+import static java.util.stream.Collectors.toList;
 
 public abstract class InMemoryRepository<T extends Identifiable<ID>, ID>
     implements Repository<T, ID> {
@@ -17,12 +23,13 @@ public abstract class InMemoryRepository<T extends Identifiable<ID>, ID>
   }
 
   @Override
-  public <S extends T> Iterable<S> save(Iterable<S> entities) {
+  public <S extends T> List<S> save(Iterable<S> entities) {
     for (S entity : entities) {
       save(entity);
     }
 
-    return entities;
+    return StreamSupport.stream(entities.spliterator(), false)
+                        .collect(toList());
   }
 
   @Override
@@ -35,7 +42,6 @@ public abstract class InMemoryRepository<T extends Identifiable<ID>, ID>
     return Optional.ofNullable(items.get(id));
   }
 
-  // TODO: Pick a suitable return type
   @Override
   public List<T> findAll() {
     return new ArrayList<>(items.values());

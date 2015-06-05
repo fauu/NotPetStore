@@ -41,7 +41,7 @@ class SnippetService {
   }
 
   public Page<Snippet> getListableSnippets(PageRequest pageRequest,
-                                           SnippetSortType sortType,
+                                           SnippetSort sortType,
                                            Optional<Snippet.SyntaxHighlighting>
                                                syntaxHighlightingFilter) {
     if (pageRequest.getPageNo() < 1) {
@@ -78,7 +78,7 @@ class SnippetService {
   public void deleteExpiredSnippets() {
     List<Snippet> expiredSnippets =
         snippetRepository
-            .findByDeletedFalseAndDateTimeExpiresNotAfter(LocalDateTime.now());
+            .findByDeletedFalseAndExpiresAtNotAfter(LocalDateTime.now());
 
     expiredSnippets.forEach(s -> s.setDeleted(true));
 
@@ -90,8 +90,9 @@ class SnippetService {
 
   public boolean verifySnippetOwnerPassword(Snippet snippet,
                                             String ownerPassword) {
-    return bCryptPasswordEncoder.matches(
-        ownerPassword, snippet.getOwnerPassword());
+    return ownerPassword == null ||
+           bCryptPasswordEncoder.matches(ownerPassword,
+                                         snippet.getOwnerPassword());
   }
 
   public Optional<String> recordSnippetVisit(Snippet snippet,
@@ -112,7 +113,7 @@ class SnippetService {
 
         snippetVisitRepository.save(lastVisit);
       } else {
-        incrementSnippetNumViewsAndSave(snippet);
+        incrementSnippetViewCountAndSave(snippet);
 
         snippetVisitRepository.save(
             new SnippetVisit(visitId.getSnippetId(),
@@ -127,14 +128,14 @@ class SnippetService {
       snippetVisitRepository.save(
           new SnippetVisit(snippet.getId(), newVisitorId, now));
 
-      incrementSnippetNumViewsAndSave(snippet);
+      incrementSnippetViewCountAndSave(snippet);
 
       return Optional.of(newVisitorId.toString());
     }
   }
 
-  private void incrementSnippetNumViewsAndSave(Snippet snippet) {
-    snippet.setNumViews(snippet.getNumViews() + 1);
+  private void incrementSnippetViewCountAndSave(Snippet snippet) {
+    snippet.setViewCount(snippet.getViewCount() + 1);
 
     snippetRepository.save(snippet);
   }

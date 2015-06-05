@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.is;
 public class TestUtilTests {
 
   @Test(expected = IllegalArgumentException.class)
+  @SuppressWarnings("unused")
   public void generateDummyString_LengthBelow0_ShouldThrowIllegalArgumentException()
       throws Exception {
     String s = TestUtil.generateDummyString(-1);

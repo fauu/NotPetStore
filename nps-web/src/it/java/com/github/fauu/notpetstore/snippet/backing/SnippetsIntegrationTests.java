@@ -40,10 +40,10 @@ public abstract class SnippetsIntegrationTests extends IntegrationTests {
     dummySnippet1.setSyntaxHighlighting(Snippet.SyntaxHighlighting.NONE);
     dummySnippet1.setOwnerPassword(bCryptPasswordEncoder.encode("pass"));
     dummySnippet1.setVisibility(Snippet.Visibility.PUBLIC);
-    dummySnippet1.setNumViews(10);
+    dummySnippet1.setViewCount(10);
 
     Snippet dummySnippet2 =
-        new Snippet("id2,", "Content 2", dummyDate.plusDays(1));
+        new Snippet("id2", "Content 2", dummyDate.plusDays(1));
     dummySnippet2.setTitle("Title 2");
     dummySnippet2.setSyntaxHighlighting(Snippet.SyntaxHighlighting.JAVA);
     dummySnippet2.setVisibility(Snippet.Visibility.PUBLIC);

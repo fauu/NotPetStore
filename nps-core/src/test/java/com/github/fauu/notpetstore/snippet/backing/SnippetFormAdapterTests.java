@@ -1,6 +1,6 @@
 package com.github.fauu.notpetstore.snippet.backing;
 
-import com.github.fauu.notpetstore.ContextAwareTests;
+import com.github.fauu.notpetstore.common.ContextAwareTests;
 import com.github.fauu.notpetstore.snippet.Snippet;
 import com.github.fauu.notpetstore.snippet.SnippetForm;
 import org.junit.Test;
@@ -16,31 +16,31 @@ import static org.hamcrest.Matchers.notNullValue;
 
 public class SnippetFormAdapterTests extends ContextAwareTests {
 
-  private static final SnippetForm DUMMY_SNIPPET_FORM;
+  private static final SnippetForm dummySnippetForm;
 
   private @Autowired SnippetFormAdapter snippetFormAdapter;
 
   private @Autowired BCryptPasswordEncoder bCryptPasswordEncoder;
 
   static {
-    DUMMY_SNIPPET_FORM = new SnippetForm();
+    dummySnippetForm = new SnippetForm();
 
-    DUMMY_SNIPPET_FORM
+    dummySnippetForm
         .setTitle("title");
 
-    DUMMY_SNIPPET_FORM
+    dummySnippetForm
         .setContent("content");
 
-    DUMMY_SNIPPET_FORM
+    dummySnippetForm
         .setSyntaxHighlighting(Snippet.SyntaxHighlighting.JAVA);
 
-    DUMMY_SNIPPET_FORM
+    dummySnippetForm
         .setExpirationMoment(SnippetForm.ExpirationMoment.IN_TEN_MINUTES);
 
-    DUMMY_SNIPPET_FORM
+    dummySnippetForm
         .setOwnerPassword("password");
 
-    DUMMY_SNIPPET_FORM
+    dummySnippetForm
         .setVisibility(Snippet.Visibility.UNLISTED);
   }
 
@@ -48,7 +48,7 @@ public class SnippetFormAdapterTests extends ContextAwareTests {
   public void createSnippetFromSnippetForm_ReturnsSnippetObjectWithProperlyPopulatedFields()
       throws Exception {
     Snippet snippet =
-        snippetFormAdapter.createSnippetFromSnippetForm(DUMMY_SNIPPET_FORM);
+        snippetFormAdapter.createSnippetFromSnippetForm(dummySnippetForm);
 
     assertThat(snippet.getId(),
         is(notNullValue()));
@@ -62,7 +62,7 @@ public class SnippetFormAdapterTests extends ContextAwareTests {
     assertThat(snippet.getSyntaxHighlighting(),
         is(Snippet.SyntaxHighlighting.JAVA));
 
-    assertThat(snippet.getDateTimeExpires()
+    assertThat(snippet.getExpiresAt()
                       .minusMinutes(10)
                       .truncatedTo(ChronoUnit.MINUTES)
                       .isEqual(LocalDateTime.now()),
@@ -75,12 +75,12 @@ public class SnippetFormAdapterTests extends ContextAwareTests {
     assertThat(snippet.getVisibility(),
         is(Snippet.Visibility.UNLISTED));
 
-    assertThat(snippet.getDateTimeAdded()
+    assertThat(snippet.getCreatedAt()
                       .truncatedTo(ChronoUnit.MINUTES)
                       .isEqual(LocalDateTime.now()),
         is(true));
 
-    assertThat(snippet.getNumViews(),
+    assertThat(snippet.getViewCount(),
         is(0));
 
     assertThat(snippet.isDeleted(),

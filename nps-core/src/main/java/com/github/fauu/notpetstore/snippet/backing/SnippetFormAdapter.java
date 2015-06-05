@@ -30,7 +30,7 @@ class SnippetFormAdapter {
 
     Optional<Duration> timeUntilExpiration =
         form.getExpirationMoment().getTimeUntil();
-    snippet.setDateTimeExpires(timeUntilExpiration.map(now::plus).orElse(null));
+    snippet.setExpiresAt(timeUntilExpiration.map(now::plus).orElse(null));
 
     String ownerPassword = form.getOwnerPassword();
     if (ownerPassword != null) {

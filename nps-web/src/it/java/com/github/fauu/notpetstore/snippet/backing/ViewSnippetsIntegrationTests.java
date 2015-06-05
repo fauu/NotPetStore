@@ -9,9 +9,10 @@ import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.github.fauu.notpetstore.common.feedback.ExceptionFeedback.PAGE_NOT_FOUND_DEFAULT;
-import static com.github.fauu.notpetstore.common.feedback.ExceptionFeedback.REQUESTED_SNIPPET_DELETED;
-import static org.hamcrest.Matchers.*;
+import static com.github.fauu.notpetstore.common.ExceptionFeedback.PAGE_NOT_FOUND_DEFAULT;
+import static com.github.fauu.notpetstore.common.ExceptionFeedback.REQUESTED_SNIPPET_DELETED;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -79,7 +80,7 @@ public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
   }
 
   @Test
-  public void view_ReturningVisitor_ShouldHaveSnippetWithNotIncrementedNumViews()
+  public void view_ReturningVisitor_ShouldHaveSnippetWithViewCountUnchanged()
       throws Exception {
     Snippet dummySnippet = dummySnippets.get(0);
 
@@ -98,7 +99,7 @@ public class ViewSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
     mockMvc.perform(get("/" + dummySnippet.getId()).cookie(visitorIdCookie))
            .andExpect(model().attribute("snippet",
-               hasProperty("numViews", is(dummySnippet.getNumViews()))));
+               hasProperty("viewCount", is(dummySnippet.getViewCount()))));
   }
 
   @Test

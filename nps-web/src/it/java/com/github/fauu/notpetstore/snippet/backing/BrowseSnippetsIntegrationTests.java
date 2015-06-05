@@ -2,18 +2,23 @@ package com.github.fauu.notpetstore.snippet.backing;
 
 import com.github.fauu.notpetstore.snippet.Snippet;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.Random;
 
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class BrowseSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
+  @Value("${web.browseSnippets.pageSize}")
+  private int maxPageSize;
+
   @Test
-  public void browse_ShouldRedirectToBrowseSnippetsPage1Page() throws Exception {
+  public void browse_ShouldRedirectToBrowseSnippetsPage1Page()
+      throws Exception {
     mockMvc.perform(get("/browse"))
            .andExpect(status().is3xxRedirection())
            .andExpect(view().name("redirect:/browse/page/1"))
@@ -36,7 +41,8 @@ public class BrowseSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void browse_NonEmptyPage_ShouldHaveNonDeletedPublicSnippetPage() throws Exception {
+  public void browse_NonEmptyPage_ShouldHaveNonDeletedPublicSnippetPage()
+      throws Exception {
     dummySnippets.forEach(snippetRepository::save);
 
     mockMvc.perform(get("/browse/page/1"))
@@ -51,7 +57,7 @@ public class BrowseSnippetsIntegrationTests extends SnippetsIntegrationTests {
   }
 
   @Test
-  public void browse_NonEmptyPage_ShouldHaveSnippetPageSortedByDateTimeAddedDesc()
+  public void browse_NonEmptyPage_ShouldHaveSnippetPageSortedByCreatedAtDesc()
       throws Exception {
     dummySnippets.stream().limit(2).forEachOrdered(snippetRepository::save);
 
@@ -62,7 +68,7 @@ public class BrowseSnippetsIntegrationTests extends SnippetsIntegrationTests {
   }
 
   @Test
-  public void browse_SortCodePopular_ShouldHaveSnippetPageSortedByNumViewsDesc()
+  public void browse_SortTypePopular_ShouldHaveSnippetPageSortedByViewCountDesc()
       throws Exception {
     dummySnippets.stream().limit(2).forEachOrdered(snippetRepository::save);
 
@@ -81,7 +87,7 @@ public class BrowseSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
     mockMvc.perform(get("/browse/page/1?syntax=" + syntaxCode))
            .andExpect(model().attribute("filteredSyntaxName",
-               is(Snippet.SyntaxHighlighting.fromCode(syntaxCode)
+               is(Snippet.SyntaxHighlighting.ofCode(syntaxCode)
                                             .get()
                                             .toString())));
   }
@@ -98,7 +104,8 @@ public class BrowseSnippetsIntegrationTests extends SnippetsIntegrationTests {
   }
 
   @Test
-  public void browse_FullPage_ShouldHaveSnippetPageOfSize10() throws Exception {
+  public void browse_FullPage_ShouldHaveSnippetPageOfMaxSize()
+      throws Exception {
     Snippet dummySnippet;
     Random random = new Random();
     LocalDateTime now = LocalDateTime.now();
@@ -106,7 +113,7 @@ public class BrowseSnippetsIntegrationTests extends SnippetsIntegrationTests {
       dummySnippet =
           new Snippet("id" + i, "content", now.minusDays(random.nextInt(100)));
 
-      dummySnippet.setNumViews(random.nextInt(100));
+      dummySnippet.setViewCount(random.nextInt(100));
       dummySnippet.setVisibility(Snippet.Visibility.PUBLIC);
 
       snippetRepository.save(dummySnippet);
@@ -114,7 +121,7 @@ public class BrowseSnippetsIntegrationTests extends SnippetsIntegrationTests {
 
     mockMvc.perform(get("/browse/page/1"))
            .andExpect(model().attribute("snippetPage",
-               hasProperty("items", hasSize(10))));
+               hasProperty("items", hasSize(maxPageSize))));
   }
 
 }

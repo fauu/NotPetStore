@@ -2,9 +2,8 @@ package com.github.fauu.notpetstore.common.backing;
 
 import com.github.fauu.notpetstore.common.BadRequestException;
 import com.github.fauu.notpetstore.common.ResourceNotFoundException;
-import com.github.fauu.notpetstore.common.feedback.ExceptionFeedback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.fauu.notpetstore.common.ExceptionFeedback;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,10 +15,8 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import javax.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
+@Slf4j
 class GlobalExceptionHandlingControllerAdvice {
-
-  private static final Logger LOG
-      = LoggerFactory.getLogger(GlobalExceptionHandlingControllerAdvice.class);
 
   // TODO: Test these handlers?
 
@@ -42,10 +39,10 @@ class GlobalExceptionHandlingControllerAdvice {
   }
 
 
-  @ExceptionHandler(Throwable.class)
+  @ExceptionHandler(Exception.class)
   public @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) ModelAndView
-  any(Throwable e, HttpServletResponse response) {
-    LOG.error("Returned Internal Server Error", e);
+  any(Exception e, HttpServletResponse response) {
+    log.error("Returned Internal Server Error", e);
 
     return prepareResponseAndMav(response,
                                  HttpStatus.INTERNAL_SERVER_ERROR,
@@ -54,7 +51,8 @@ class GlobalExceptionHandlingControllerAdvice {
 
   private ModelAndView prepareResponseAndMav(HttpServletResponse response,
                                              HttpStatus status,
-                                             ExceptionFeedback exceptionFeedback) {
+                                             ExceptionFeedback
+                                                 exceptionFeedback) {
     response.setStatus(status.value());
 
     ModelAndView mav = new ModelAndView();

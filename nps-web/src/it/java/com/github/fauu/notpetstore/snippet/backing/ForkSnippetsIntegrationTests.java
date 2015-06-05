@@ -1,12 +1,10 @@
 package com.github.fauu.notpetstore.snippet.backing;
 
-import com.github.fauu.notpetstore.common.feedback.ExceptionFeedback;
+import com.github.fauu.notpetstore.common.ExceptionFeedback;
 import com.github.fauu.notpetstore.snippet.Snippet;
 import com.github.fauu.notpetstore.snippet.SnippetForm;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

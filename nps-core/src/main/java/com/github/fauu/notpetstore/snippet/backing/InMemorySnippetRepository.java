@@ -4,11 +4,14 @@ import com.github.fauu.notpetstore.common.Page;
 import com.github.fauu.notpetstore.common.PageRequest;
 import com.github.fauu.notpetstore.common.backing.InMemoryRepository;
 import com.github.fauu.notpetstore.snippet.Snippet;
-import com.github.fauu.notpetstore.snippet.SnippetSortType;
+import com.github.fauu.notpetstore.snippet.SnippetSort;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
@@ -28,52 +31,46 @@ class InMemorySnippetRepository extends InMemoryRepository<Snippet, String>
 
   @Override
   public List<Snippet>
-  findByDeletedFalseAndDateTimeExpiresNotAfter(LocalDateTime dateTime) {
+  findByDeletedFalseAndExpiresAtNotAfter(LocalDateTime dateTime) {
     return items.values()
                 .stream()
                 .filter(s -> !s.isDeleted() &&
-                             s.getDateTimeExpires() != null &&
-                             !s.getDateTimeExpires().isAfter(dateTime))
+                             s.getExpiresAt() != null &&
+                             !s.getExpiresAt().isAfter(dateTime))
                 .collect(toList());
   }
 
   @Override
   public Page<Snippet>
   findByDeletedFalseAndVisibilityPublic(PageRequest pageRequest,
-                                        SnippetSortType sortType,
+                                        SnippetSort sortType,
                                         Optional<Snippet.SyntaxHighlighting>
                                             syntaxHighlightingFilter) {
-    Comparator<Snippet> dateTimeAddedPresortComparator =
-        Comparator.comparing(Snippet::getDateTimeAdded).reversed();
-
-    Comparator<Snippet> combinedSortComparator =
-        sortType.getComparator().isPresent() ?
-            sortType.getComparator()
-                    .get()
-                    .thenComparing(dateTimeAddedPresortComparator) :
-            dateTimeAddedPresortComparator;
-
-    Predicate<Snippet> nonDeletedAndPublicPredicate =
+    Predicate<Snippet> snippetIsNotDeletedAndPublic =
         s -> !s.isDeleted() &&
              s.getVisibility().equals(Snippet.Visibility.PUBLIC);
 
     Predicate<Snippet> combinedFilterPredicate =
         syntaxHighlightingFilter.isPresent() ?
-            nonDeletedAndPublicPredicate
+            snippetIsNotDeletedAndPublic
                 .and(s -> s.getSyntaxHighlighting()
                            .equals(syntaxHighlightingFilter.get())) :
-            nonDeletedAndPublicPredicate;
+            snippetIsNotDeletedAndPublic;
 
     List<Snippet> allItems = items.values()
                                   .stream()
                                   .filter(combinedFilterPredicate)
-                                  .sorted(combinedSortComparator)
+                                  .sorted(sortType)
                                   .collect(toList());
 
     int fromIndex = (pageRequest.getPageNo() - 1) * pageRequest.getPageSize();
     int toIndex = fromIndex + pageRequest.getPageSize();
-    if (toIndex > allItems.size()) {
-      toIndex = allItems.size();
+    int itemCount = allItems.size();
+    if (fromIndex > itemCount) {
+      fromIndex = itemCount;
+    }
+    if (toIndex > itemCount) {
+      toIndex = itemCount;
     }
     List<Snippet> pageItems = allItems.subList(fromIndex, toIndex);
 

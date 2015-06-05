@@ -11,9 +11,10 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class AddSnippetsIntegrationTests extends SnippetsIntegrationTests {
@@ -120,9 +121,9 @@ public class AddSnippetsIntegrationTests extends SnippetsIntegrationTests {
     assertThat(snippet.getSyntaxHighlighting(),
         is(DUMMY_SYNTAX_HIGHLIGHTING));
 
-    assertThat(snippet.getDateTimeExpires()
+    assertThat(snippet.getExpiresAt()
             .minusMinutes(10)
-            .isEqual(snippet.getDateTimeAdded()),
+            .isEqual(snippet.getCreatedAt()),
         is(true));
 
     assertThat(bCryptPasswordEncoder.matches(DUMMY_OWNER_PASSWORD,
@@ -133,14 +134,14 @@ public class AddSnippetsIntegrationTests extends SnippetsIntegrationTests {
         is(DUMMY_VISIBILITY));
 
     LocalDateTime now = LocalDateTime.now();
-    assertThat(snippet.getDateTimeAdded()
+    assertThat(snippet.getCreatedAt()
                       .isAfter(now.minusMinutes(1)),
         is(true));
-    assertThat(snippet.getDateTimeAdded()
+    assertThat(snippet.getCreatedAt()
                       .isBefore(now),
         is(true));
 
-    assertThat(snippet.getNumViews(),
+    assertThat(snippet.getViewCount(),
         is(0));
   }
 

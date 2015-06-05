@@ -19,22 +19,22 @@ public @Data class Snippet implements Identifiable<String> {
 
   private SyntaxHighlighting syntaxHighlighting;
 
-  private LocalDateTime dateTimeExpires;
+  private LocalDateTime expiresAt;
 
   private String ownerPassword;
 
   private Visibility visibility;
 
-  private @NonNull LocalDateTime dateTimeAdded;
+  private @NonNull LocalDateTime createdAt;
 
-  private int numViews;
+  private int viewCount;
 
   private boolean deleted;
 
   {
     syntaxHighlighting = SyntaxHighlighting.NONE;
     visibility = Visibility.UNLISTED;
-    numViews = 0;
+    viewCount = 0;
     deleted = false;
   }
 
@@ -70,7 +70,7 @@ public @Data class Snippet implements Identifiable<String> {
 
     private final @NonNull String displayName;
 
-    public static Optional<SyntaxHighlighting> fromCode(String code) {
+    public static Optional<SyntaxHighlighting> ofCode(String code) {
       if (code != null) {
         for (SyntaxHighlighting sh : SyntaxHighlighting.values()) {
           if (code.equalsIgnoreCase(sh.code)) {

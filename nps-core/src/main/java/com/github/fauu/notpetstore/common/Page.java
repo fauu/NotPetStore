@@ -13,11 +13,11 @@ public @Data class Page<T> {
 
   private @NonNull int maxSize;
 
-  private @NonNull int numItemsTotal;
+  private @NonNull int totalItemCount;
 
   public int getNumPagesTotal() {
-    return numItemsTotal == 0 ? 1 : (int) Math.ceil((double) numItemsTotal /
-                                                    (double) maxSize);
+    return totalItemCount == 0 ? 1 : (int) Math.ceil((double) totalItemCount /
+                                                     (double) maxSize);
   }
 
   public boolean isMoreAvailable() {

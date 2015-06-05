@@ -37,7 +37,7 @@
           <th class="snippet-added">
             <s:message code="addedDateTime" />
           <th class="snippet-views ${param.sort == 'popular' ? 'is-sorted-by' : ''}">
-            <c:url var="numViewsSortUrl" value="/browse/page/${snippetPage.no}">
+            <c:url var="viewCountSortUrl" value="/browse/page/${snippetPage.no}">
               <c:if test="${not empty param.syntax}">
                 <c:param name="syntax" value="${param.syntax}" />
               </c:if>
@@ -45,10 +45,10 @@
                 <c:param name="sort" value="popular" />
               </c:if>
             </c:url>
-            <a class="table-sort-link" href="${numViewsSortUrl}">
+            <a class="table-sort-link" href="${viewCountSortUrl}">
               <i class="table-sort-icon material-icons">keyboard_arrow_down</i>
 
-              <s:message code="numViews" />
+              <s:message code="viewCount" />
             </a>
       <tbody>
         <c:forEach var="snippet" items="${snippetPage.items}">
@@ -69,9 +69,9 @@
                 <c:out value="${snippet.syntaxHighlighting}" />
               </a>
             <td class="snippet-added">
-              <u:relativeLocalDateTime localDateTime="${snippet.dateTimeAdded}" locale="${pageContext.response.locale}" />
+              <u:relativeLocalDateTime localDateTime="${snippet.createdAt}" locale="${pageContext.response.locale}" />
             <td class="snippet-views">
-              <c:out value="${snippet.numViews}" />
+              <c:out value="${snippet.viewCount}" />
         </c:forEach>
     </table>
 

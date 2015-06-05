@@ -29,14 +29,14 @@
       <c:out value="${snippetTitle}" />
     </h2>
 
-    <c:set var="dateTimeAddedAsDate" value="${u:localDateTimeToDate(snippet.dateTimeAdded)}" />
+    <c:set var="createdAtAsDate" value="${u:localDateTimeToDate(snippet.createdAt)}" />
     <f:setLocale value="${pageContext.response.locale}" scope="session"/>
-    <f:formatDate var="formattedDateTimeAdded"
-                    value="${dateTimeAddedAsDate}"
+    <f:formatDate var="formattedCreatedAt"
+                    value="${createdAtAsDate}"
                     pattern="yyyy-MM-dd HH:mm:ss 'UTC'"
                     timeZone="UTC" />
-    <f:formatDate var="formattedDateTimeAddedHumanized"
-                    value="${dateTimeAddedAsDate}"
+    <f:formatDate var="formattedCreatedAtHumanized"
+                    value="${createdAtAsDate}"
                     dateStyle="long"
                     timeZone="UTC" />
     <div class="page-details">
@@ -44,11 +44,11 @@
 
       <s:message code="addedByXOn" arguments="Anonymous" />
 
-      <time class="with-help" datetime="${snippet.dateTimeAdded}" title="${formattedDateTimeAdded}">
-        <c:out value="${formattedDateTimeAddedHumanized}" />
+      <time class="with-help" datetime="${snippet.createdAt}" title="${formattedCreatedAt}">
+        <c:out value="${formattedCreatedAtHumanized}" />
       </time>
 
-      <span class="separator"></span> <s:message code="numViews" />: <c:out value="${snippet.numViews}" />
+      <span class="separator"></span> <s:message code="viewCount" />: <c:out value="${snippet.viewCount}" />
     </div>
 
     <div class="text-card">

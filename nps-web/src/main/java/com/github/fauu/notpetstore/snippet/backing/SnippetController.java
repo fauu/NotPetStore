@@ -1,13 +1,15 @@
 package com.github.fauu.notpetstore.snippet.backing;
 
+import com.github.fauu.notpetstore.common.Page;
 import com.github.fauu.notpetstore.common.PageRequest;
-import com.github.fauu.notpetstore.common.feedback.ExceptionFeedback;
-import com.github.fauu.notpetstore.common.feedback.UserActionFeedback;
+import com.github.fauu.notpetstore.common.ExceptionFeedback;
+import com.github.fauu.notpetstore.common.UserActionFeedback;
 import com.github.fauu.notpetstore.snippet.RequestedSnippetDeletedException;
 import com.github.fauu.notpetstore.snippet.Snippet;
 import com.github.fauu.notpetstore.snippet.SnippetForm;
-import com.github.fauu.notpetstore.snippet.SnippetSortType;
+import com.github.fauu.notpetstore.snippet.SnippetSort;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,21 +28,21 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Controller
 @RequestMapping("/")
 class SnippetController {
 
-  // TODO: Externalize this?
-  private static final int SNIPPET_PAGE_SIZE = 10;
+  private @Autowired SnippetService snippetService;
 
-  @Autowired
-  private SnippetService snippetService;
+  private @Autowired CookieGenerator visitorIdCookieGenerator;
 
-  @Autowired
-  private CookieGenerator visitorIdCookieGenerator;
+  @Value("${web.browseSnippets.pageSize}")
+  private int snippetPageSize = 1;
+
+  @Value("${web.visitorIdCookieName}")
+  private String visitorIdCookieName;
 
   @InitBinder
   public void initBinder(WebDataBinder binder) {
@@ -49,21 +51,20 @@ class SnippetController {
     binder.registerCustomEditor(String.class, stringTrimmerEditor);
   }
 
-	@RequestMapping(method = GET, value = "/")
-	public String add(Model model) throws Exception {
+	@RequestMapping(value = "/", method = {GET, HEAD})
+	public String add(Model model) {
     model.addAttribute(new SnippetForm());
 
 		return "add";
 	}
 
-  @RequestMapping(method = POST, value = "/")
+  @RequestMapping(value = "/", method = POST)
   public String doAdd(@ModelAttribute @Valid SnippetForm snippetForm,
                       BindingResult bindingResult,
                       Model model,
                       RedirectAttributes redirectAttributes) {
     if (bindingResult.hasErrors()) {
-      model.addAttribute("userActionFeedback",
-          UserActionFeedback.SNIPPET_ADD_FORM_INVALLID);
+      model.addAttribute(UserActionFeedback.SNIPPET_ADD_FORM_INVALLID);
 
       return "add";
     }
@@ -71,54 +72,57 @@ class SnippetController {
     Snippet addedSnippet = snippetService.addSnippet(snippetForm);
 
     redirectAttributes.addAttribute("snippetId", addedSnippet.getId())
-                      .addFlashAttribute("userActionFeedback",
-                          UserActionFeedback.SNIPPET_ADD_SUCCESS);
+                      .addFlashAttribute(UserActionFeedback.SNIPPET_ADD_SUCCESS);
 
     return "redirect:/{snippetId}";
   }
 
-  @RequestMapping(method = GET, value = "/browse")
+  @RequestMapping(value = "/browse", method = {GET, HEAD})
   public String browse() {
     return "redirect:/browse/page/1";
   }
 
-  @RequestMapping(method = GET, value = "/browse/page/{pageNo}")
+  @RequestMapping(value = "/browse/page/{pageNo}", method = {GET, HEAD})
   public String browsePage(@PathVariable int pageNo,
-                           @RequestParam(required = false) String sort,
+                           @RequestParam(value = "sort", required = false)
+                               String sortCode,
                            @RequestParam(value = "syntax", required = false)
-                               String syntaxHighlightingFilterCode,
+                               String syntaxHighlightingCode,
                            Model model) {
 
     Optional<Snippet.SyntaxHighlighting> syntaxHighlightingFilter =
-        Snippet.SyntaxHighlighting.fromCode(syntaxHighlightingFilterCode);
+        Snippet.SyntaxHighlighting.ofCode(syntaxHighlightingCode);
 
-    model.addAttribute("snippetPage",
+    Page<Snippet> snippetPage =
         snippetService.getListableSnippets(
-            new PageRequest(pageNo, SNIPPET_PAGE_SIZE),
-            SnippetSortType.fromCode(sort),
-            syntaxHighlightingFilter));
+            new PageRequest(pageNo, snippetPageSize),
+            SnippetSort.ofCode(sortCode).orElse(SnippetSort.RECENT_FIRST),
+            syntaxHighlightingFilter);
+    model.addAttribute("snippetPage", snippetPage);
 
-    model.addAttribute("filteredSyntaxName",
+    String filteredSyntaxName =
         syntaxHighlightingFilter.map(Snippet.SyntaxHighlighting::getDisplayName)
-                                .orElse(null));
+                                .orElse(null);
+    model.addAttribute("filteredSyntaxName", filteredSyntaxName);
 
     return "browse";
   }
 
-  @RequestMapping(method = GET, value = "/{snippetId}")
+  @RequestMapping(value = "/{snippetId}", method = {GET, HEAD})
   public String view(@PathVariable String snippetId,
-                     @CookieValue(value = "npsVisitorId", required = false)
+                     @CookieValue(value = "${visitorIdCookieName}",
+                                  required = false)
                         String visitorId,
                      Model model,
                      HttpServletResponse response) {
     Snippet snippet = snippetService.getNonDeletedSnippetById(snippetId);
 
-    Optional<String> optionalNewVisitorId =
+    Optional<String> newVisitorId =
         snippetService
             .recordSnippetVisit(snippet, Optional.ofNullable(visitorId));
 
-    if (optionalNewVisitorId.isPresent()) {
-      visitorIdCookieGenerator.addCookie(response, optionalNewVisitorId.get());
+    if (newVisitorId.isPresent()) {
+      visitorIdCookieGenerator.addCookie(response, newVisitorId.get());
     }
 
     model.addAttribute(snippet);
@@ -126,14 +130,14 @@ class SnippetController {
     return "view";
   }
 
-  @RequestMapping(method = GET,
-                  value = "/{snippetId}/raw",
+  @RequestMapping(value = "/{snippetId}/raw",
+                  method = {GET, HEAD},
                   produces = MediaType.TEXT_PLAIN_VALUE)
   public @ResponseBody String viewRaw(@PathVariable String snippetId) {
     return snippetService.getNonDeletedSnippetById(snippetId).getContent();
   }
 
-  @RequestMapping(method = GET, value = "/{snippetId}/download")
+  @RequestMapping(value = "/{snippetId}/download", method = {GET, HEAD})
   public void download(@PathVariable String snippetId,
                        HttpServletResponse response) throws IOException {
     Snippet snippet = snippetService.getNonDeletedSnippetById(snippetId);
@@ -150,19 +154,18 @@ class SnippetController {
     out.close();
   }
 
-  @RequestMapping(method = POST,
-                  value = "/{snippetId}",
+  @RequestMapping(value = "/{snippetId}",
+                  method = POST,
                   params = {"delete", "ownerPassword"})
   public String doDelete(@PathVariable String snippetId,
                          @RequestParam String ownerPassword,
                          RedirectAttributes redirectAttributes) {
     Snippet snippet = snippetService.getNonDeletedSnippetById(snippetId);
 
-    if (ownerPassword == null ||
-        !snippetService.verifySnippetOwnerPassword(snippet, ownerPassword)) {
+    if (!snippetService.verifySnippetOwnerPassword(snippet, ownerPassword)) {
       redirectAttributes
           .addAttribute(snippetId)
-          .addFlashAttribute("userActionFeedback",
+          .addFlashAttribute(
               UserActionFeedback.SNIPPET_PERFORM_OWNER_ACTION_PASSWORD_INVALID);
 
       return "redirect:/{snippetId}";
@@ -170,13 +173,13 @@ class SnippetController {
 
     snippetService.deleteSnippet(snippet);
 
-    redirectAttributes.addFlashAttribute("userActionFeedback",
-        UserActionFeedback.SNIPPET_DELETE_SUCCESS);
+    redirectAttributes
+        .addFlashAttribute(UserActionFeedback.SNIPPET_DELETE_SUCCESS);
 
     return "redirect:/browse";
   }
 
-  @RequestMapping(method = GET, value = "/fork/{snippetId}")
+  @RequestMapping(value = "/fork/{snippetId}", method = {GET, HEAD})
   public String fork(@PathVariable String snippetId, Model model) {
     Snippet snippet = snippetService.getNonDeletedSnippetById(snippetId);
 
@@ -191,8 +194,7 @@ class SnippetController {
   public @ResponseStatus(HttpStatus.NOT_FOUND) ModelAndView deleted() {
     ModelAndView mav = new ModelAndView();
 
-    mav.addObject("exceptionFeedback",
-        ExceptionFeedback.REQUESTED_SNIPPET_DELETED);
+    mav.addObject(ExceptionFeedback.REQUESTED_SNIPPET_DELETED);
 
     mav.setViewName("exception");
 

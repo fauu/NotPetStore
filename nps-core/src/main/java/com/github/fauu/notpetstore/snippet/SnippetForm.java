@@ -1,8 +1,6 @@
 package com.github.fauu.notpetstore.snippet;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
@@ -16,14 +14,18 @@ public @Data class SnippetForm {
   private String title;
 
   @NotEmpty(message = "{snippetForm.error.contentEmpty}")
-  @Size(min = 140, max = 5000, message = "{snippetForm.error.contentIncorrectLength}")
+  @Size(min = 140,
+        max = 5000,
+        message = "{snippetForm.error.contentIncorrectLength}")
   private @NonNull String content;
 
   private @NonNull Snippet.SyntaxHighlighting syntaxHighlighting;
 
   private @NonNull SnippetForm.ExpirationMoment expirationMoment;
 
-  @Size(min = 5, max = 30, message = "{snippetForm.error.ownerPasswordIncorrectLength}")
+  @Size(min = 5,
+        max = 30,
+        message = "{snippetForm.error.ownerPasswordIncorrectLength}")
   private String ownerPassword;
 
   private @NonNull Snippet.Visibility visibility;
@@ -54,40 +56,22 @@ public @Data class SnippetForm {
     return Snippet.Visibility.values();
   }
 
-  // TODO: Move this out?
+  @RequiredArgsConstructor
+  @Getter
   public enum ExpirationMoment {
-    NEVER
-        (Optional.<Duration>empty(), "Never"),
+    NEVER(Optional.<Duration>empty(), "Never"),
+    IN_TEN_MINUTES(Optional.of(Duration.ofMinutes(10L)),  "In 10 minutes"),
+    IN_ONE_HOUR(Optional.of(Duration.ofHours(1L)), "In an hour"),
+    IN_ONE_DAY(Optional.of(Duration.ofDays(1)), "In a day"),
+    IN_ONE_WEEK(Optional.of(Duration.ofDays(7)), "In a week"),
+    IN_ONE_MONTH(Optional.of(Duration.ofDays(30)), "In a month");
 
-    IN_TEN_MINUTES
-        (Optional.of(Duration.ofMinutes(10L)),  "In 10 minutes"),
+    private final Optional<Duration> timeUntil;
 
-    IN_ONE_HOUR
-        (Optional.of(Duration.ofHours(1L)), "In an hour"),
+    private final String displayName;
 
-    IN_ONE_DAY
-        (Optional.of(Duration.ofDays(1)), "In a day"),
-
-    IN_ONE_WEEK
-        (Optional.of(Duration.ofDays(7)), "In a week"),
-
-    IN_ONE_MONTH
-        (Optional.of(Duration.ofDays(30)), "In a month");
-
-    private Optional<Duration> timeUntil;
-
-    private String displayName;
-
-    ExpirationMoment(Optional<Duration> timeUntil, String displayName) {
-      this.timeUntil = timeUntil;
-      this.displayName = displayName;
-    }
-
-    public Optional<Duration> getTimeUntil() {
-      return timeUntil;
-    }
-
-    public String getDisplayName() {
+    @Override
+    public String toString() {
       return displayName;
     }
   }

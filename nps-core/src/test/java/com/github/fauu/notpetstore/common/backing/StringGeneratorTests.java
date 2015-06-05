@@ -1,13 +1,12 @@
 package com.github.fauu.notpetstore.common.backing;
 
-import com.github.fauu.notpetstore.ContextAwareTests;
+import com.github.fauu.notpetstore.common.ContextAwareTests;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.util.stream.Collectors.toList;
 import static junit.framework.TestCase.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -17,17 +16,17 @@ public class StringGeneratorTests extends ContextAwareTests {
 
   private @Autowired StringGenerator stringGenerator;
 
-  private static final char[] DUMMY_SYMBOLS;
+  private static final char[] dummySymbols;
 
   static {
-    DUMMY_SYMBOLS = new char[] { 'a', 'b', 'c', 'A', 'B', 'C', '1', '2', '3'};
+    dummySymbols = new char[] { 'a', 'b', 'c', 'A', 'B', 'C', '1', '2', '3'};
   }
 
   @Test(expected = IllegalArgumentException.class)
   @SuppressWarnings("unused")
   public void generateString_LengthBelow1_ShouldThrowIllegalArgumentException()
       throws Exception {
-      String id = stringGenerator.generateString(DUMMY_SYMBOLS, 0);
+      String id = stringGenerator.generateString(dummySymbols, 0);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -39,7 +38,7 @@ public class StringGeneratorTests extends ContextAwareTests {
 
   @Test
   public void generate_ShouldReturnStringOfDesiredLength() throws Exception {
-    String id = stringGenerator.generateString(DUMMY_SYMBOLS, 15);
+    String id = stringGenerator.generateString(dummySymbols, 15);
 
     assertThat(id.length(), is(15));
   }
@@ -47,10 +46,10 @@ public class StringGeneratorTests extends ContextAwareTests {
   @Test
   public void generate_ShouldReturnStringWithOnlyDesiredCharacters()
       throws Exception {
-    String id = stringGenerator.generateString(DUMMY_SYMBOLS, 8);
+    String id = stringGenerator.generateString(dummySymbols, 8);
 
     Set<Character> dummySymbolsAsSet = new HashSet<>();
-    for (char c : DUMMY_SYMBOLS) {
+    for (char c : dummySymbols) {
       dummySymbolsAsSet.add(c);
     }
 
@@ -62,8 +61,8 @@ public class StringGeneratorTests extends ContextAwareTests {
   @Test
   public void generate_ShouldReturnDistinctStringsForTwoConsecutiveCalls()
       throws Exception {
-    String previousId = stringGenerator.generateString(DUMMY_SYMBOLS, 8);
-    String id = stringGenerator.generateString(DUMMY_SYMBOLS, 8);
+    String previousId = stringGenerator.generateString(dummySymbols, 8);
+    String id = stringGenerator.generateString(dummySymbols, 8);
 
     assertThat(id, is(not(previousId)));
   }
