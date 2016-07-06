@@ -46,7 +46,7 @@ public @Data class SnippetForm {
     }
   }
 
-  // TODO: Transform both into properties with @Setter(AccessLevel.NONE)?
+  // TODO: Transform all three into properties with @Setter(AccessLevel.NONE)?
 
   public ExpirationMoment[] getExpirationMomentValues() {
     return ExpirationMoment.values();
@@ -54,6 +54,10 @@ public @Data class SnippetForm {
 
   public Snippet.Visibility[] getVisibilityValues() {
     return Snippet.Visibility.values();
+  }
+
+  public Snippet.SyntaxHighlighting[] getSyntaxHighlightingValues() {
+    return Snippet.SyntaxHighlighting.values();
   }
 
   @RequiredArgsConstructor

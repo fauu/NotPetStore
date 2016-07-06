@@ -14,7 +14,7 @@
     <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
   </context:component-scan>
 
-  <context:property-placeholder location="classpath:application.properties" />
+  <context:property-placeholder location="classpath:application.properties" ignore-unresolvable="true" />
 
   <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
     <property name="basename" value="classpath:messages" />

@@ -38,10 +38,10 @@ class SnippetController {
 
   private @Autowired CookieGenerator visitorIdCookieGenerator;
 
-  @Value("${web.browseSnippets.pageSize}")
+  @Value("${browseSnippets.pageSize}")
   private int snippetPageSize = 1;
 
-  @Value("${web.visitorIdCookieName}")
+  @Value("${visitorIdCookieName}")
   private String visitorIdCookieName;
 
   @InitBinder

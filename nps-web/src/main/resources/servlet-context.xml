@@ -9,9 +9,11 @@
                            http://www.springframework.org/schema/mvc
                            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-  <context:component-scan base-package="com.github.fauu.notpetstore">
+  <context:component-scan base-package="com.github.fauu.notpetstore" use-default-filters="false">
     <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
   </context:component-scan>
+
+  <context:property-placeholder location="classpath:web.properties" ignore-unresolvable="true" />
 
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="prefix" value="/WEB-INF/templates/jsp/"/>
@@ -25,8 +27,8 @@
   <mvc:annotation-driven validator="validator"/>
 
   <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
-    <property name="defaultLocale" value="${web.defaultLocale}" />
-    <property name="cookieName" value="${web.localeCookieName}" />
+    <property name="defaultLocale" value="${defaultLocale}" />
+    <property name="cookieName" value="${localeCookieName}" />
     <property name="cookieMaxAge" value="31556926" />
   </bean>
   <mvc:interceptors>
@@ -36,7 +38,7 @@
   </mvc:interceptors>
 
   <bean id="visitorIdCookieGenerator" class="org.springframework.web.util.CookieGenerator">
-    <property name="cookieName" value="${web.visitorIdCookieName}" />
+    <property name="cookieName" value="${visitorIdCookieName}" />
     <property name="cookieMaxAge" value="31556926" />
   </bean>
 
