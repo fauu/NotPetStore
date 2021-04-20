@@ -1,31 +1,28 @@
 # Not Pet Store or Naive Pasting System
 
-![NPS logo][logo]
+Not Pet Store was an alpha-stage project aiming to create a set of progressively more complex sample _Spring_ web applications (pastebin.com clones). The project was active in 2015–16.
 
-A sample Spring web application. Allows users to post, browse, view and download text/code snippets. Planned to consist of several phases:
+<p align="center">
+  <img src="images/screenshot-preview.png?raw=true" alt="Preview screenshot" />
+</p>
 
-0. **Basics** - Basic functionality, in-memory repository *(almost done)*
+## Planned stages
+
+0. **Basics** - Basic functionality, in-memory repository _(almost complete)_
 1. **Persistence Intro** - In-memory database, plain old JDBC
 2. **External Database** - Spring JDBC
 3. **JPA** - Hibernate
 4. **JPA Simplified** - Spring Data JPA
 5. **Authentication and Authorization** - Spring Security, user profiles
 6. **REST API**
-7. ...
+7. …
 
-##Screenshots:
-* [Adding a snippet][1]
-* [Browsing snippets][2]
-* [Viewing a snippet][3]
+## Screenshots:
 
-[1]: https://i.imgur.com/7WcsRtO.png
-[2]: https://i.imgur.com/xzhopof.png
-[3]: https://i.imgur.com/yCauatL.png
+- [Adding a snippet](images/screenshot-adding-snippet.png?raw=true)
+- [Browsing snippets](images/screenshot-browsing-snippets.png?raw=true)
+- [Viewing a snippet](images/screenshot-viewing-snippet.png?raw=true)
 
-##Licensing
+## License
+
 See the [COPYING](https://github.com/fauu/NotPetStore/blob/master/COPYING) file.
-
-##Authors
-See the [AUTHORS](https://github.com/fauu/NotPetStore/blob/master/AUTHORS) file.
-
-[logo]: https://i.imgur.com/cbWhbcQ.png
